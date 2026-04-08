@@ -1,9 +1,11 @@
-interface VerifyEmailProps {
+import * as React from "react";
+
+interface ResetPasswordProps {
   name: string;
   url: string;
 }
 
-export function VerifyEmail({ name, url }: VerifyEmailProps) {
+export function ResetPassword({ name, url }: ResetPasswordProps) {
   return (
     <div
       style={{
@@ -45,7 +47,7 @@ export function VerifyEmail({ name, url }: VerifyEmailProps) {
             letterSpacing: "-0.5px",
           }}
         >
-          Verify your email
+          Reset your password
         </h1>
         <p
           style={{
@@ -55,8 +57,8 @@ export function VerifyEmail({ name, url }: VerifyEmailProps) {
             lineHeight: "1.6",
           }}
         >
-          Hey {name}, thanks for signing up. Click the button below to verify
-          your email address and start journaling.
+          Hey {name}, we received a request to reset your password. Click the
+          button below to choose a new one.
         </p>
 
         <a
@@ -72,14 +74,13 @@ export function VerifyEmail({ name, url }: VerifyEmailProps) {
             textDecoration: "none",
           }}
         >
-          Verify email address
+          Reset password
         </a>
 
         <div style={{ borderTop: "1px solid #27272a", margin: "32px 0" }} />
 
         <p style={{ fontSize: "13px", color: "#52525b", margin: "0 0 8px 0" }}>
-          If the button doesn&apos;t work, copy and paste this link into your
-          browser:
+          Or copy this link into your browser:
         </p>
         <p
           style={{
@@ -102,8 +103,8 @@ export function VerifyEmail({ name, url }: VerifyEmailProps) {
           }}
         >
           <p style={{ fontSize: "12px", color: "#3f3f46", margin: 0 }}>
-            This link expires in 24 hours. If you didn&apos;t create an account,
-            you can safely ignore this email.
+            This link expires in 1 hour. If you didn&apos;t request a password reset,
+            ignore this email — your password won&apos;t change.
           </p>
         </div>
       </div>

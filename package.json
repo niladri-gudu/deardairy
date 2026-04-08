@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@better-fetch/fetch": "^1.1.21",
+    "@react-email/components": "^1.0.11",
+    "@react-email/render": "^2.0.5",
     "@tiptap/extension-document": "^3.22.2",
     "@tiptap/extension-heading": "^3.22.2",
     "@tiptap/extension-paragraph": "^3.22.2",
