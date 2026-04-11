@@ -6,15 +6,17 @@ import {
   Bold,
   Italic,
   Underline,
+  Strikethrough,
+  Heading1,
   Heading2,
+  Heading3,
   List,
-  Quote,
-  Image,
+  ListOrdered,
+  Link as LinkIcon,
+  Unlink,
   Undo,
   Redo,
-  CheckSquare,
-  Link as LinkIcon,
-  Eraser,
+  Image,
 } from "lucide-react";
 import { useRef } from "react";
 import { toast } from "sonner";
@@ -45,12 +47,13 @@ function ToolbarButton({
       disabled={disabled}
       title={title}
       className={`
-        p-2 rounded-md transition-all
-        ${active
-          ? "bg-accent text-accent-foreground"
-          : "text-muted-foreground hover:text-foreground hover:bg-accent/50"}
-        ${disabled ? "opacity-30" : ""}
-      `}
+        p-1.5 rounded-md transition-all
+        ${
+          active
+            ? "bg-accent text-accent-foreground"
+            : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+        }
+        ${disabled ? "opacity-30 cursor-not-allowed" : "cursor-pointer"}      `}
     >
       {children}
     </button>
@@ -58,20 +61,23 @@ function ToolbarButton({
 }
 
 function Divider() {
-  return <div className="w-px h-5 bg-border mx-1" />;
+  return <div className="w-px h-5 bg-border mx-1 shrink-0" />;
 }
 
 export function Toolbar({ editor }: ToolbarProps) {
   const imageInputRef = useRef<HTMLInputElement>(null);
 
-  // 🔗 LINK
   const addLink = () => {
-    const url = prompt("Enter URL");
-    if (!url) return;
+    const existing = editor.getAttributes("link").href;
+    const url = window.prompt("Enter URL:", existing ?? "https://");
+    if (url === null) return; // cancelled
+    if (url === "") {
+      editor.chain().focus().unsetLink().run();
+      return;
+    }
     editor.chain().focus().setLink({ href: url }).run();
   };
 
-  // 🖼 IMAGE (FULL WORKING FLOW)
   const addImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -79,7 +85,6 @@ export function Toolbar({ editor }: ToolbarProps) {
 
     const tempId = `upload-${Date.now()}`;
 
-    // show temp image
     editor
       .chain()
       .focus()
@@ -87,7 +92,6 @@ export function Toolbar({ editor }: ToolbarProps) {
       .run();
 
     try {
-      // 1. get presigned URL
       const res = await fetch("/api/journal/upload", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -100,14 +104,12 @@ export function Toolbar({ editor }: ToolbarProps) {
 
       const { presignedUrl, publicUrl } = await res.json();
 
-      // 2. upload to S3
       await fetch(presignedUrl, {
         method: "PUT",
         body: file,
         headers: { "Content-Type": file.type },
       });
 
-      // 3. replace temp image
       const { state } = editor;
       state.doc.descendants((node, pos) => {
         if (node.type.name === "image" && node.attrs.alt === tempId) {
@@ -122,11 +124,13 @@ export function Toolbar({ editor }: ToolbarProps) {
     } catch (err) {
       toast.error("Image upload failed");
 
-      // remove temp
       const { state } = editor;
       state.doc.descendants((node, pos) => {
         if (node.type.name === "image" && node.attrs.alt === tempId) {
-          editor.chain().deleteRange({ from: pos, to: pos + node.nodeSize }).run();
+          editor
+            .chain()
+            .deleteRange({ from: pos, to: pos + node.nodeSize })
+            .run();
         }
       });
     }
@@ -134,12 +138,11 @@ export function Toolbar({ editor }: ToolbarProps) {
 
   return (
     <div className="flex items-center gap-1 px-3 py-2 border-b border-border bg-background/80 backdrop-blur sticky top-0 z-10">
-      
       {/* Undo / Redo */}
       <ToolbarButton
         onClick={() => editor.chain().focus().undo().run()}
         disabled={!editor.can().undo()}
-        title="Undo"
+        title="Undo (Ctrl+Z)"
       >
         <Undo className="h-4 w-4" />
       </ToolbarButton>
@@ -147,7 +150,7 @@ export function Toolbar({ editor }: ToolbarProps) {
       <ToolbarButton
         onClick={() => editor.chain().focus().redo().run()}
         disabled={!editor.can().redo()}
-        title="Redo"
+        title="Redo (Ctrl+Y)"
       >
         <Redo className="h-4 w-4" />
       </ToolbarButton>
@@ -156,11 +159,27 @@ export function Toolbar({ editor }: ToolbarProps) {
 
       {/* Heading */}
       <ToolbarButton
+        onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+        active={editor.isActive("heading", { level: 1 })}
+        title="Heading 1"
+      >
+        <Heading1 className="h-4 w-4" />
+      </ToolbarButton>
+
+      <ToolbarButton
         onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
         active={editor.isActive("heading", { level: 2 })}
-        title="Heading"
+        title="Heading 2"
       >
         <Heading2 className="h-4 w-4" />
+      </ToolbarButton>
+
+      <ToolbarButton
+        onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+        active={editor.isActive("heading", { level: 3 })}
+        title="Heading 3"
+      >
+        <Heading3 className="h-4 w-4" />
       </ToolbarButton>
 
       <Divider />
@@ -169,6 +188,7 @@ export function Toolbar({ editor }: ToolbarProps) {
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleBold().run()}
         active={editor.isActive("bold")}
+        title="Bold (Ctrl+B)"
       >
         <Bold className="h-4 w-4" />
       </ToolbarButton>
@@ -176,6 +196,7 @@ export function Toolbar({ editor }: ToolbarProps) {
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleItalic().run()}
         active={editor.isActive("italic")}
+        title="Italic (Ctrl+I)"
       >
         <Italic className="h-4 w-4" />
       </ToolbarButton>
@@ -183,8 +204,17 @@ export function Toolbar({ editor }: ToolbarProps) {
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleUnderline().run()}
         active={editor.isActive("underline")}
+        title="Underline (Ctrl+U)"
       >
         <Underline className="h-4 w-4" />
+      </ToolbarButton>
+
+      <ToolbarButton
+        onClick={() => editor.chain().focus().toggleStrike().run()}
+        active={editor.isActive("strike")}
+        title="Strikethrough"
+      >
+        <Strikethrough className="h-4 w-4" />
       </ToolbarButton>
 
       <Divider />
@@ -198,38 +228,39 @@ export function Toolbar({ editor }: ToolbarProps) {
       </ToolbarButton>
 
       <ToolbarButton
-        onClick={() => editor.chain().focus().toggleTaskList().run()}
-        active={editor.isActive("taskList")}
+        onClick={() => editor.chain().focus().toggleOrderedList().run()}
+        active={editor.isActive("orderedList")}
+        title="Numbered list"
       >
-        <CheckSquare className="h-4 w-4" />
-      </ToolbarButton>
-
-      <ToolbarButton
-        onClick={() => editor.chain().focus().toggleBlockquote().run()}
-        active={editor.isActive("blockquote")}
-      >
-        <Quote className="h-4 w-4" />
+        <ListOrdered className="h-4 w-4" />
       </ToolbarButton>
 
       <Divider />
 
       {/* Extras */}
-      <ToolbarButton onClick={addLink}>
+      <ToolbarButton
+        onClick={addLink}
+        active={editor.isActive("link")}
+        title="Add link"
+      >
         <LinkIcon className="h-4 w-4" />
       </ToolbarButton>
-
-      <ToolbarButton
-        onClick={() =>
-          editor.chain().focus().unsetAllMarks().clearNodes().run()
-        }
-      >
-        <Eraser className="h-4 w-4" />
-      </ToolbarButton>
+      {editor.isActive("link") && (
+        <ToolbarButton
+          onClick={() => editor.chain().focus().unsetLink().run()}
+          title="Remove link"
+        >
+          <Unlink className="h-4 w-4" />
+        </ToolbarButton>
+      )}
 
       <Divider />
 
       {/* Image */}
-      <ToolbarButton onClick={() => imageInputRef.current?.click()}>
+      <ToolbarButton
+        onClick={() => imageInputRef.current?.click()}
+        title="Add image"
+      >
         <Image className="h-4 w-4" />
       </ToolbarButton>
 

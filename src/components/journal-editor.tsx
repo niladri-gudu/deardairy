@@ -1,10 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState } from "react";
 import Editor from "@/components/editor";
 import { SaveIndicator } from "@/components/save-indicator";
 import { useAutoSave } from "@/hooks/use-auto-save";
-import { getLocalDateString } from "@/lib/utils/date";
 
 interface Props {
   date: string;
@@ -37,8 +37,6 @@ export function JournalEditor({ date, initialTitle, initialContent }: Props) {
     contentText: editorContent.text,
     contentJson: editorContent.json,
   });
-
-  const isToday = date === getLocalDateString();
 
   return (
     <div className="min-h-screen bg-background text-foreground pt-16">
