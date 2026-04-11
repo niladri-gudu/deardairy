@@ -9,14 +9,16 @@ export function Navbar() {
   const { data: session, isPending } = useSession();
 
   return (
-    <nav className="fixed top-0 w-full z-50 border-b border-border bg-background/70 backdrop-blur-md transition-colors duration-500">
+    <nav className="fixed top-0 w-full z-50 border-b border-border bg-background backdrop-blur-md transition-colors duration-500 ease-in-out">
+      {" "}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          
           {/* Logo Section */}
           <Link href="/" className="flex items-center gap-2 group">
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center group-hover:rotate-6 transition-all duration-300 shadow-lg shadow-primary/20">
-              <span className="text-primary-foreground font-black text-xl">J</span>
+              <span className="text-primary-foreground font-black text-xl">
+                J
+              </span>
             </div>
             <span className="text-foreground font-bold tracking-tighter text-xl">
               JOURNAL
@@ -26,7 +28,7 @@ export function Navbar() {
           {/* Right Section: Theme + Auth */}
           <div className="flex items-center gap-3">
             <ThemePicker />
-            
+
             <div className="h-6 w-px bg-border mx-1" />
 
             {isPending ? (

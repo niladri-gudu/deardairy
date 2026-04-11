@@ -4,9 +4,9 @@ import { useState } from "react";
 import Editor from "@/components/editor";
 import { SaveIndicator } from "@/components/save-indicator";
 import { useAutoSave } from "@/hooks/use-auto-save";
+import { ThemePicker } from "@/components/theme-picker";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { getLocalDateString } from "@/lib/utils/date";
 
 interface Props {
   date: string;
@@ -40,46 +40,38 @@ export function JournalEditor({ date, initialTitle, initialContent }: Props) {
     contentJson: editorContent.json,
   });
 
-  const isToday = date === getLocalDateString();
+  const isToday = date === new Date().toLocaleDateString("en-CA");
 
   return (
-    <div className="min-h-screen bg-[#020617] text-white">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Top bar */}
-      <header className="sticky top-0 z-20 flex items-center justify-between px-6 py-3 border-b border-zinc-800/60 bg-[#020617]/80 backdrop-blur">
+      <header className="sticky top-0 z-20 flex items-center justify-between px-6 py-3 border-b border-border bg-background/80 backdrop-blur">
         <Link
           href="/journal"
-          className="flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-300 transition-colors"
+          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           Journal
         </Link>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <SaveIndicator status={saveStatus} />
-          <span className="text-xs text-zinc-600">
+          <span className="text-xs text-muted-foreground">
             {isToday ? "Today" : formatDate(date)}
           </span>
+          <ThemePicker />
         </div>
       </header>
 
-      {/* Editor area */}
       <main className="max-w-2xl mx-auto px-6 py-14">
-        {/* Title */}
         <input
           placeholder="Untitled"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full text-4xl font-bold bg-transparent outline-none text-zinc-100 placeholder:text-zinc-700 tracking-tight mb-3"
+          className="w-full text-4xl font-bold bg-transparent outline-none text-foreground placeholder:text-muted-foreground/20 tracking-tight mb-3"
         />
-
-        {/* Date */}
-        <p className="text-sm text-zinc-600 mb-8">{formatDate(date)}</p>
-
-        {/* Editor */}
-        <Editor
-          content={initialContent}
-          onChange={setEditorContent}
-        />
+        <p className="text-sm text-muted-foreground mb-8">{formatDate(date)}</p>
+        <Editor content={initialContent} onChange={setEditorContent} />
       </main>
     </div>
   );

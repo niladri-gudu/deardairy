@@ -17,7 +17,7 @@ export default async function JournalPage() {
 
   const entries = await Entry.find(
     { userId: session.user.id },
-    { date: 1, title: 1, wordCount: 1, contentText: 1 },
+    { date: 1, title: 1, wordCount: 1 },
   )
     .sort({ date: -1 })
     .limit(10)
@@ -26,14 +26,13 @@ export default async function JournalPage() {
   const todayEntry = (entries as any[]).find((e) => e.date === today);
 
   return (
-    <div className="min-h-screen bg-[#020617] text-white">
+    <div className="min-h-screen bg-background text-foreground">
       <main className="max-w-2xl mx-auto px-6 py-16 space-y-12">
-        {/* Header */}
         <div className="space-y-1">
-          <h1 className="text-3xl font-bold tracking-tight text-zinc-100">
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">
             Hey, {session.user.name?.split(" ")[0]} 👋
           </h1>
-          <p className="text-zinc-500">
+          <p className="text-muted-foreground">
             {new Date().toLocaleDateString("en-US", {
               weekday: "long",
               month: "long",
@@ -42,51 +41,49 @@ export default async function JournalPage() {
           </p>
         </div>
 
-        {/* Today CTA */}
         <Link href={`/journal/${today}`}>
-          <div className="group border border-zinc-800 hover:border-zinc-700 rounded-2xl p-6 transition-all cursor-pointer bg-zinc-900/30 hover:bg-zinc-900/60">
+          <div className="group border border-border hover:border-border/80 rounded-2xl p-6 transition-all cursor-pointer bg-card/30 hover:bg-card/60">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <p className="text-xs text-zinc-500 uppercase tracking-widest">
+                <p className="text-xs text-muted-foreground uppercase tracking-widest">
                   Today
                 </p>
                 {todayEntry ? (
                   <>
-                    <p className="text-lg font-medium text-zinc-100">
-                      {todayEntry.title || "Untitled"}
+                    <p className="text-lg font-medium text-foreground">
+                      {(todayEntry as any).title || "Untitled"}
                     </p>
-                    <p className="text-sm text-zinc-500">
-                      {todayEntry.wordCount} words
+                    <p className="text-sm text-muted-foreground">
+                      {(todayEntry as any).wordCount} words
                     </p>
                   </>
                 ) : (
-                  <p className="text-lg font-medium text-zinc-400">
-                    Write today's entry
+                  <p className="text-lg font-medium text-muted-foreground">
+                    Write today&apos;s entry
                   </p>
                 )}
               </div>
-              <PenLine className="h-5 w-5 text-zinc-600 group-hover:text-zinc-400 transition-colors" />
+              <PenLine className="h-5 w-5 text-muted-foreground/50 group-hover:text-muted-foreground transition-colors" />
             </div>
           </div>
         </Link>
 
-        {/* Recent entries */}
-        {entries.length > 0 && (
+        {entries.filter((e) => e.date !== today).length > 0 && (
           <div className="space-y-3">
-            <h2 className="text-xs text-zinc-500 uppercase tracking-widest">
+            <h2 className="text-xs text-muted-foreground uppercase tracking-widest">
               Recent
             </h2>
-            <div className="space-y-2">
+            <div className="space-y-1">
               {(entries as any[])
                 .filter((e) => e.date !== today)
                 .map((entry) => (
                   <Link key={entry.date} href={`/journal/${entry.date}`}>
-                    <div className="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-zinc-900/60 transition-all group border border-transparent hover:border-zinc-800">
+                    <div className="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-accent/30 transition-all group border border-transparent hover:border-border">
                       <div className="space-y-0.5">
-                        <p className="text-sm font-medium text-zinc-300 group-hover:text-zinc-100 transition-colors">
+                        <p className="text-sm font-medium text-foreground/70 group-hover:text-foreground transition-colors">
                           {entry.title || "Untitled"}
                         </p>
-                        <p className="text-xs text-zinc-600">
+                        <p className="text-xs text-muted-foreground">
                           {new Date(
                             entry.date + "T00:00:00",
                           ).toLocaleDateString("en-US", {
@@ -96,7 +93,7 @@ export default async function JournalPage() {
                           })}
                         </p>
                       </div>
-                      <span className="text-xs text-zinc-600">
+                      <span className="text-xs text-muted-foreground">
                         {entry.wordCount} words
                       </span>
                     </div>

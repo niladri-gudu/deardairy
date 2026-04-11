@@ -50,14 +50,10 @@ function ToolbarButton({
       disabled={disabled}
       title={title}
       className={`
-        p-1.5 rounded-md transition-all
-        ${
-          active
-            ? "bg-zinc-700 text-zinc-100"
-            : "text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800"
-        }
-        ${disabled ? "opacity-30 cursor-not-allowed" : "cursor-pointer"}
-      `}
+  p-1.5 rounded-md transition-all
+  ${active ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:text-foreground hover:bg-accent/50"}
+  ${disabled ? "opacity-30 cursor-not-allowed" : "cursor-pointer"}
+`}
     >
       {children}
     </button>
@@ -65,7 +61,7 @@ function ToolbarButton({
 }
 
 function Divider() {
-  return <div className="w-px h-5 bg-zinc-800 mx-1 shrink-0" />;
+  return <div className="w-px h-5 bg-border mx-1 shrink-0" />;
 }
 
 export function Toolbar({ editor }: ToolbarProps) {
@@ -137,7 +133,8 @@ export function Toolbar({ editor }: ToolbarProps) {
   };
 
   return (
-    <div className="flex items-center gap-0.5 flex-wrap px-3 py-2 border-b border-zinc-800/60 bg-zinc-950/80 backdrop-blur sticky top-0 z-10">
+    <div className="flex items-center gap-0.5 flex-wrap px-3 py-2 border-b border-border bg-background/80 backdrop-blur sticky top-0 z-10">
+      {" "}
       {/* Undo / Redo */}
       <ToolbarButton
         onClick={() => editor.chain().focus().undo().run()}
@@ -153,9 +150,7 @@ export function Toolbar({ editor }: ToolbarProps) {
       >
         <Redo className="h-4 w-4" />
       </ToolbarButton>
-
       <Divider />
-
       {/* Headings */}
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
@@ -178,9 +173,7 @@ export function Toolbar({ editor }: ToolbarProps) {
       >
         <Heading3 className="h-4 w-4" />
       </ToolbarButton>
-
       <Divider />
-
       {/* Inline formatting */}
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleBold().run()}
@@ -217,9 +210,7 @@ export function Toolbar({ editor }: ToolbarProps) {
       >
         <Highlighter className="h-4 w-4" />
       </ToolbarButton>
-
       <Divider />
-
       {/* Alignment */}
       <ToolbarButton
         onClick={() => editor.chain().focus().setTextAlign("left").run()}
@@ -242,9 +233,7 @@ export function Toolbar({ editor }: ToolbarProps) {
       >
         <AlignRight className="h-4 w-4" />
       </ToolbarButton>
-
       <Divider />
-
       {/* Lists */}
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleBulletList().run()}
@@ -273,9 +262,7 @@ export function Toolbar({ editor }: ToolbarProps) {
       >
         <Minus className="h-4 w-4" />
       </ToolbarButton>
-
       <Divider />
-
       {/* Media */}
       <ToolbarButton
         onClick={() => imageInputRef.current?.click()}
@@ -290,7 +277,6 @@ export function Toolbar({ editor }: ToolbarProps) {
         className="hidden"
         onChange={addImage}
       />
-
       <ToolbarButton onClick={addYoutube} title="Embed YouTube video">
         <Video className="h-4 w-4" />
       </ToolbarButton>

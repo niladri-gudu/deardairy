@@ -36,7 +36,7 @@ export default function Editor({
     editorProps: {
       attributes: {
         class:
-          "prose prose-invert prose-zinc max-w-none focus:outline-none min-h-[60vh] text-lg leading-relaxed text-zinc-200 prose-headings:text-zinc-100 prose-strong:text-zinc-100 prose-blockquote:border-zinc-700 prose-blockquote:text-zinc-400 prose-code:text-zinc-300 prose-hr:border-zinc-800",
+          "prose max-w-none focus:outline-none min-h-[60vh] text-lg leading-relaxed text-foreground prose-headings:text-foreground prose-strong:text-foreground prose-blockquote:border-border prose-blockquote:text-muted-foreground prose-code:text-foreground prose-hr:border-border prose-a:text-primary",
       },
     },
     onUpdate({ editor }) {

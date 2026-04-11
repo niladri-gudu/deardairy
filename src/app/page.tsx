@@ -22,7 +22,7 @@ export default function LandingPage() {
         </h1>
 
         <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed mb-10">
-          Don't let your thoughts weigh you down. A minimalist journal designed 
+          Don&apos;t let your thoughts weigh you down. A minimalist journal designed 
           to help you process anxiety, build a writing habit, and find 
           a moment of peace every day.
         </p>
