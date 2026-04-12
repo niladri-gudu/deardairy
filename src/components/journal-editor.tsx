@@ -42,7 +42,7 @@ export function JournalEditor({ date, initialTitle, initialContent }: Props) {
 
   return (
     <div className="min-h-screen bg-background text-foreground pt-16">
-      <div className="fixed top-20 left-0 right-0 z-10 flex justify-center pointer-events-none">
+      <div className="fixed bottom-10 left-0 right-0 z-10 flex justify-center pointer-events-none">
         {editorInstance && (
           <div className="pointer-events-auto">
             <Toolbar editor={editorInstance} />

@@ -6,7 +6,6 @@ import {
   Bold,
   Italic,
   Underline,
-  Strikethrough,
   Heading1,
   Heading2,
   Heading3,
@@ -214,13 +213,6 @@ export function Toolbar({ editor }: ToolbarProps) {
         title="Underline (Ctrl+U)"
       >
         <Underline className="h-4 w-4" />
-      </ToolbarButton>
-      <ToolbarButton
-        onClick={() => editor.chain().focus().toggleStrike().run()}
-        active={editorState.isStrike}
-        title="Strikethrough"
-      >
-        <Strikethrough className="h-4 w-4" />
       </ToolbarButton>
       <Divider />
       <ToolbarButton

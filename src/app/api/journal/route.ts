@@ -22,8 +22,11 @@ export async function POST(req: NextRequest) {
 
   const entry = await Entry.findOneAndUpdate(
     { userId: session.user.id, date },
-    { title, contentHtml, contentText, contentJson, wordCount },
-    { upsert: true, new: true },
+    {
+      $set: { title, contentHtml, contentText, contentJson, wordCount },
+      $setOnInsert: { userId: session.user.id, date },
+    },
+    { upsert: true, returnDocument: "after" },
   );
 
   return NextResponse.json({ entry });

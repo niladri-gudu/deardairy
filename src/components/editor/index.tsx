@@ -60,7 +60,7 @@ export default function Editor({
 
   return (
     <div className="bg-background">
-      <div className="px-8 py-8">
+      <div className="px-4 py-4">
         <EditorContent editor={editor} />
       </div>
     </div>
