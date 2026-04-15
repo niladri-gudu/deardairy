@@ -9,6 +9,7 @@ import { Toolbar } from "../editor/toolbar";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { ChevronLeft } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface Props {
   date: string;
@@ -93,7 +94,10 @@ export function JournalEditor({ date, initialTitle, initialContent }: Props) {
             <Button
               variant="ghost"
               size="sm"
-              className="rounded-full hover:bg-accent shrink-0 px-4 flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors border border-transparent hover:border-border/50"
+              className={cn(
+                "rounded-full shrink-0 px-4 flex items-center gap-2 transition-all border border-transparent",
+                "text-muted-foreground hover:text-background hover:bg-foreground hover:border-foreground",
+              )}
             >
               <ChevronLeft className="h-4 w-4" />
               <span className="text-xs font-semibold uppercase tracking-wide">

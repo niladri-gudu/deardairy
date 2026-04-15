@@ -207,6 +207,18 @@
     --ring: oklch(0.62 0.14 190);
   }
 
+  .bg-primary:hover {
+    background-color: var(--primary); /* Keeps it solid when selected */
+    opacity: 0.9;
+  }
+
+  /* Smooth out the scaling to prevent blurriness */
+  .group {
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    -webkit-font-smoothing: subpixel-antialiased;
+  }
+
   * {
     @apply border-border outline-ring/50;
   }
@@ -238,6 +250,10 @@
   .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+
+  .selected-shadow {
+    box-shadow: 0 10px 25px -5px var(--primary);
   }
 }
 

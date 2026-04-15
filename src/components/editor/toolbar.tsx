@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { useRef } from "react";
 import { toast } from "sonner";
+import { Button } from "../ui/button";
 
 interface ToolbarProps {
   editor: Editor;
@@ -38,7 +39,9 @@ function ToolbarButton({
   children: React.ReactNode;
 }) {
   return (
-    <button
+    <Button
+      variant="ghost"
+      size="icon"
       onMouseDown={(e) => {
         e.preventDefault();
         onClick();
@@ -55,7 +58,7 @@ function ToolbarButton({
         ${disabled ? "opacity-30 cursor-not-allowed" : "cursor-pointer"}      `}
     >
       {children}
-    </button>
+    </Button>
   );
 }
 
