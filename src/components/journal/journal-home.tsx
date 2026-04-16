@@ -156,6 +156,7 @@ export function JournalHome({ today, entries, userName }: Props) {
                   contentHtml={selectedEntry.contentHtml}
                   wordCount={selectedEntry.wordCount}
                   today={today}
+                  onDeleteSuccess={() => setSelectedEntry(null)}
                 />
               )}
             </div>

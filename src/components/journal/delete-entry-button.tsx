@@ -17,7 +17,13 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "../ui/button";
 
-export function DeleteEntryButton({ date }: { date: string }) {
+export function DeleteEntryButton({
+  date,
+  onSuccess,
+}: {
+  date: string;
+  onSuccess: () => void;
+}) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -26,7 +32,13 @@ export function DeleteEntryButton({ date }: { date: string }) {
     try {
       const res = await fetch(`/api/journal/${date}`, { method: "DELETE" });
       if (!res.ok) throw new Error("Failed to delete");
+
       toast.success("Entry deleted");
+
+      if (onSuccess) {
+        onSuccess();
+      }
+
       router.refresh();
     } catch {
       toast.error("Failed to delete entry");
@@ -38,19 +50,26 @@ export function DeleteEntryButton({ date }: { date: string }) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button className="p-1.5 rounded-md text-muted-foreground/40 hover:text-destructive hover:bg-destructive/10 transition-all opacity-0 group-hover:opacity-100">
+        <Button
+          variant="destructive"
+          size="sm"
+          className="rounded-full px-5 font-bold tracking-tight transition-transform active:scale-95"
+        >
           {loading ? (
-            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            <Loader2 className="h-3.5 w-3.5 animate-spin mr-2" />
           ) : (
-            <Trash2 className="h-3.5 w-3.5" />
+            <Trash2 className="h-3.5 w-3.5 mr-2" />
           )}
+          Delete
         </Button>
       </AlertDialogTrigger>
+
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Delete entry?</AlertDialogTitle>
           <AlertDialogDescription>
-            This will permanently delete this journal entry. This action cannot be undone.
+            This will permanently delete this journal entry. This action cannot
+            be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

@@ -10,6 +10,8 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
 
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
@@ -51,6 +53,8 @@
     --input: oklch(0.9 0 0);
     --ring: oklch(0.5 0 0);
     --radius: 0.625rem;
+    --destructive: oklch(0.6 0.18 27);
+    --destructive-foreground: oklch(0.98 0 0);
   }
 
   /* --- THEME OVERRIDES --- */
@@ -72,6 +76,8 @@
     --accent-foreground: oklch(0.14 0.06 265);
     --border: oklch(1 0 0 / 12%);
     --ring: oklch(0.62 0.18 270);
+    --destructive: oklch(0.45 0.18 340);
+    --destructive-foreground: oklch(0.94 0.02 260);
   }
 
   .warm-minimal {
@@ -91,6 +97,8 @@
     --accent-foreground: oklch(0.27 0.02 261);
     --border: oklch(0.27 0.02 261 / 10%);
     --ring: oklch(0.32 0.05 40);
+    --destructive: oklch(0.55 0.12 28);
+    --destructive-foreground: oklch(0.98 0.01 76);
   }
 
   .forest {
@@ -110,6 +118,8 @@
     --accent-foreground: oklch(0.15 0.02 160);
     --border: oklch(1 0 0 / 10%);
     --ring: oklch(0.68 0.18 150);
+    --destructive: oklch(0.5 0.16 40);
+    --destructive-foreground: oklch(0.95 0.02 150);
   }
 
   .moonlight {
@@ -129,6 +139,8 @@
     --accent-foreground: oklch(0.12 0.03 280);
     --border: oklch(1 0 0 / 10%);
     --ring: oklch(0.55 0.12 280);
+    --destructive: oklch(0.5 0.15 15);
+    --destructive-foreground: oklch(0.98 0 0);
   }
 
   .terminal {
@@ -148,6 +160,8 @@
     --accent-foreground: oklch(0.12 0 0);
     --border: oklch(0.85 0.15 85 / 15%);
     --ring: oklch(0.85 0.15 85);
+    --destructive: oklch(0.65 0.2 35);
+    --destructive-foreground: oklch(0.12 0 0);
   }
 
   .rose-quartz {
@@ -167,6 +181,8 @@
     --accent-foreground: oklch(0.18 0.03 330);
     --border: oklch(0.75 0.1 330 / 20%);
     --ring: oklch(0.78 0.14 330);
+    --destructive: oklch(0.4 0.14 10);
+    --destructive-foreground: oklch(0.92 0.03 330);
   }
 
   .nordic {
@@ -186,6 +202,8 @@
     --accent-foreground: oklch(0.97 0.01 240);
     --border: oklch(0.25 0.04 240 / 10%);
     --ring: oklch(0.5 0.16 240);
+    --destructive: oklch(0.6 0.15 25);
+    --destructive-foreground: oklch(0.97 0.01 240);
   }
 
   .solarized {
@@ -205,6 +223,8 @@
     --accent-foreground: oklch(0.13 0.02 230);
     --border: oklch(0.85 0.02 200 / 10%);
     --ring: oklch(0.62 0.14 190);
+    --destructive: oklch(0.55 0.2 330);
+    --destructive-foreground: oklch(0.95 0 0);
   }
 
   .bg-primary:hover {
