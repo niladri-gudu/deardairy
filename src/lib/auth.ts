@@ -11,10 +11,6 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 export const auth = betterAuth({
   database: mongodbAdapter(client.db("deardiary"), { client }),
 
-  account: {
-    accountEnumerationPrevention: false, 
-  },
-  
   emailAndPassword: {
     enabled: true,
     minPasswordLength: 8,
