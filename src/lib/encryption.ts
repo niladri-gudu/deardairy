@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import "server-only";
 import { createCipheriv, createDecipheriv, randomBytes } from "crypto";
 
 const ALGORITHM = "aes-256-gcm";
@@ -19,8 +20,12 @@ export function encrypt(text: string): string {
 
 export function decrypt(encryptedData: string): string {
   console.log("Input to decrypt:", encryptedData.substring(0, 20) + "..."); // Debug line
-  
-  if (!encryptedData || typeof encryptedData !== "string" || !encryptedData.includes(":")) {
+
+  if (
+    !encryptedData ||
+    typeof encryptedData !== "string" ||
+    !encryptedData.includes(":")
+  ) {
     console.log("Not encrypted format, skipping.");
     return encryptedData;
   }
@@ -37,12 +42,12 @@ export function decrypt(encryptedData: string): string {
     const iv = Buffer.from(ivHex, "hex");
     const authTag = Buffer.from(authTagHex, "hex");
     const decipher = createDecipheriv(ALGORITHM, KEY, iv);
-    
+
     decipher.setAuthTag(authTag);
-    
+
     let decrypted = decipher.update(encryptedText, "hex", "utf8");
     decrypted += decipher.final("utf8");
-    
+
     console.log("Decryption successful!");
     return decrypted;
   } catch (e) {
