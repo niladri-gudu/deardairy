@@ -31,7 +31,6 @@ export function SigninForm() {
   return (
     <div className="min-h-[85vh] flex flex-col justify-center py-12 px-8 md:px-0 antialiased">
       <div className="w-full max-w-sm mx-auto space-y-10">
-        {/* Header */}
         <div className="space-y-3">
           <h1 className="text-5xl font-black tracking-tighter leading-[0.85]">
             Welcome <br />
@@ -73,26 +72,33 @@ export function SigninForm() {
 
           <div className="pt-4 space-y-4">
             <Button
-              className="w-full h-14 rounded-full font-bold text-lg hover:scale-[1.02] active:scale-[0.98] transition-all"
+              className="w-full h-14 rounded-full font-bold text-lg hover:scale-[1.02] active:scale-[0.98] transition-all relative overflow-hidden"
               onClick={handleSignin}
               disabled={isLoading}
             >
-              {isLoading ? (
-                <span className="flex items-center gap-2">
-                  <Loader2 className="h-5 w-5 animate-spin" />
-                  Accessing...
-                </span>
-              ) : (
-                <>
-                  Access Journal <ArrowRight className="ml-2 h-5 w-5" />
-                </>
-              )}
+              <div className="flex items-center justify-center gap-2 w-full transition-all duration-200">
+                {isLoading && (
+                  <div className="absolute inset-0 flex items-center justify-center gap-2 bg-primary">
+                    <Loader2 className="h-5 w-5 animate-spin shrink-0" />
+                    <span>Accessing...</span>
+                  </div>
+                )}
+
+                <div
+                  className={`flex items-center justify-center gap-2 transition-opacity duration-200 ${isLoading ? "opacity-0" : "opacity-100"}`}
+                >
+                  <span>Access Journal</span>
+                  <ArrowRight className="h-5 w-5 shrink-0" />
+                </div>
+              </div>
             </Button>
 
             <Button
               variant="ghost"
               className="w-full h-12 rounded-full font-mono text-[10px] uppercase tracking-widest text-muted-foreground hover:text-foreground"
-              onClick={() => signIn.social({ provider: "google", callbackURL: "/journal" })}
+              onClick={() =>
+                signIn.social({ provider: "google", callbackURL: "/journal" })
+              }
             >
               <GoogleIcon />
               Continue with Google
@@ -111,7 +117,7 @@ export function SigninForm() {
             New here?{" "}
             <Link
               href="/signup"
-              className="text-foreground font-bold border-b border-primary/40 hover:border-primary transition-all pb-0.5"
+              className="text-foreground font-bold border-b border-primary/40 hover:border-primary transition-all pb-0.5 ml-1"
             >
               Start_New_Journey
             </Link>

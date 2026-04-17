@@ -16,6 +16,9 @@ export const auth = betterAuth({
     minPasswordLength: 8,
     requireEmailVerification: true,
     autoSignIn: false,
+    // account: {
+    //   accountEnumerationPrevention: false,
+    // },
     sendResetPassword: async ({ user, url }) => {
       await resend.emails.send({
         from: process.env.EMAIL_FROM!,

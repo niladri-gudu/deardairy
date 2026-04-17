@@ -40,7 +40,7 @@ export function SignupForm() {
     <div className="min-h-[85vh] flex flex-col justify-center py-12 px-8 md:px-0 antialiased">
       <div className="w-full max-w-sm mx-auto">
         {verifyPending ? (
-          <div className="space-y-8 animate-in fade-in zoom-in duration-500">
+          <div className="space-y-8">
             <div className="space-y-3">
               <h2 className="text-5xl font-black tracking-tighter leading-[0.85]">
                 Check your <br />
@@ -60,12 +60,15 @@ export function SignupForm() {
               </span>
             </p>
 
-            <button
+            <Button
+              variant="ghost"
               onClick={() => setVerifyPending(false)}
-              className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground/40 hover:text-primary transition-colors ml-1"
+              className="group text-[10px] font-mono uppercase tracking-widest text-muted-foreground/40 hover:text-primary transition-all mt-4 block"
             >
-              // Wrong email?
-            </button>
+              <span className="border-b border-transparent group-hover:border-primary/40 pb-0.5">
+                // Wrong email?
+              </span>
+            </Button>
           </div>
         ) : (
           <div className="space-y-10">
@@ -123,20 +126,26 @@ export function SignupForm() {
 
               <div className="pt-4 space-y-4">
                 <Button
-                  className="w-full h-14 rounded-full font-bold text-lg hover:scale-[1.02] active:scale-[0.98] transition-all"
+                  className="w-full h-14 rounded-full font-bold text-lg hover:scale-[1.02] active:scale-[0.98] transition-all relative overflow-hidden"
                   onClick={handleSignup}
                   disabled={isLoading}
                 >
-                  {isLoading ? (
-                    <span className="flex items-center gap-2">
-                      <Loader2 className="h-5 w-5 animate-spin" />
-                      Inking...
-                    </span>
-                  ) : (
-                    <>
-                      Start Writing <PenLine className="ml-2 h-5 w-5" />
-                    </>
-                  )}
+                  <div className="flex items-center justify-center gap-2 w-full transition-all duration-200">
+                    {isLoading && (
+                      <div className="absolute inset-0 flex items-center justify-center gap-2 bg-primary rounded-full">
+                        <Loader2 className="h-5 w-5 animate-spin shrink-0" />
+                        <span>Inking...</span>
+                      </div>
+                    )}
+
+                    {/* Default State: Invisible when loading but still taking up space */}
+                    <div
+                      className={`flex items-center justify-center gap-2 transition-opacity duration-200 ${isLoading ? "opacity-0" : "opacity-100"}`}
+                    >
+                      <span>Start Writing</span>
+                      <PenLine className="h-5 w-5 shrink-0" />
+                    </div>
+                  </div>
                 </Button>
 
                 <Button
