@@ -15,6 +15,7 @@ export function SignupForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [verifyPending, setVerifyPending] = useState(false);
 
@@ -50,7 +51,7 @@ export function SignupForm() {
         return;
       }
 
-      const { data, error } = await signUp.email({ name, email, password });
+      const { error } = await signUp.email({ name, email, password });
       setIsLoading(false);
 
       if (error) {
@@ -181,21 +182,26 @@ export function SignupForm() {
                     </span>
                   )}
                 </div>
-                <Input
-                  type="password"
-                  placeholder="••••••••"
-                  className={`h-12 bg-transparent border-0 border-b rounded-none px-0 focus-visible:ring-0 transition-all placeholder:text-muted-foreground/30 text-lg ${
-                    errors.password
-                      ? "border-destructive/50"
-                      : "border-border/50 focus-visible:border-primary"
-                  }`}
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                    if (errors.password)
-                      setErrors((p) => ({ ...p, password: undefined }));
-                  }}
-                />
+                <div className="relative">
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="••••••••"
+                    className={`h-12 bg-transparent border-0 border-b rounded-none px-0 pr-12 focus-visible:ring-0 transition-all placeholder:text-muted-foreground/30 text-lg ${errors.password ? "border-destructive/50" : "border-border/50 focus-visible:border-primary"}`}
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      if (errors.password)
+                        setErrors((p) => ({ ...p, password: undefined }));
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 text-[10px] font-mono uppercase tracking-widest text-muted-foreground/40 hover:text-primary transition-colors px-1"
+                  >
+                    {showPassword ? "Hide" : "Show"}
+                  </button>
+                </div>
               </div>
 
               <div className="pt-4 space-y-4">
