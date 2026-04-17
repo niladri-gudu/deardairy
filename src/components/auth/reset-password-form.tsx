@@ -3,17 +3,10 @@
 import { useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
-import { Loader2, Lock, ShieldCheck } from "lucide-react";
+import { Loader2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { toast } from "sonner";
 
 export function ResetPasswordForm() {
@@ -23,116 +16,86 @@ export function ResetPasswordForm() {
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleReset = async () => {
-    if (!token) {
-      toast.error("Invalid or missing token. Please request a new reset link.");
-      return;
-    }
-    if (password !== confirmPassword) {
-      toast.error("Passwords do not match.");
-      return;
-    }
+    if (!token) return toast.error("Invalid token.");
+    if (password !== confirmPassword) return toast.error("Keys do not match.");
 
-    setLoading(true);
-    const res = await authClient.resetPassword({
-      token,
-      newPassword: password,
-    });
-    setLoading(false);
+    setIsLoading(true);
+    const res = await authClient.resetPassword({ token, newPassword: password });
+    setIsLoading(false);
 
     if (res.error) {
       toast.error(res.error.message);
-      return;
+    } else {
+      toast.success("Secret key updated.");
+      router.push("/signin");
     }
-
-    toast.success("Password updated successfully.");
-    setTimeout(() => router.push("/signin"), 1500);
   };
 
   return (
-    <Card className="w-full max-w-md border-border shadow-2xl relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-border to-transparent" />
-
-      <CardHeader className="space-y-2 pb-8 text-center">
-        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-muted border border-border">
-          <ShieldCheck className="h-6 w-6 text-muted-foreground" />
-        </div>
-        <CardTitle className="text-3xl font-bold tracking-tight text-foreground">
-          Reset Password
-        </CardTitle>
-        <CardDescription className="text-muted-foreground text-base">
-          Secure your account with a new password.
-        </CardDescription>
-      </CardHeader>
-
-      <CardContent className="grid gap-6">
-        <div className="grid gap-4">
-          <div className="grid gap-2">
-            <Label
-              htmlFor="password"
-              className="text-muted-foreground font-medium ml-1"
-            >
-              New Password
-            </Label>
-            <div className="relative group">
-              <Lock className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground/50 group-focus-within:text-foreground transition-colors" />
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                className="pl-10 h-11 bg-foreground/5"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="grid gap-2">
-            <Label
-              htmlFor="confirm-password"
-              className="text-muted-foreground font-medium ml-1"
-            >
-              Confirm New Password
-            </Label>
-            <div className="relative group">
-              <Lock className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground/50 group-focus-within:text-foreground transition-colors" />
-              <Input
-                id="confirm-password"
-                type="password"
-                placeholder="••••••••"
-                className="pl-10 h-11 bg-foreground/5"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
-            </div>
-          </div>
+    <div className="min-h-[85vh] flex flex-col justify-center py-12 px-8 md:px-0 antialiased">
+      <div className="w-full max-w-sm mx-auto space-y-10">
+        <div className="space-y-3">
+          <h1 className="text-5xl font-black tracking-tighter leading-[0.85]">
+            Reset <br />
+            <span className="text-primary/60 italic font-serif font-light text-6xl">
+              access.
+            </span>
+          </h1>
+          <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.2em]">
+            Restoring archives // Update security credentials
+          </p>
         </div>
 
-        <Button
-          className="w-full h-11 rounded-xl font-semibold"
-          onClick={handleReset}
-          disabled={loading || !password || password !== confirmPassword}
-        >
-          {loading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Resetting...
-            </>
-          ) : (
-            "Update Password"
-          )}
-        </Button>
-
-        {!token && (
-          <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-center">
-            <p className="text-xs text-destructive">
-              Invalid reset link. Please check your email for the correct URL.
-            </p>
+        <div className="space-y-6">
+          <div className="space-y-2">
+            <Label className="text-[10px] font-mono uppercase tracking-[0.3em] text-muted-foreground/60 ml-1">
+              New.Secret.Key
+            </Label>
+            <Input
+              type="password"
+              placeholder="••••••••"
+              className="h-12 bg-transparent border-0 border-b border-border/50 rounded-none px-0 focus-visible:ring-0 focus-visible:border-primary transition-all placeholder:text-muted-foreground/30 text-lg"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </div>
-        )}
-      </CardContent>
-    </Card>
+
+          <div className="space-y-2">
+            <Label className="text-[10px] font-mono uppercase tracking-[0.3em] text-muted-foreground/60 ml-1">
+              Confirm.Secret.Key
+            </Label>
+            <Input
+              type="password"
+              placeholder="••••••••"
+              className="h-12 bg-transparent border-0 border-b border-border/50 rounded-none px-0 focus-visible:ring-0 focus-visible:border-primary transition-all placeholder:text-muted-foreground/30 text-lg"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+          </div>
+
+          <div className="pt-4">
+            <Button
+              className="w-full h-14 rounded-full font-bold text-lg hover:scale-[1.02] active:scale-[0.98] transition-all"
+              onClick={handleReset}
+              disabled={isLoading || !password}
+            >
+              {isLoading ? (
+                <span className="flex items-center gap-2">
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  Updating...
+                </span>
+              ) : (
+                <>
+                  Update Secret <ArrowRight className="ml-2 h-5 w-5" />
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

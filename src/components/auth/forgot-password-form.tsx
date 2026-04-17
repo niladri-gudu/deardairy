@@ -1,13 +1,13 @@
+/* eslint-disable react/jsx-no-comment-textnodes */
 "use client";
 
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
-import { Loader2, Mail, ArrowLeft } from "lucide-react";
+import { Loader2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export function ForgotPasswordForm() {
   const [email, setEmail] = useState("");
@@ -21,61 +21,87 @@ export function ForgotPasswordForm() {
     setSent(true);
   };
 
-  if (sent) {
-    return (
-      <Card className="w-full max-w-md border-border shadow-2xl">
-        <CardContent className="flex flex-col items-center gap-4 py-12 text-center">
-          <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center">
-            <Mail className="h-5 w-5 text-muted-foreground" />
-          </div>
-          <h2 className="text-xl font-semibold text-foreground">Check your email</h2>
-          <p className="text-sm text-muted-foreground max-w-xs">
-            If an account exists for <span className="text-foreground">{email}</span>, you&apos;ll receive a reset link shortly.
-          </p>
-          <Link href="/signin" className="text-sm text-muted-foreground hover:text-foreground transition-colors mt-2">
-            Back to sign in
-          </Link>
-        </CardContent>
-      </Card>
-    );
-  }
-
   return (
-    <Card className="w-full max-w-md border-border shadow-2xl">
-      <CardHeader className="space-y-2 pb-8">
-        <CardTitle className="text-3xl font-bold tracking-tight text-foreground">
-          Forgot password?
-        </CardTitle>
-        <CardDescription className="text-muted-foreground text-base">
-          Enter your email and we&apos;ll send you a reset link.
-        </CardDescription>
-      </CardHeader>
-
-      <CardContent className="grid gap-6">
-        <div className="grid gap-2">
-          <Label htmlFor="email" className="text-muted-foreground font-medium ml-1">Email</Label>
-          <div className="relative group">
-            <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground/50 group-focus-within:text-foreground transition-colors" />
-            <Input
-              id="email"
-              type="email"
-              placeholder="name@example.com"
-              className="pl-10 h-11 bg-foreground/5"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
+    <div className="min-h-[85vh] flex flex-col justify-center py-12 px-8 md:px-0 antialiased">
+      <div className="w-full max-w-sm mx-auto">
+        {sent ? (
+          <div className="text-center space-y-8 animate-in fade-in zoom-in duration-500">
+            <h2 className="text-5xl font-black tracking-tighter leading-[0.85]">
+              Check your <br />
+              <span className="text-primary/60 italic font-serif font-light text-6xl">
+                inbox.
+              </span>
+            </h2>
+            <p className="text-muted-foreground font-mono text-xs tracking-widest leading-relaxed">
+              Recovery instructions dispatched to <br />
+              <span className="text-foreground block mt-2 underline decoration-primary/40 underline-offset-4">
+                {email}
+              </span>
+            </p>
+            <Link 
+              href="/signin" 
+              className="inline-block text-[10px] font-mono uppercase tracking-widest text-muted-foreground/40 hover:text-primary transition-colors"
+            >
+              // Return to Sign_In
+            </Link>
           </div>
-        </div>
+        ) : (
+          <div className="space-y-10">
+            <div className="space-y-3">
+              <h1 className="text-5xl font-black tracking-tighter leading-[0.85]">
+                Forgot <br />
+                <span className="text-primary/60 italic font-serif font-light text-6xl">
+                  secret.
+                </span>
+              </h1>
+              <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.2em]">
+                Initiating recovery // Identity verification
+              </p>
+            </div>
 
-        <Button className="w-full h-11 rounded-xl font-semibold" onClick={handleSubmit} disabled={isLoading || !email}>
-          {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Send reset link"}
-        </Button>
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <Label className="text-[10px] font-mono uppercase tracking-[0.3em] text-muted-foreground/60 ml-1">
+                  Registered.Email
+                </Label>
+                <Input
+                  type="email"
+                  placeholder="name@example.com"
+                  className="h-12 bg-transparent border-0 border-b border-border/50 rounded-none px-0 focus-visible:ring-0 focus-visible:border-primary transition-all placeholder:text-muted-foreground/30 text-lg"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
 
-        <Link href="/signin" className="flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
-          <ArrowLeft className="h-3 w-3" />
-          Back to sign in
-        </Link>
-      </CardContent>
-    </Card>
+              <div className="pt-4 space-y-4 text-center">
+                <Button
+                  className="w-full h-14 rounded-full font-bold text-lg hover:scale-[1.02] active:scale-[0.98] transition-all"
+                  onClick={handleSubmit}
+                  disabled={isLoading || !email}
+                >
+                  {isLoading ? (
+                    <span className="flex items-center gap-2">
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                      Dispatching...
+                    </span>
+                  ) : (
+                    <>
+                      Send Reset Link <ArrowRight className="ml-2 h-5 w-5" />
+                    </>
+                  )}
+                </Button>
+                
+                <Link 
+                  href="/signin" 
+                  className="inline-block text-[10px] font-mono uppercase tracking-widest text-muted-foreground/30 hover:text-primary transition-colors italic"
+                >
+                  Back_to_SignIn
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

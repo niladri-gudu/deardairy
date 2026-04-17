@@ -1,35 +1,39 @@
+/* eslint-disable react/jsx-no-comment-textnodes */
 import Link from "next/link";
-import { CheckCircle } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function VerifiedPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background pt-16 px-4">
-      <div className="flex flex-col items-center gap-6 text-center max-w-sm">
-
-        <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center">
-          <CheckCircle className="h-8 w-8 text-primary" />
-        </div>
-
-        <div className="space-y-2">
-          <h1 className="text-2xl font-bold text-foreground tracking-tight">
-            Email verified
+    <div className="min-h-[85vh] flex flex-col justify-center py-12 px-8 md:px-0 antialiased">
+      {/* Removed text-center here */}
+      <div className="w-full max-w-sm mx-auto space-y-10">
+        <div className="space-y-3">
+          <h1 className="text-5xl font-black tracking-tighter leading-[0.85]">
+            Identity <br />
+            <span className="text-primary/60 italic font-serif font-light text-6xl">
+              verified.
+            </span>
           </h1>
-          <p className="text-muted-foreground text-sm leading-relaxed">
-            Your account is all set. Start writing your first entry.
+          <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.2em]">
+            Verification successful // Entry permitted
           </p>
         </div>
 
-        <Link href="/journal" className="w-full">
-          <Button className="w-full h-11 rounded-xl font-semibold">
-            Go to my journal
-          </Button>
-        </Link>
+        <div className="pt-4 space-y-6">
+          <Link href="/journal" className="block w-full">
+            <Button className="w-full h-14 rounded-full font-bold text-lg hover:scale-[1.02] active:scale-[0.98] transition-all">
+              Go to Journal <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          </Link>
 
-        <Link href="/" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
-          Back to home
-        </Link>
-
+          <Link 
+            href="/" 
+            className="inline-block text-[10px] font-mono uppercase tracking-widest text-muted-foreground/40 hover:text-foreground transition-all ml-1"
+          >
+            // Return_Home
+          </Link>
+        </div>
       </div>
     </div>
   );

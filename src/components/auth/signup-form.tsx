@@ -22,7 +22,15 @@ export function SignupForm() {
     const res = await signUp.email({ name, email, password });
     setIsLoading(false);
     if (res.error) {
-      toast.error(res.error.message);
+      if (
+        res.error.status === 422 ||
+        res.error.code === "USER_ALREADY_EXISTS"
+      ) {
+        toast.error("Identity already exists. Try signing in.");
+        return;
+      }
+
+      toast.error(res.error.message || "Failed to initialize identity.");
       return;
     }
     setVerifyPending(true);
@@ -32,22 +40,29 @@ export function SignupForm() {
     <div className="min-h-[85vh] flex flex-col justify-center py-12 px-8 md:px-0 antialiased">
       <div className="w-full max-w-sm mx-auto">
         {verifyPending ? (
-          <div className="text-center space-y-8 animate-in fade-in zoom-in duration-500">
-            <h2 className="text-5xl font-black tracking-tighter">
-              Check your <br />
-              <span className="text-primary/60 italic font-serif font-light text-6xl">
-                ink.
-              </span>
-            </h2>
+          <div className="space-y-8 animate-in fade-in zoom-in duration-500">
+            <div className="space-y-3">
+              <h2 className="text-5xl font-black tracking-tighter leading-[0.85]">
+                Check your <br />
+                <span className="text-primary/60 italic font-serif font-light text-6xl">
+                  ink.
+                </span>
+              </h2>
+              <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.2em]">
+                Identity pending // Action required
+              </p>
+            </div>
+
             <p className="text-muted-foreground font-mono text-xs tracking-widest leading-relaxed">
               A verification link has been dispatched to <br />
               <span className="text-foreground block mt-2 underline decoration-primary/40 underline-offset-4">
                 {email}
               </span>
             </p>
-            <button 
+
+            <button
               onClick={() => setVerifyPending(false)}
-              className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground/40 hover:text-primary transition-colors"
+              className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground/40 hover:text-primary transition-colors ml-1"
             >
               // Wrong email?
             </button>
@@ -99,7 +114,7 @@ export function SignupForm() {
                 </Label>
                 <Input
                   type="password"
-                  placeholder="Keep it cryptic"
+                  placeholder="••••••••"
                   className="h-12 bg-transparent border-0 border-b border-border/50 rounded-none px-0 focus-visible:ring-0 focus-visible:border-primary transition-all placeholder:text-muted-foreground/30 text-lg"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -127,7 +142,12 @@ export function SignupForm() {
                 <Button
                   variant="ghost"
                   className="w-full h-12 rounded-full font-mono text-[10px] uppercase tracking-widest text-muted-foreground hover:text-foreground"
-                  onClick={() => signIn.social({ provider: "google", callbackURL: "/journal" })}
+                  onClick={() =>
+                    signIn.social({
+                      provider: "google",
+                      callbackURL: "/journal",
+                    })
+                  }
                 >
                   <GoogleIcon />
                   Continue with Google
