@@ -52,7 +52,7 @@ export function SigninForm() {
   };
 
   return (
-    <div className="min-h-[85vh] flex flex-col justify-center py-12 px-8 md:px-0 antialiased">
+    <div className="min-h-[85vh] flex flex-col justify-center py-12 px-8 antialiased">
       <div className="w-full max-w-sm mx-auto space-y-10">
         <div className="space-y-3">
           <h1 className="text-5xl font-black tracking-tighter leading-[0.85]">

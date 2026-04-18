@@ -43,7 +43,7 @@ export function ForgotPasswordForm() {
   };
 
   return (
-    <div className="min-h-[85vh] flex flex-col justify-center py-12 px-8 md:px-0 antialiased">
+    <div className="min-h-[85vh] flex flex-col justify-center py-12 px-8 antialiased">
       <div className="w-full max-w-sm mx-auto">
         {sent ? (
           <div className="text-center space-y-8 animate-in fade-in zoom-in duration-500">
