@@ -21,8 +21,11 @@ export async function connectDB() {
   if (cached.conn) return cached.conn;
 
   if (!cached.promise) {
+    const DB_NAME =
+      process.env.NODE_ENV === "production" ? "withink_prod" : "withink_dev";
+
     cached.promise = mongoose.connect(MONGODB_URI, {
-      dbName: "deardiary",
+      dbName: DB_NAME,
       bufferCommands: false,
     });
   }

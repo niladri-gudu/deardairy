@@ -7,9 +7,10 @@ import { VerifyEmail } from "@/components/emails/verify-email";
 import { ResetPassword } from "@/components/emails/reset-password";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+const DB_NAME = process.env.NODE_ENV === "production" ? "withink_prod" : "withink_dev";
 
 export const auth = betterAuth({
-  database: mongodbAdapter(client.db("deardiary"), { client }),
+  database: mongodbAdapter(client.db(DB_NAME), { client }),
 
   emailAndPassword: {
     enabled: true,
@@ -20,7 +21,7 @@ export const auth = betterAuth({
       await resend.emails.send({
         from: process.env.EMAIL_FROM!,
         to: user.email,
-        subject: "Reset your password — Dear Diary",
+        subject: "Reset your password — withink.",
         react: ResetPassword({ name: user.name, url }),
       });
     },
@@ -36,7 +37,7 @@ export const auth = betterAuth({
       await resend.emails.send({
         from: process.env.EMAIL_FROM!,
         to: user.email,
-        subject: "Verify your email — Dear Diary",
+        subject: "Verify your email — withink.",
         react: VerifyEmail({
           name: user.name,
           url: verificationUrl.toString(),
