@@ -108,6 +108,7 @@ export function JournalEditor({ date, initialTitle, initialContent }: Props) {
         </div>
 
         <Editor
+          key={date}
           content={initialContent}
           onChange={setEditorContent}
           onEditorReady={setEditorInstance}
