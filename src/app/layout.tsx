@@ -42,7 +42,7 @@ export default function RootLayout({
       <body className="h-full antialiased">
         <ThemeProvider
           attribute="class"
-          defaultTheme="light"
+          defaultTheme="warm-minimal"
           enableSystem={true}
           themes={[
             "light",
