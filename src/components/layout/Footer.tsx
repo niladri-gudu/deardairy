@@ -13,7 +13,7 @@ export function Footer() {
             <div className="flex items-center gap-2">
               <PenLine className="h-5 w-5 text-primary" />
               <span className="text-2xl font-extrabold tracking-tighter">
-                inked
+                withink
                 <span className="text-primary/60 italic font-serif font-light text-3xl ml-0.5">
                   .
                 </span>
@@ -31,7 +31,7 @@ export function Footer() {
               Metadata
             </span>
             <ul className="space-y-3.5">
-              <FooterLink href="https://github.com/niladri-gudu/deardiary">
+              <FooterLink href="https://github.com/niladri-gudu/withink">
                 Source Code
               </FooterLink>
               <FooterLink href="#">Changelog</FooterLink>
@@ -48,7 +48,7 @@ export function Footer() {
               <FooterLink href="https://twitter.com/dev_niladri">
                 Twitter / X
               </FooterLink>
-              <FooterLink href="mailto:hello@deardiary.ai">Support</FooterLink>
+              <FooterLink href="mailto:hello@withink.me">Support</FooterLink>
               <FooterLink href="https://github.com/niladri-gudu">
                 Developer
               </FooterLink>
@@ -71,7 +71,7 @@ export function Footer() {
           </div>
 
           <p className="text-muted-foreground text-[10px] font-mono uppercase tracking-widest">
-            © {new Date().getFullYear()} inked // Built by{" "}
+            © {new Date().getFullYear()} withink // Built by{" "}
             <Link href="https://github.com/niladri-gudu" target="_blank">
               <span className="text-foreground font-bold border-b border-primary/20">
                 Niladri

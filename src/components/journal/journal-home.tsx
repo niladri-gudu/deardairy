@@ -114,7 +114,7 @@ export function JournalHome({ today, entries, userName }: Props) {
             <div className="flex items-center gap-3 shrink-0">
               <button
                 onClick={() => setIsDesktopSidebarOpen((o) => !o)}
-                className="hidden lg:flex p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all"
+                className="hidden cursor-pointer lg:flex p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all"
               >
                 {isDesktopSidebarOpen ? (
                   <PanelLeftClose className="h-4 w-4" />

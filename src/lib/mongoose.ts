@@ -16,13 +16,16 @@ if (!globalWithMongoose._mongoose) {
 }
 
 const cached = globalWithMongoose._mongoose;
+const isProduction = process.env.IS_PROD === "true";
 
 export async function connectDB() {
   if (cached.conn) return cached.conn;
 
   if (!cached.promise) {
+    const DB_NAME = isProduction ? "withink_prod" : "withink_dev";
+
     cached.promise = mongoose.connect(MONGODB_URI, {
-      dbName: "deardiary",
+      dbName: DB_NAME,
       bufferCommands: false,
     });
   }

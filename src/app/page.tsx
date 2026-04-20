@@ -1,34 +1,35 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
 import React from "react";
 import {
   ArrowRight,
-  Leaf,
-  PenLine,
   ImageIcon,
   List,
   Italic,
-  Underline,
   Bold,
   Undo,
   Redo,
   Flame,
   Hash,
   ShieldCheck,
-  Zap,
-  Sparkles,
   Palette,
   Type,
+  LayoutDashboard,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/layout/Footer";
 import Link from "next/link";
+import { GithubIcon } from "@/components/icons/github";
+import { useSession } from "@/lib/auth-client";
 
-// Utility for tailwind class merging
 function cn(...inputs: any[]) {
   return inputs.filter(Boolean).join(" ");
 }
 
 export default function LandingPage() {
+  const { data: session } = useSession();
+
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-500 overflow-x-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(var(--border)_1px,transparent_1px)] bg-[size:32px_32px] opacity-10 -z-20" />
@@ -38,9 +39,14 @@ export default function LandingPage() {
         <div className="absolute top-10 left-0 w-64 h-64 bg-primary/10 blur-[100px] rounded-full -z-10" />
 
         <div className="text-left space-y-5 md:space-y-8">
-          <div className="inline-flex items-center gap-3 px-3 py-1 rounded-lg border border-border bg-muted/50 text-muted-foreground text-[10px] font-mono uppercase tracking-tight">
-            <span className="flex h-2 w-2 rounded-full bg-primary animate-pulse" />
-            v1.0.0 — Now Public & Open Source
+          <div className="inline-flex items-center gap-3 px-3 py-1 rounded-lg border border-border bg-muted/50 text-muted-foreground text-[10px] font-mono tracking-tight">
+            <span
+              className={cn(
+                "flex h-2 w-2 rounded-full animate-pulse",
+                session ? "bg-green-500" : "bg-primary",
+              )}
+            />
+            {session ? "System Active" : "v1.0.0 — Now Public & Open Source"}
           </div>
 
           <h1 className="text-[clamp(3.5rem,12vw,7rem)] font-black tracking-tighter leading-[0.85]">
@@ -58,18 +64,27 @@ export default function LandingPage() {
           {/* ACTION AREA */}
           <div className="flex flex-col gap-6">
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
-              <Link href="/signup" className="w-full sm:w-auto">
+              {/* PRIMARY BUTTON: Changes destination and text */}
+              <Link
+                href={session ? "/journal" : "/signup"}
+                className="w-full sm:w-auto"
+              >
                 <Button
                   size="lg"
                   className="w-full rounded-xl px-8 h-12 md:h-14 font-bold text-base shadow-xl shadow-primary/20 hover:-translate-y-0.5 transition-all"
                 >
-                  Get Started
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  {session ? "Go to Journal" : "Get Started"}
+                  {session ? (
+                    <LayoutDashboard className="ml-2 h-4 w-4" />
+                  ) : (
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  )}
                 </Button>
               </Link>
 
-              <a
-                href="https://github.com/niladri-gudu/deardiary"
+              {/* SECONDARY BUTTON: Stays as View Source, or you could change it to Settings if logged in */}
+              <Link
+                href="https://github.com/niladri-gudu/withink"
                 target="_blank"
                 rel="noreferrer"
                 className="w-full sm:w-auto"
@@ -82,19 +97,21 @@ export default function LandingPage() {
                   <GithubIcon className="mr-2 h-4 w-4" />
                   view_source
                 </Button>
-              </a>
-            </div>
-
-            <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground/50">
-              <div className="h-px w-8 bg-border/50" />
-              <span>Returning to your sanctuary?</span>
-              <Link
-                href="/signin"
-                className="text-foreground hover:text-primary transition-colors hover:underline underline-offset-4 decoration-primary/30"
-              >
-                Sign in here
               </Link>
             </div>
+
+            {!session && (
+              <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground/50">
+                <div className="h-px w-8 bg-border/50" />
+                <span>Returning to your sanctuary?</span>
+                <Link
+                  href="/signin"
+                  className="text-foreground hover:text-primary transition-colors hover:underline underline-offset-4 decoration-primary/30"
+                >
+                  Sign in here
+                </Link>
+              </div>
+            )}
           </div>
         </div>
 
@@ -258,24 +275,29 @@ export default function LandingPage() {
         <div className="bg-card/30 border border-border/40 rounded-3xl md:rounded-[40px] p-10 md:p-24 backdrop-blur-sm relative overflow-hidden">
           <div className="absolute top-0 right-0 w-48 h-48 bg-primary/5 blur-[80px] -z-10" />
           <h2 className="text-4xl md:text-6xl font-black tracking-tighter mb-6 md:mb-8 text-balance">
-            Ready to write?
+            {session ? "Welcome back." : "Ready to write?"}{" "}
           </h2>
           <div className="flex flex-col items-center gap-4">
-            <Link href="/signup" className="w-full sm:w-auto">
+            <Link
+              href={session ? "/journal" : "/signup"}
+              className="w-full sm:w-auto"
+            >
               <Button
                 size="lg"
                 className="rounded-full px-8 md:px-10 h-12 md:h-16 font-bold text-base md:text-lg w-full sm:w-auto"
               >
-                Open your diary
+                {session ? "Continue Writing" : "Open your diary"}
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
-            <Link
-              href="/signin"
-              className="text-sm font-medium opacity-50 hover:opacity-100 transition-opacity"
-            >
-              I already have an account
-            </Link>
+            {!session && (
+              <Link
+                href="/signin"
+                className="text-sm font-medium opacity-50 hover:opacity-100 transition-opacity"
+              >
+                I already have an account
+              </Link>
+            )}
           </div>
         </div>
       </section>
@@ -327,18 +349,3 @@ function FeatureRow({ num, title, desc, icon, reverse }: FeatureRowProps) {
     </div>
   );
 }
-
-const GithubIcon = ({ className }: { className?: string }) => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className={className}
-  >
-    <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
-    <path d="M9 18c-4.51 2-5-2-7-2" />
-  </svg>
-);

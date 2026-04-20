@@ -36,8 +36,14 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // Determine folder based on environment
+  // Vercel sets NODE_ENV to 'production' only on the main branch
+  const isProduction = process.env.IS_PROD === "true";
+  const folder = isProduction ? "uploads" : "dev-uploads";
+
   const ext = filename.split(".").pop();
-  const key = `${session.user.id}/${randomUUID()}.${ext}`;
+  // Key now looks like: dev-uploads/user_id/uuid.png
+  const key = `${folder}/${session.user.id}/${randomUUID()}.${ext}`;
 
   const command = new PutObjectCommand({
     Bucket: process.env.R2_BUCKET_NAME!,
@@ -51,4 +57,3 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({ presignedUrl, publicUrl });
 }
-  
