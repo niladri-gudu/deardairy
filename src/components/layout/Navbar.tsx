@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ThemePicker } from "../ui/theme-picker";
 import { getGithubStars } from "@/app/actions/github";
 import { cn } from "@/lib/utils";
+import { useSession } from "@/lib/auth-client";
 
 /**
  * Navbar component for WithInk.me
@@ -18,6 +19,8 @@ import { cn } from "@/lib/utils";
  */
 export function Navbar() {
   const [starCount, setStarCount] = useState<number | null>(null);
+
+  const { data: session } = useSession();
 
   useEffect(() => {
     const fetchStars = async () => {
@@ -32,12 +35,14 @@ export function Navbar() {
     fetchStars();
   }, []);
 
+  const logoHref = session ? "/journal" : "/";
+
   return (
     <nav className="fixed top-0 w-full z-50 bg-background/60 backdrop-blur-md antialiased border-b border-border/40">
       <div className="max-w-7xl mx-auto px-6 h-16 flex justify-between items-center">
         {/* Brand Section */}
         <Link
-          href="/"
+          href={logoHref}
           className="flex items-center gap-2.5 group transition-opacity hover:opacity-90"
         >
           <PenLine className="h-4 w-4 text-primary group-hover:-rotate-12 transition-transform duration-300" />
