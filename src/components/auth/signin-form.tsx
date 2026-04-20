@@ -5,7 +5,7 @@ import { useState } from "react";
 import { signIn } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Loader2, ArrowRight } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -31,7 +31,8 @@ export function SigninForm() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSignin = async () => {
+  const handleSignin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     setErrors({});
     if (!validate()) return;
     setIsLoading(true);
@@ -67,7 +68,7 @@ export function SigninForm() {
           </p>
         </div>
 
-        <div className="space-y-6">
+        <form onSubmit={handleSignin} className="space-y-6">
           <div className="space-y-2 relative">
             <div className="flex justify-between items-end">
               <Label className="text-[10px] font-mono uppercase tracking-[0.3em] text-muted-foreground/60 ml-1">
@@ -127,8 +128,8 @@ export function SigninForm() {
 
           <div className="pt-4 space-y-4">
             <Button
+              type="submit"
               className="w-full h-14 rounded-full font-bold text-lg hover:scale-[1.02] active:scale-[0.98] transition-all relative overflow-hidden"
-              onClick={handleSignin}
               disabled={isLoading}
             >
               <div className="flex items-center justify-center gap-2 w-full transition-all duration-200">
@@ -147,6 +148,7 @@ export function SigninForm() {
             </Button>
 
             <Button
+              type="button"
               variant="ghost"
               className="w-full h-12 rounded-full font-mono text-[10px] uppercase tracking-widest text-muted-foreground hover:text-foreground"
               onClick={() =>
@@ -157,7 +159,7 @@ export function SigninForm() {
               Continue with Google
             </Button>
           </div>
-        </div>
+        </form>
 
         <div className="flex flex-col items-center gap-4">
           <Link

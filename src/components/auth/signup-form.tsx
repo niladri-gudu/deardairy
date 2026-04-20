@@ -38,7 +38,8 @@ export function SignupForm() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSignup = async () => {
+  const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     setErrors({});
     if (!validate()) return;
 
@@ -113,8 +114,7 @@ export function SignupForm() {
               </p>
             </div>
 
-            <div className="space-y-6">
-              {/* Name Field */}
+            <form onSubmit={handleSignup} className="space-y-6">
               <div className="space-y-2">
                 <div className="flex justify-between items-end">
                   <Label className="text-[10px] font-mono uppercase tracking-[0.3em] text-muted-foreground/60 ml-1">
@@ -142,7 +142,6 @@ export function SignupForm() {
                 />
               </div>
 
-              {/* Email Field */}
               <div className="space-y-2">
                 <div className="flex justify-between items-end">
                   <Label className="text-[10px] font-mono uppercase tracking-[0.3em] text-muted-foreground/60 ml-1">
@@ -171,7 +170,6 @@ export function SignupForm() {
                 />
               </div>
 
-              {/* Password Field */}
               <div className="space-y-2">
                 <div className="flex justify-between items-end">
                   <Label className="text-[10px] font-mono uppercase tracking-[0.3em] text-muted-foreground/60 ml-1">
@@ -207,8 +205,8 @@ export function SignupForm() {
 
               <div className="pt-4 space-y-4">
                 <Button
+                  type="submit"
                   className="w-full h-14 rounded-full font-bold text-lg hover:scale-[1.02] active:scale-[0.98] transition-all relative overflow-hidden"
-                  onClick={handleSignup}
                   disabled={isLoading}
                 >
                   <div className="flex items-center justify-center gap-2 w-full transition-all duration-200">
@@ -229,6 +227,7 @@ export function SignupForm() {
 
                 <Button
                   variant="ghost"
+                  type="button"
                   className="w-full h-12 rounded-full font-mono text-[10px] uppercase tracking-widest text-muted-foreground hover:text-foreground"
                   onClick={() =>
                     signIn.social({
@@ -241,7 +240,7 @@ export function SignupForm() {
                   Continue with Google
                 </Button>
               </div>
-            </div>
+            </form>
 
             <p className="text-center text-[11px] font-medium text-muted-foreground/60 pb-8">
               Already have an account?{" "}

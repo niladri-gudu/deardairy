@@ -4,7 +4,7 @@
 import { useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
-import { Loader2, Eye, EyeOff } from "lucide-react"; // Import icons
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,21 +19,35 @@ export function ResetPasswordForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState<{ password?: string; confirm?: string; global?: string }>({});
+  const [errors, setErrors] = useState<{
+    password?: string;
+    confirm?: string;
+    global?: string;
+  }>({});
 
-  const handleReset = async () => {
+  const handleReset = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     setErrors({});
-    if (!token) { setErrors({ global: "Invalid or expired session link" }); return; }
+    if (!token) {
+      setErrors({ global: "Invalid or expired session link" });
+      return;
+    }
 
     const newErrors: typeof errors = {};
     if (!password) newErrors.password = "Secret required";
     else if (password.length < 8) newErrors.password = "8+ characters needed";
     if (password !== confirmPassword) newErrors.confirm = "Keys do not match";
 
-    if (Object.keys(newErrors).length > 0) { setErrors(newErrors); return; }
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
 
     setIsLoading(true);
-    const res = await authClient.resetPassword({ token, newPassword: password });
+    const res = await authClient.resetPassword({
+      token,
+      newPassword: password,
+    });
     setIsLoading(false);
 
     if (res.error) {
@@ -49,7 +63,9 @@ export function ResetPasswordForm() {
         <div className="space-y-3">
           <h1 className="text-5xl font-black tracking-tighter leading-[0.85]">
             Reset <br />
-            <span className="text-primary/60 italic font-serif font-light text-6xl">access.</span>
+            <span className="text-primary/60 italic font-serif font-light text-6xl">
+              access.
+            </span>
           </h1>
           <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.2em]">
             Restoring archives // Update security credentials
@@ -64,11 +80,17 @@ export function ResetPasswordForm() {
           </div>
         )}
 
-        <div className="space-y-6">
+        <form onSubmit={handleReset} className="space-y-6">
           <div className="space-y-2 relative group">
             <div className="flex justify-between items-end">
-              <Label className="text-[10px] font-mono uppercase tracking-[0.3em] text-muted-foreground/60 ml-1">New.Secret.Key</Label>
-              {errors.password && <span className="text-[9px] font-mono text-destructive uppercase tracking-tighter animate-in fade-in slide-in-from-right-1">// {errors.password}</span>}
+              <Label className="text-[10px] font-mono uppercase tracking-[0.3em] text-muted-foreground/60 ml-1">
+                New.Secret.Key
+              </Label>
+              {errors.password && (
+                <span className="text-[9px] font-mono text-destructive uppercase tracking-tighter animate-in fade-in slide-in-from-right-1">
+                  // {errors.password}
+                </span>
+              )}
             </div>
             <div className="relative">
               <Input
@@ -81,8 +103,8 @@ export function ResetPasswordForm() {
                   if (errors.password || errors.global) setErrors({});
                 }}
               />
-              <button 
-                type="button"
+              <button
+                type="button" // Prevent form submission on click
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute cursor-pointer right-0 top-1/2 -translate-y-1/2 text-[10px] font-mono uppercase tracking-widest text-muted-foreground/40 hover:text-primary transition-colors px-2 py-1"
               >
@@ -93,8 +115,14 @@ export function ResetPasswordForm() {
 
           <div className="space-y-2 relative group">
             <div className="flex justify-between items-end">
-              <Label className="text-[10px] font-mono uppercase tracking-[0.3em] text-muted-foreground/60 ml-1">Confirm.Secret.Key</Label>
-              {errors.confirm && <span className="text-[9px] font-mono text-destructive uppercase tracking-tighter animate-in fade-in slide-in-from-right-1">// {errors.confirm}</span>}
+              <Label className="text-[10px] font-mono uppercase tracking-[0.3em] text-muted-foreground/60 ml-1">
+                Confirm.Secret.Key
+              </Label>
+              {errors.confirm && (
+                <span className="text-[9px] font-mono text-destructive uppercase tracking-tighter animate-in fade-in slide-in-from-right-1">
+                  // {errors.confirm}
+                </span>
+              )}
             </div>
             <div className="relative">
               <Input
@@ -107,7 +135,7 @@ export function ResetPasswordForm() {
                   if (errors.confirm || errors.global) setErrors({});
                 }}
               />
-              <button 
+              <button
                 type="button"
                 onClick={() => setShowConfirm(!showConfirm)}
                 className="absolute cursor-pointer right-0 top-1/2 -translate-y-1/2 text-[10px] font-mono uppercase tracking-widest text-muted-foreground/40 hover:text-primary transition-colors px-2 py-1"
@@ -118,16 +146,22 @@ export function ResetPasswordForm() {
           </div>
 
           <div className="pt-4">
-            <Button className="w-full h-14 rounded-full font-bold text-lg hover:scale-[1.02] active:scale-[0.98] transition-all relative overflow-hidden" onClick={handleReset} disabled={isLoading}>
+            <Button
+              type="submit"
+              className="w-full h-14 rounded-full font-bold text-lg hover:scale-[1.02] active:scale-[0.98] transition-all relative overflow-hidden"
+              disabled={isLoading}
+            >
               {isLoading ? (
                 <div className="absolute inset-0 flex items-center justify-center gap-2 bg-primary">
                   <Loader2 className="h-5 w-5 animate-spin shrink-0" />
                   <span>Updating...</span>
                 </div>
-              ) : "Update Secret"}
+              ) : (
+                "Update Secret"
+              )}
             </Button>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );
