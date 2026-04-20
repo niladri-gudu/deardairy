@@ -5,6 +5,7 @@ import { Resend } from "resend";
 import { client } from "./db";
 import { VerifyEmail } from "@/components/emails/verify-email";
 import { ResetPassword } from "@/components/emails/reset-password";
+import { WelcomeEmail } from "@/components/emails/welcome-email";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -13,6 +14,23 @@ const DB_NAME = isProduction ? "withink_prod" : "withink_dev";
 
 export const auth = betterAuth({
   database: mongodbAdapter(client.db(DB_NAME), { client }),
+
+  databaseHooks: {
+    user: {
+      update: {
+        after: async (user) => {
+          if (user.emailVerified) {
+            await resend.emails.send({
+              from: process.env.EMAIL_FROM!,
+              to: user.email,
+              subject: "Welcome to your sanctuary — withink.",
+              react: WelcomeEmail({ userFirstname: user.name.split(" ")[0] }),
+            });
+          }
+        },
+      },
+    },
+  },
 
   emailAndPassword: {
     enabled: true,
