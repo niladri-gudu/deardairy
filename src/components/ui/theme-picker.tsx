@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
 import * as React from "react";
@@ -71,7 +72,7 @@ export function ThemePicker() {
 
       <DropdownMenuContent
         align="end"
-        className="border-zinc-800 min-w-40"
+        className="border-zinc-800 min-w-40 mt-3"
       >
         {themes.map((t) => (
           <DropdownMenuItem
