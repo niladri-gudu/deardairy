@@ -88,7 +88,7 @@ export function Navbar() {
             )
           ) : (
             <Link
-              href="https://github.com/niladri-gudu/deardiary"
+              href="https://github.com/niladri-gudu/withink"
               target="_blank"
             >
               <Button

@@ -31,7 +31,7 @@ export function Footer() {
               Metadata
             </span>
             <ul className="space-y-3.5">
-              <FooterLink href="https://github.com/niladri-gudu/deardiary">
+              <FooterLink href="https://github.com/niladri-gudu/withink">
                 Source Code
               </FooterLink>
               <FooterLink href="#">Changelog</FooterLink>

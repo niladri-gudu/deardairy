@@ -4,7 +4,7 @@ import { revalidateTag } from "next/cache";
 
 export async function getGithubStars() {
   try {
-    const res = await fetch("https://api.github.com/repos/niladri-gudu/deardiary", {
+    const res = await fetch("https://api.github.com/repos/niladri-gudu/withink", {
       next: { 
         revalidate: 3600,
         tags: ["github-stars"] 

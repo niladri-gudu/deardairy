@@ -70,7 +70,7 @@ export default function LandingPage() {
               </Link>
 
               <a
-                href="https://github.com/niladri-gudu/deardiary"
+                href="https://github.com/niladri-gudu/withink"
                 target="_blank"
                 rel="noreferrer"
                 className="w-full sm:w-auto"
