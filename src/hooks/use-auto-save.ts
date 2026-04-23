@@ -14,21 +14,21 @@ interface EntryData {
 export function useAutoSave(data: EntryData, debounceMs = 1500) {
   const [status, setStatus] = useState<SaveStatus>("idle");
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  
+
   const latestData = useRef(data);
-  
+
   const initialContent = useRef({
     title: data.title,
-    html: data.contentHtml
+    html: data.contentHtml,
   });
 
   const isDirty = useRef(false);
 
   useEffect(() => {
     latestData.current = data;
-    
+
     if (
-      data.title !== initialContent.current.title || 
+      data.title !== initialContent.current.title ||
       data.contentHtml !== initialContent.current.html
     ) {
       isDirty.current = true;
@@ -43,20 +43,24 @@ export function useAutoSave(data: EntryData, debounceMs = 1500) {
     timerRef.current = setTimeout(async () => {
       setStatus("saving");
       try {
+        const userLocalToday = new Date().toLocaleDateString("en-CA");
         const res = await fetch("/api/journal", {
           method: "POST",
           credentials: "include",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(latestData.current),
+          body: JSON.stringify({
+            ...latestData.current,
+            userLocalToday,
+          }),
         });
 
         if (!res.ok) throw new Error("Save failed");
-        
+
         initialContent.current = {
           title: latestData.current.title,
-          html: latestData.current.contentHtml
+          html: latestData.current.contentHtml,
         };
-        
+
         setStatus("saved");
         setTimeout(() => setStatus("idle"), 2000);
       } catch (err) {
@@ -68,12 +72,7 @@ export function useAutoSave(data: EntryData, debounceMs = 1500) {
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
-  }, [
-    data.title,
-    data.contentText,
-    data.contentHtml,
-    debounceMs,
-  ]);
+  }, [data.title, data.contentText, data.contentHtml, debounceMs]);
 
   return status;
 }

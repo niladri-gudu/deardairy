@@ -10,11 +10,18 @@ export async function POST(req: NextRequest) {
   if (!session)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { date, title, contentHtml, contentText, contentJson } =
+  const { date, title, contentHtml, contentText, contentJson, userLocalToday } =
     await req.json();
 
   if (!date)
     return NextResponse.json({ error: "Date is required" }, { status: 400 });
+
+  if (date > userLocalToday) {
+    return NextResponse.json(
+      { error: "The future is still unwritten." },
+      { status: 403 },
+    );
+  }
 
   await connectDB();
 
