@@ -30,7 +30,7 @@ export function DeleteEntryButton({
   const handleDelete = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/journal/${date}`, { method: "DELETE" });
+      const res = await fetch(`/api/entries/${date}`, { method: "DELETE" });
       if (!res.ok) throw new Error("Failed to delete");
 
       toast.success("Entry deleted");

@@ -17,6 +17,6 @@ export async function getGithubStars() {
     return data.stargazers_count as number;
   } catch (error) {
     console.error("GitHub Fetch Error:", error);
-    return 128; // Your fallback
+    return 128; 
   }
 }

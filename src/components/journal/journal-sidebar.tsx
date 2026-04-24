@@ -84,7 +84,7 @@ export function JournalSidebar({
     setIsLoading(true);
     try {
       const nextPage = page + 1;
-      const res = await fetch(`/api/journal?page=${nextPage}&limit=15`);
+      const res = await fetch(`/api/entries?page=${nextPage}&limit=15`);
       const data = await res.json();
 
       if (data.entries.length === 0) {

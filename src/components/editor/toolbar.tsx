@@ -113,7 +113,7 @@ export function Toolbar({ editor }: ToolbarProps) {
       .run();
 
     try {
-      const res = await fetch("/api/journal/upload", {
+      const res = await fetch("/api/media/upload", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

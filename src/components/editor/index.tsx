@@ -88,7 +88,7 @@ export default function Editor({
 
     try {
       // 2. Get Presigned URL
-      const res = await fetch("/api/journal/upload", {
+      const res = await fetch("/api/media/upload", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

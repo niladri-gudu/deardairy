@@ -44,7 +44,7 @@ export function useAutoSave(data: EntryData, debounceMs = 1500) {
       setStatus("saving");
       try {
         const userLocalToday = new Date().toLocaleDateString("en-CA");
-        const res = await fetch("/api/journal", {
+        const res = await fetch("/api/entries", {
           method: "POST",
           credentials: "include",
           headers: { "Content-Type": "application/json" },
