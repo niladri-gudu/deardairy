@@ -9,7 +9,7 @@ export function ResetPassword({ name, url }: ResetPasswordProps) {
   return (
     <div
       style={{
-        fontFamily: "sans-serif",
+        fontFamily: "ui-monospace, monospace",
         backgroundColor: "#020617",
         color: "#e4e4e7",
         padding: "40px 20px",
@@ -28,13 +28,13 @@ export function ResetPassword({ name, url }: ResetPasswordProps) {
         <div style={{ marginBottom: "32px" }}>
           <span
             style={{
-              fontSize: "20px",
-              fontWeight: "700",
+              fontSize: "22px",
+              fontWeight: "900",
               color: "#f4f4f5",
-              letterSpacing: "-0.5px",
+              letterSpacing: "-1px",
             }}
           >
-            Dear Diary
+            withink.
           </span>
         </div>
 
@@ -52,13 +52,13 @@ export function ResetPassword({ name, url }: ResetPasswordProps) {
         <p
           style={{
             fontSize: "15px",
-            color: "#71717a",
+            color: "#a1a1aa",
             margin: "0 0 32px 0",
             lineHeight: "1.6",
           }}
         >
-          Hey {name}, we received a request to reset your password. Click the
-          button below to choose a new one.
+          Hey {name}, we received a request to access your sanctuary. Click the
+          button below to choose a new password.
         </p>
 
         <a
@@ -79,34 +79,10 @@ export function ResetPassword({ name, url }: ResetPasswordProps) {
 
         <div style={{ borderTop: "1px solid #27272a", margin: "32px 0" }} />
 
-        <p style={{ fontSize: "13px", color: "#52525b", margin: "0 0 8px 0" }}>
-          Or copy this link into your browser:
+        <p style={{ fontSize: "12px", color: "#52525b", margin: "0 0 8px 0" }}>
+          This link expires in 1 hour. If you didn&apos;t request this, you can
+          safely ignore it.
         </p>
-        <p
-          style={{
-            fontSize: "12px",
-            color: "#3f3f46",
-            wordBreak: "break-all",
-            margin: 0,
-          }}
-        >
-          <a href={url} style={{ color: "#3f3f46", textDecoration: "none" }}>
-            {url}
-          </a>
-        </p>
-
-        <div
-          style={{
-            borderTop: "1px solid #27272a",
-            marginTop: "32px",
-            paddingTop: "24px",
-          }}
-        >
-          <p style={{ fontSize: "12px", color: "#3f3f46", margin: 0 }}>
-            This link expires in 1 hour. If you didn&apos;t request a password reset,
-            ignore this email — your password won&apos;t change.
-          </p>
-        </div>
       </div>
     </div>
   );

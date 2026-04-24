@@ -7,7 +7,7 @@ export function VerifyEmail({ name, url }: VerifyEmailProps) {
   return (
     <div
       style={{
-        fontFamily: "sans-serif",
+        fontFamily: "ui-monospace, monospace",
         backgroundColor: "#020617",
         color: "#e4e4e7",
         padding: "40px 20px",
@@ -26,13 +26,13 @@ export function VerifyEmail({ name, url }: VerifyEmailProps) {
         <div style={{ marginBottom: "32px" }}>
           <span
             style={{
-              fontSize: "20px",
-              fontWeight: "700",
+              fontSize: "22px",
+              fontWeight: "900",
               color: "#f4f4f5",
-              letterSpacing: "-0.5px",
+              letterSpacing: "-1px",
             }}
           >
-            Dear Diary
+            withink.
           </span>
         </div>
 
@@ -45,18 +45,18 @@ export function VerifyEmail({ name, url }: VerifyEmailProps) {
             letterSpacing: "-0.5px",
           }}
         >
-          Verify your email
+          Initialize your sanctuary
         </h1>
         <p
           style={{
             fontSize: "15px",
-            color: "#71717a",
+            color: "#a1a1aa",
             margin: "0 0 32px 0",
             lineHeight: "1.6",
           }}
         >
-          Hey {name}, thanks for signing up. Click the button below to verify
-          your email address and start journaling.
+          Hey {name}, thanks for joining. Click the button below to verify your
+          email address and start journaling.
         </p>
 
         <a
@@ -72,40 +72,14 @@ export function VerifyEmail({ name, url }: VerifyEmailProps) {
             textDecoration: "none",
           }}
         >
-          Verify email address
+          Verify email
         </a>
 
         <div style={{ borderTop: "1px solid #27272a", margin: "32px 0" }} />
 
-        <p style={{ fontSize: "13px", color: "#52525b", margin: "0 0 8px 0" }}>
-          If the button doesn&apos;t work, copy and paste this link into your
-          browser:
+        <p style={{ fontSize: "12px", color: "#52525b", margin: 0 }}>
+          This link expires in 24 hours. Welcome to the archives.
         </p>
-        <p
-          style={{
-            fontSize: "12px",
-            color: "#3f3f46",
-            wordBreak: "break-all",
-            margin: 0,
-          }}
-        >
-          <a href={url} style={{ color: "#3f3f46", textDecoration: "none" }}>
-            {url}
-          </a>
-        </p>
-
-        <div
-          style={{
-            borderTop: "1px solid #27272a",
-            marginTop: "32px",
-            paddingTop: "24px",
-          }}
-        >
-          <p style={{ fontSize: "12px", color: "#3f3f46", margin: 0 }}>
-            This link expires in 24 hours. If you didn&apos;t create an account,
-            you can safely ignore this email.
-          </p>
-        </div>
       </div>
     </div>
   );
