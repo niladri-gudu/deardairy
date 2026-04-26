@@ -152,14 +152,14 @@ export function SettingsModal({
     }
   };
 
-  const handlePasswordReset = async () => {
-    const { error } = await authClient.forgetPassword({
-      email: user.email,
-      redirectTo: "/reset-password",
-    });
-    if (error) return toast.error(error.message);
-    toast.success("Security link sent to your email.");
-  };
+  // const handlePasswordReset = async () => {
+  //   const { error } = await authClient.forgetPassword({
+  //     email: user.email,
+  //     redirectTo: "/reset-password",
+  //   });
+  //   if (error) return toast.error(error.message);
+  //   toast.success("Security link sent to your email.");
+  // };
 
   const handleTabChange = async (tab: TabType) => {
     setActiveTab(tab);
