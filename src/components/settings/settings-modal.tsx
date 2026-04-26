@@ -192,6 +192,8 @@ export function SettingsModal({
 
   if (!mounted) return null;
 
+  const currentDisplayImage = localPreview || user?.image;
+
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
@@ -247,11 +249,11 @@ export function SettingsModal({
           <div className="flex-1 p-5 sm:p-8 overflow-y-auto no-scrollbar pb-24 sm:pb-8">
             {activeTab === "profile" && (
               <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 sm:slide-in-from-right-4 duration-300">
-                <h3 className="text-lg font-bold tracking-tight">
+                <h3 className="text-lg font-bold tracking-tight text-foreground">
                   Account Identity
                 </h3>
 
-                {/* 📸 Avatar Selection */}
+                {/* 📸 Avatar Section */}
                 <div className="flex flex-col items-center sm:items-start gap-4 mb-2">
                   <input
                     type="file"
@@ -260,24 +262,20 @@ export function SettingsModal({
                     accept="image/*"
                     onChange={onFileChange}
                   />
+
                   <button
                     onClick={() => fileInputRef.current?.click()}
                     className="relative group transition-transform active:scale-95"
                   >
                     <div className="h-24 w-24 rounded-full border-4 border-background shadow-2xl overflow-hidden bg-secondary/30 relative">
-                      {localPreview ? (
+                      {/* 🚀 PRIORITY LOGIC HERE */}
+                      {currentDisplayImage ? (
                         <Image
-                          src={localPreview}
-                          alt="Preview"
+                          src={currentDisplayImage}
+                          alt={user.name || "User"}
                           fill
                           className="object-cover"
-                        />
-                      ) : user.image ? (
-                        <Image
-                          src={user.image}
-                          alt={user.name}
-                          fill
-                          className="object-cover"
+                          unoptimized={currentDisplayImage.startsWith("blob:")} // Important for local previews
                         />
                       ) : (
                         <div className="h-full w-full flex items-center justify-center text-muted-foreground">
@@ -285,12 +283,14 @@ export function SettingsModal({
                         </div>
                       )}
                     </div>
-                    <div className="absolute bottom-0 right-0 p-1.5 bg-foreground text-background rounded-full border-2 border-background shadow-lg">
+                    <div className="absolute bottom-0 right-0 p-1.5 bg-foreground text-background rounded-full border-2 border-background shadow-lg group-hover:scale-110 transition-transform">
                       <Camera size={12} />
                     </div>
                   </button>
                   <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">
-                    {localPreview ? "Preview ready" : "Click to change avatar"}
+                    {localPreview
+                      ? "New Avatar Selected"
+                      : "Click to change avatar"}
                   </p>
                 </div>
 
