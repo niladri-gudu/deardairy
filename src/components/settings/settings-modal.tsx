@@ -227,44 +227,63 @@ export function SettingsModal({
             </DialogDescription>
           </div>
 
-          {/* 🏛️ Sidebar */}
-          <div className="w-full sm:w-52.5 border-b sm:border-b-0 sm:border-r border-border/20 bg-secondary/10 p-3 sm:p-4 flex flex-row sm:flex-col justify-between items-center sm:items-stretch shrink-0">
-            <div className="flex flex-row sm:flex-col items-center sm:items-stretch w-full gap-2 sm:gap-1 overflow-x-auto no-scrollbar">
-              <div className="hidden sm:block px-3 py-4 mb-2 text-center">
-                <span className="text-xl font-black tracking-tighter italic text-foreground">
-                  withink.
-                </span>
-              </div>
+          {/* 🏛️ SIDEBAR: Polished Vertical Navigation */}
+          <div className="w-full sm:w-56 border-b sm:border-b-0 sm:border-r border-border/10 bg-secondary/5 flex flex-col shrink-0">
+            {/* Logo Section */}
+            <div className="hidden sm:flex px-8 py-10 items-center gap-3">
+              <div className="h-6 w-1.5 bg-primary rounded-full shadow-[0_0_15px_rgba(var(--primary),0.5)]" />
+              <span className="text-2xl font-black tracking-tighter italic text-foreground/90 leading-none">
+                withink.
+              </span>
+            </div>
+
+            {/* Tabs Container */}
+            <div className="flex flex-row sm:flex-col items-center sm:items-stretch w-full gap-1.5 p-4 sm:px-3 overflow-x-auto sm:overflow-visible no-scrollbar">
               {[
                 { id: "profile", label: "Profile", icon: User },
                 { id: "appearance", label: "Appearance", icon: Palette },
                 { id: "data", label: "Data & Media", icon: Database },
-              ].map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => void handleTabChange(item.id as TabType)}
-                  className={cn(
-                    "flex items-center gap-2.5 sm:gap-3 px-3 py-2 sm:py-2.5 rounded-full sm:rounded-xl text-xs sm:text-sm font-medium transition-all whitespace-nowrap",
-                    activeTab === item.id
-                      ? "bg-foreground text-background shadow-md sm:scale-[1.02]"
-                      : "hover:bg-secondary/50 text-muted-foreground",
-                  )}
-                >
-                  <item.icon size={14} className="sm:w-4 sm:h-4" /> {item.label}
-                </button>
-              ))}
+              ].map((item) => {
+                const isActive = activeTab === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => void handleTabChange(item.id as TabType)}
+                    className={cn(
+                      "flex items-center gap-4 px-4 py-3.5 rounded-2xl text-xs sm:text-sm font-bold transition-all duration-300 whitespace-nowrap relative group w-full",
+                      isActive
+                        ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20 scale-[0.98] cursor-default"
+                        : "text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground",
+                    )}
+                  >
+                    <item.icon
+                      size={18}
+                      className={cn(
+                        "transition-all duration-500",
+                        isActive
+                          ? "text-primary-foreground scale-110"
+                          : "opacity-40 group-hover:opacity-100",
+                      )}
+                    />
+                    <span className="tracking-tight">{item.label}</span>
+                  </button>
+                );
+              })}
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="hidden sm:flex justify-start gap-3 rounded-xl text-muted-foreground hover:text-destructive mt-auto"
-              onClick={async () => {
-                await signOut();
-                window.location.href = "/";
-              }}
-            >
-              <LogOut size={16} /> Logout
-            </Button>
+
+            {/* Logout Section */}
+            <div className="mt-auto p-4 hidden sm:block">
+              <Button
+                variant="ghost"
+                className="w-full justify-start gap-4 rounded-2xl text-muted-foreground hover:text-destructive hover:bg-destructive/5 transition-all px-5 py-7 font-black text-[10px] uppercase tracking-[0.2em]"
+                onClick={async () => {
+                  await signOut();
+                  window.location.href = "/";
+                }}
+              >
+                <LogOut size={16} /> Logout
+              </Button>
+            </div>
           </div>
 
           {/* 🏛️ Content */}
@@ -436,12 +455,6 @@ export function SettingsModal({
                   <h3 className="text-lg font-bold tracking-tight">
                     Data & Media
                   </h3>
-                  <div className="flex items-center gap-1.5 px-2 py-1 bg-green-500/5 border border-green-500/20 rounded-full">
-                    <ShieldCheck size={10} className="text-green-500" />
-                    <span className="text-[7px] sm:text-[8px] font-bold text-green-600 uppercase">
-                      AES-256
-                    </span>
-                  </div>
                 </div>
 
                 <div className="bg-secondary/20 border border-border/40 p-4 sm:p-5 rounded-3xl space-y-4">
