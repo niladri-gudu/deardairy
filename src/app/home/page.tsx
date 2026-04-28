@@ -7,16 +7,16 @@ import { Entry } from "@/models/entry";
 import { getLocalDateString } from "@/lib/utils/date";
 import { JournalHome } from "@/components/journal/journal-home";
 import { safeDecrypt } from "@/lib/encryption";
+import { getStreakData } from "@/actions/streak";
 
 export default async function JournalPage() {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) redirect("/signin");
 
   await connectDB();
-
   const today = getLocalDateString();
 
-  const [todayEntry, allEntries] = await Promise.all([
+  const [todayEntry, allEntries, streakData] = await Promise.all([
     Entry.findOne({ userId: session.user.id, date: today }).lean(),
     Entry.find(
       { userId: session.user.id },
@@ -25,6 +25,7 @@ export default async function JournalPage() {
       .sort({ date: -1 })
       .limit(15)
       .lean(),
+    getStreakData(),
   ]);
 
   const entries = (allEntries as any[]).map((e) => {
@@ -49,6 +50,8 @@ export default async function JournalPage() {
       todayTitle={(todayEntry as any)?.title || ""}
       entries={entries}
       userName={session.user.name?.split(" ")[0] ?? ""}
+      streak={streakData.currentStreak}
+      totalEntries={streakData.totalEntries}
     />
   );
 }

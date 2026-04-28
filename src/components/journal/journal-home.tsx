@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { StreakCounter } from "./streak-counter"; // 🏛️ Import the component
 
 interface Entry {
   date: string;
@@ -31,22 +32,28 @@ interface Props {
   todayTitle: string;
   entries: Entry[];
   userName: string;
+  streak: number;        // 🏛️ Added streak prop
+  totalEntries: number;  // 🏛️ Added totalEntries prop
 }
 
-export function JournalHome({ today, entries: serverEntries, userName }: Props) {
+export function JournalHome({
+  today,
+  entries: serverEntries,
+  userName,
+  streak,        // 🏛️ Destructured
+  totalEntries,  // 🏛️ Destructured
+}: Props) {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isDesktopSidebarOpen, setIsDesktopSidebarOpen] = useState(true);
 
   const [selectedEntry, setSelectedEntry] = useState<Entry | null>(null);
   const [isFetchingEntry, setIsFetchingEntry] = useState(false);
-  
-  // 🚀 Cache to store full decrypted entries fetched during this session
+
   const [entryCache, setEntryCache] = useState<Record<string, Entry>>({});
 
-  // 🏛️ Deduplicate entries to prevent key errors
   const entries = useMemo(() => {
     const map = new Map<string, Entry>();
-    serverEntries.forEach(e => map.set(e.date, e));
+    serverEntries.forEach((e) => map.set(e.date, e));
     return Array.from(map.values());
   }, [serverEntries]);
 
@@ -63,19 +70,16 @@ export function JournalHome({ today, entries: serverEntries, userName }: Props) 
       return;
     }
 
-    // 1. New/Empty entry check
     if (!entry.title && !entry.contentHtml && entry.wordCount === 0) {
       setSelectedEntry(entry);
       return;
     }
 
-    // 2. Cache Hit check
     if (entryCache[entry.date]) {
       setSelectedEntry(entryCache[entry.date]);
       return;
     }
 
-    // 3. Option B: Targeted Fetch
     if (!entry.contentHtml) {
       setIsFetchingEntry(true);
       try {
@@ -176,7 +180,11 @@ export function JournalHome({ today, entries: serverEntries, userName }: Props) 
                 onClick={() => setIsDesktopSidebarOpen((o) => !o)}
                 className="hidden cursor-pointer lg:flex p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all"
               >
-                {isDesktopSidebarOpen ? <PanelLeftClose className="h-4 w-4" /> : <PanelLeftOpen className="h-4 w-4" />}
+                {isDesktopSidebarOpen ? (
+                  <PanelLeftClose className="h-4 w-4" />
+                ) : (
+                  <PanelLeftOpen className="h-4 w-4" />
+                )}
               </button>
 
               <button
@@ -192,27 +200,47 @@ export function JournalHome({ today, entries: serverEntries, userName }: Props) 
                 <div className="h-full flex flex-col items-center justify-center text-center max-w-md mx-auto animate-in fade-in duration-500">
                   <div className="space-y-4 opacity-40">
                     <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
-                    <p className="text-[10px] font-mono uppercase tracking-[0.3em]">Decrypting Archive...</p>
+                    <p className="text-[10px] font-mono uppercase tracking-[0.3em]">
+                      Decrypting Archive...
+                    </p>
                   </div>
                 </div>
               ) : showDashboard ? (
-                <div className="h-full flex flex-col items-center justify-center text-center max-w-md mx-auto">
+                <div className="h-full flex flex-col items-center justify-center text-center max-w-md mx-auto animate-in fade-in zoom-in duration-500">
+                  {/* 🚀 STREAK COUNTER PLACED HERE */}
+                  <div className="w-full mb-8">
+                    <StreakCounter 
+                      currentStreak={streak} 
+                      totalEntries={totalEntries} 
+                    />
+                  </div>
+                  
                   <div className="bg-primary/5 p-8 rounded-full mb-6">
                     <LayoutDashboard className="h-10 w-10 text-primary opacity-40" />
                   </div>
-                  <h2 className="text-2xl lg:text-3xl font-black tracking-tight">Hey, {userName}</h2>
+                  <h2 className="text-2xl lg:text-3xl font-black tracking-tight">
+                    Hey, {userName}
+                  </h2>
                   <p className="text-muted-foreground mt-3 text-lg leading-relaxed">
-                    Ready to reflect? Select a past entry or start something new for today.
+                    Ready to reflect? Select a past entry or start something new
+                    for today.
                   </p>
                 </div>
               ) : showStartWriting ? (
                 <div className="h-full flex flex-col items-center justify-center text-center space-y-8 max-w-md mx-auto">
                   <div className="space-y-3">
-                    <h2 className="text-3xl lg:text-4xl font-black tracking-tight">Today is a fresh start.</h2>
-                    <p className="text-muted-foreground text-lg italic">&quot;{randomPrompt}&quot;</p>
+                    <h2 className="text-3xl lg:text-4xl font-black tracking-tight">
+                      Today is a fresh start.
+                    </h2>
+                    <p className="text-muted-foreground text-lg italic">
+                      &quot;{randomPrompt}&quot;
+                    </p>
                   </div>
                   <Link href={`/journal/${today}?today=${userLocalToday}`}>
-                    <Button size="lg" className="rounded-full px-10 h-14 text-base font-bold shadow-2xl shadow-primary/20 hover:scale-105 transition-transform">
+                    <Button
+                      size="lg"
+                      className="rounded-full px-10 h-14 text-base font-bold shadow-2xl shadow-primary/20 hover:scale-105 transition-transform"
+                    >
                       <PenLine className="mr-2 h-5 w-5" /> Start writing
                     </Button>
                   </Link>

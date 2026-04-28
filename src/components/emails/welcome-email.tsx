@@ -32,10 +32,6 @@ export const WelcomeEmail = ({ userFirstname, baseUrl }: WelcomeEmailProps) => (
             Open Your Journal
           </Link>
         </Section>
-        <Text style={footer}>
-          If you have any questions, just reply to this email. We&apos;re here
-          to help.
-        </Text>
       </Container>
     </Body>
   </Html>

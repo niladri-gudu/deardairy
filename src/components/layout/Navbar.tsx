@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { PenLine, LayoutDashboard, LogOut, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemePicker } from "../ui/theme-picker";
-import { getGithubStars } from "@/app/actions/github";
+import { getGithubStars } from "@/actions/github";
 import { cn } from "@/lib/utils";
 import { useSession, signOut } from "@/lib/auth-client";
 import {
@@ -33,7 +33,8 @@ export function Navbar() {
   const [starCount, setStarCount] = useState<number | null>(null);
   const { data: session } = useSession();
 
-  const isJournalPage = pathname.startsWith("/home") || pathname.startsWith("/journal");
+  const isJournalPage =
+    pathname.startsWith("/home") || pathname.startsWith("/journal");
   const logoHref = session ? "/home" : "/";
 
   useEffect(() => {
