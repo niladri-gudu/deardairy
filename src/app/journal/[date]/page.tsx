@@ -12,17 +12,19 @@ import { Button } from "@/components/ui/button";
 
 interface Props {
   params: Promise<{ date: string }>;
+  searchParams: Promise<{ today?: string }>;
 }
 
-export default async function JournalDatePage({ params }: Props) {
+export default async function JournalDatePage({ params, searchParams }: Props) {
   const { date } = await params;
+  const { today: clientToday } = await searchParams;
 
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) redirect("/journal");
 
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) redirect("/signin");
 
-  const today = new Date().toISOString().split("T")[0];
+  const today = clientToday || new Date().toISOString().split("T")[0];
 
   if (date > today) {
     return (
@@ -49,7 +51,7 @@ export default async function JournalDatePage({ params }: Props) {
             </p>
 
             <div className="pt-4 space-y-4 text-center">
-              <Link href={`/journal/${today}`} className="block">
+              <Link href={`/journal/${today}?today=${today}`} className="block">
                 <Button className="w-full h-14 rounded-full font-bold text-lg hover:scale-[1.02] active:scale-[0.98] transition-all relative overflow-hidden">
                   Return to Present
                 </Button>

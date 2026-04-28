@@ -124,6 +124,8 @@ export function JournalHome({ today, entries: serverEntries, userName }: Props) 
     setSelectedEntry(null);
   };
 
+  const userLocalToday = new Date().toLocaleDateString("en-CA");
+
   return (
     <div className="min-h-screen bg-background text-foreground pt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -209,7 +211,7 @@ export function JournalHome({ today, entries: serverEntries, userName }: Props) 
                     <h2 className="text-3xl lg:text-4xl font-black tracking-tight">Today is a fresh start.</h2>
                     <p className="text-muted-foreground text-lg italic">&quot;{randomPrompt}&quot;</p>
                   </div>
-                  <Link href={`/journal/${today}`}>
+                  <Link href={`/journal/${today}?today=${userLocalToday}`}>
                     <Button size="lg" className="rounded-full px-10 h-14 text-base font-bold shadow-2xl shadow-primary/20 hover:scale-105 transition-transform">
                       <PenLine className="mr-2 h-5 w-5" /> Start writing
                     </Button>
