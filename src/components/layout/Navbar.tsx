@@ -34,7 +34,7 @@ export function Navbar() {
   const { data: session } = useSession();
 
   const isJournalPage = pathname.startsWith("/journal");
-  const logoHref = session ? "/journal" : "/";
+  const logoHref = session ? "/home" : "/";
 
   useEffect(() => {
     const fetchStars = async () => {

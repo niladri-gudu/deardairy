@@ -66,7 +66,7 @@ export default function LandingPage() {
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
               {/* PRIMARY BUTTON: Changes destination and text */}
               <Link
-                href={session ? "/journal" : "/signup"}
+                href={session ? "/home" : "/signup"}
                 className="w-full sm:w-auto"
               >
                 <Button
@@ -279,7 +279,7 @@ export default function LandingPage() {
           </h2>
           <div className="flex flex-col items-center gap-4">
             <Link
-              href={session ? "/journal" : "/signup"}
+              href={session ? "/home" : "/signup"}
               className="w-full sm:w-auto"
             >
               <Button

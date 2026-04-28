@@ -58,10 +58,10 @@ export default async function JournalDatePage({ params, searchParams }: Props) {
               </Link>
 
               <Link
-                href="/journal"
+                href="/home"
                 className="inline-block text-[10px] font-mono uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors italic"
               >
-                // Back_to_Dashboard
+                // Back_to_Home
               </Link>
             </div>
           </div>

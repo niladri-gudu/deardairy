@@ -64,6 +64,14 @@ export function JournalSidebar({
   const observerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    setLoadedEntries([]);
+    setPage(1);
+    setHasMore(true);
+
+    localStorage.removeItem(CACHE_KEY);
+  }, [initialEntries]);
+
+  useEffect(() => {
     const saved = localStorage.getItem(CACHE_KEY);
     if (saved) {
       try {

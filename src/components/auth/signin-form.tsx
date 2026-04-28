@@ -50,7 +50,7 @@ export function SigninForm() {
       return;
     }
     router.refresh();
-    router.push("/journal");
+    router.push("/home");
   };
 
   return (
