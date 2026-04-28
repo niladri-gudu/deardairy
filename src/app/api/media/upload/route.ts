@@ -20,7 +20,12 @@ export async function POST(req: NextRequest) {
   if (!session)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { filename, contentType, size } = await req.json();
+  const {
+    filename,
+    contentType,
+    size,
+    folder: customFolder,
+  } = await req.json();
 
   if (!ALLOWED_TYPES.includes(contentType)) {
     return NextResponse.json(
@@ -36,15 +41,21 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Determine folder based on environment
-  // Vercel sets NODE_ENV to 'production' only on the main branch
   const isProduction = process.env.IS_PROD === "true";
-  const folder = isProduction ? "uploads" : "dev-uploads";
+  const envPrefix = isProduction ? "" : "dev-";
+
+  let category = "uploads";
+  if (customFolder === "issue" || customFolder === "feedback") {
+    category = "system";
+  } else if (customFolder === "avatar") {
+    category = "avatars";
+  }
 
   const ext = filename.split(".").pop();
-  // Key now looks like: dev-uploads/user_id/uuid.png
-  const key = `${folder}/${session.user.id}/${randomUUID()}.${ext}`;
+  const subPath = customFolder ? `${customFolder}/` : "";
 
+  const key = `${envPrefix}${category}/${session.user.id}/${subPath}${randomUUID()}.${ext}`;
+  
   const command = new PutObjectCommand({
     Bucket: process.env.R2_BUCKET_NAME!,
     Key: key,
