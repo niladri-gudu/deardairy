@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
   const isProduction = process.env.IS_PROD === "true";
   const envPrefix = isProduction ? "" : "dev-";
 
-  let category = "uploads";
+  let category = "journal";
   if (customFolder === "issue" || customFolder === "feedback") {
     category = "system";
   } else if (customFolder === "avatar") {

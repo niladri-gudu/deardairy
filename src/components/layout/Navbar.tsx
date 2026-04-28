@@ -76,7 +76,7 @@ export function Navbar() {
             isJournalPage ? (
               <UserDropdown session={session} />
             ) : (
-              <Link href="/journal">
+              <Link href="/home">
                 <Button
                   size="sm"
                   className="h-9 rounded-full px-5 font-bold tracking-tight gap-2 shadow-sm"
