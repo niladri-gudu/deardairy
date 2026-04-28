@@ -33,7 +33,7 @@ export function Navbar() {
   const [starCount, setStarCount] = useState<number | null>(null);
   const { data: session } = useSession();
 
-  const isJournalPage = pathname.startsWith("/journal");
+  const isJournalPage = pathname.startsWith("/home") || pathname.startsWith("/journal");
   const logoHref = session ? "/home" : "/";
 
   useEffect(() => {

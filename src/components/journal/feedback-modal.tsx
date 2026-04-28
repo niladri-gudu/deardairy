@@ -16,7 +16,7 @@ interface ReportModalProps {
 }
 
 export function FeedbackModal({ open, onOpenChange, type }: ReportModalProps) {
-  const [title, setTitle] = useState(""); // 🚀 New Title State
+  const [title, setTitle] = useState(""); 
   const [text, setText] = useState("");
   const [image, setImage] = useState<{ url: string; key: string } | null>(null);
   const [isUploading, setIsUploading] = useState(false);

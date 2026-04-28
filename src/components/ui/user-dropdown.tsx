@@ -22,7 +22,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { FeedbackModal } from "../journal/feedback-modal";
 import { SettingsModal } from "../settings/settings-modal";
-import Image from "next/image"; // 🚀 Import Next.js Image
+import Image from "next/image"; 
 
 interface UserDropdownProps {
   session: any;
