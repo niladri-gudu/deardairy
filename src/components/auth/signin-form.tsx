@@ -50,7 +50,7 @@ export function SigninForm() {
       return;
     }
     router.refresh();
-    router.push("/journal");
+    router.push("/home");
   };
 
   return (
@@ -152,7 +152,7 @@ export function SigninForm() {
               variant="ghost"
               className="w-full h-12 rounded-full font-mono text-[10px] uppercase tracking-widest text-muted-foreground hover:text-foreground"
               onClick={() =>
-                signIn.social({ provider: "google", callbackURL: "/journal" })
+                signIn.social({ provider: "google", callbackURL: "/home" })
               }
             >
               <GoogleIcon />

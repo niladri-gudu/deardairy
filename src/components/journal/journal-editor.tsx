@@ -90,7 +90,7 @@ export function JournalEditor({ date, initialTitle, initialContent }: Props) {
             </p>
           </div>
 
-          <Link href="/journal" className="mt-1">
+          <Link href="/home" className="mt-1">
             <Button
               variant="ghost"
               size="sm"

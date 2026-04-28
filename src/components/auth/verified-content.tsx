@@ -19,7 +19,7 @@ export function VerifiedContent() {
           </p>
         </div>
         <div className="pt-4 space-y-6">
-          <Link href="/journal" className="block w-full">
+          <Link href="/home" className="block w-full">
             <Button className="w-full h-14 rounded-full font-bold text-lg hover:scale-[1.02] active:scale-[0.98] transition-all">
               Go to Journal <ArrowRight className="ml-2 h-5 w-5" />
             </Button>

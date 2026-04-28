@@ -33,8 +33,8 @@ export function Navbar() {
   const [starCount, setStarCount] = useState<number | null>(null);
   const { data: session } = useSession();
 
-  const isJournalPage = pathname.startsWith("/journal");
-  const logoHref = session ? "/journal" : "/";
+  const isJournalPage = pathname.startsWith("/home") || pathname.startsWith("/journal");
+  const logoHref = session ? "/home" : "/";
 
   useEffect(() => {
     const fetchStars = async () => {
@@ -76,7 +76,7 @@ export function Navbar() {
             isJournalPage ? (
               <UserDropdown session={session} />
             ) : (
-              <Link href="/journal">
+              <Link href="/home">
                 <Button
                   size="sm"
                   className="h-9 rounded-full px-5 font-bold tracking-tight gap-2 shadow-sm"

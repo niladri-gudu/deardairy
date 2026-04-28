@@ -25,23 +25,31 @@ export async function POST(req: NextRequest) {
 
   await connectDB();
 
-  const wordCount =
-    contentText?.trim().split(/\s+/).filter(Boolean).length ?? 0;
+  const updateFields: any = {};
 
-  const encryptedHtml = contentHtml ? encrypt(contentHtml) : "";
-  const encryptedText = contentText ? encrypt(contentText) : "";
-  const encryptedJson = contentJson ? encrypt(JSON.stringify(contentJson)) : "";
+  if (title !== undefined) {
+    updateFields.title = title;
+  }
+
+  if (contentHtml) {
+    updateFields.contentHtml = encrypt(contentHtml);
+  }
+  if (contentText) {
+    updateFields.contentText = encrypt(contentText);
+    updateFields.wordCount = contentText
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean).length;
+  }
+
+  if (contentJson) {
+    updateFields.contentJson = encrypt(JSON.stringify(contentJson));
+  }
 
   const entry = await Entry.findOneAndUpdate(
     { userId: session.user.id, date },
     {
-      $set: {
-        title,
-        contentHtml: encryptedHtml,
-        contentText: encryptedText,
-        contentJson: encryptedJson,
-        wordCount: contentText?.trim().split(/\s+/).filter(Boolean).length ?? 0,
-      },
+      $set: updateFields,
       $setOnInsert: { userId: session.user.id, date },
     },
     { upsert: true, new: true, lean: true },
@@ -95,7 +103,7 @@ export async function GET(req: NextRequest) {
   const [entries, total] = await Promise.all([
     Entry.find(
       { userId: session.user.id },
-      { date: 1, title: 1, wordCount: 1, contentText: 1 },
+      { date: 1, title: 1, wordCount: 1, contentText: 1, contentHtml: 1 },
     )
       .sort({ date: -1 })
       .skip(skip)
@@ -104,10 +112,18 @@ export async function GET(req: NextRequest) {
     Entry.countDocuments({ userId: session.user.id }),
   ]);
 
-  const decryptedEntries = entries.map((entry) => ({
-    ...entry,
-    contentText: safeDecrypt(entry.contentText || ""),
-  }));
+  const decryptedEntries = entries.map((entry) => {
+    const decryptedText = safeDecrypt(entry.contentText || "");
+    return {
+      ...entry,
+      contentHtml: safeDecrypt(entry.contentHtml || ""),
+      contentText: decryptedText,
+      preview:
+        decryptedText.length > 100
+          ? decryptedText.substring(0, 100) + "..."
+          : decryptedText,
+    };
+  });
 
   return NextResponse.json(
     {

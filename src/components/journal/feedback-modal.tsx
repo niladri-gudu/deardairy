@@ -1,7 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input"; // Ensure you have this shadcn component
@@ -16,7 +21,7 @@ interface ReportModalProps {
 }
 
 export function FeedbackModal({ open, onOpenChange, type }: ReportModalProps) {
-  const [title, setTitle] = useState(""); // 🚀 New Title State
+  const [title, setTitle] = useState("");
   const [text, setText] = useState("");
   const [image, setImage] = useState<{ url: string; key: string } | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -29,10 +34,19 @@ export function FeedbackModal({ open, onOpenChange, type }: ReportModalProps) {
     try {
       const res = await fetch("/api/media/upload", {
         method: "POST",
-        body: JSON.stringify({ filename: file.name, contentType: file.type, size: file.size }),
+        body: JSON.stringify({
+          filename: file.name,
+          contentType: file.type,
+          size: file.size,
+          folder: type,
+        }),
       });
       const { presignedUrl, publicUrl } = await res.json();
-      await fetch(presignedUrl, { method: "PUT", body: file, headers: { "Content-Type": file.type } });
+      await fetch(presignedUrl, {
+        method: "PUT",
+        body: file,
+        headers: { "Content-Type": file.type },
+      });
       setImage({ url: publicUrl, key: file.name });
       toast.success("Evidence attached.");
     } catch (err) {
@@ -45,7 +59,7 @@ export function FeedbackModal({ open, onOpenChange, type }: ReportModalProps) {
   const handleSubmit = async () => {
     if (!title.trim()) return toast.error("Title required.");
     if (!text.trim()) return toast.error("Description required.");
-    
+
     setIsSubmitting(true);
     try {
       const res = await fetch("/api/feedback", {
@@ -54,7 +68,9 @@ export function FeedbackModal({ open, onOpenChange, type }: ReportModalProps) {
         body: JSON.stringify({ title, text, imageUrl: image?.url, type }),
       });
       if (res.ok) {
-        toast.success(type === "issue" ? "Dispatch successful." : "Feedback received.");
+        toast.success(
+          type === "issue" ? "Dispatch successful." : "Feedback received.",
+        );
         onOpenChange(false);
         setTitle("");
         setText("");
@@ -78,7 +94,9 @@ export function FeedbackModal({ open, onOpenChange, type }: ReportModalProps) {
             </span>
           </DialogTitle>
           <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.2em]">
-            {type === "issue" ? "System Diagnostic // Report Bug" : "Direct Channel // Feedback Loop"}
+            {type === "issue"
+              ? "System Diagnostic // Report Bug"
+              : "Direct Channel // Feedback Loop"}
           </p>
         </DialogHeader>
 
@@ -89,7 +107,11 @@ export function FeedbackModal({ open, onOpenChange, type }: ReportModalProps) {
               Summary.Heading
             </label>
             <Input
-              placeholder={type === "issue" ? "Short glitch summary" : "Headline for your thought"}
+              placeholder={
+                type === "issue"
+                  ? "Short glitch summary"
+                  : "Headline for your thought"
+              }
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="h-10 bg-transparent border-0 border-b border-border/50 rounded-none px-0 focus-visible:ring-0 transition-all placeholder:text-muted-foreground/30 text-lg"
@@ -131,11 +153,20 @@ export function FeedbackModal({ open, onOpenChange, type }: ReportModalProps) {
             </div>
           ) : (
             <label className="flex items-center justify-center gap-2 w-full py-6 border border-dashed border-border/60 rounded-[28px] cursor-pointer hover:bg-muted/30 transition-all group">
-              {isUploading ? <Loader2 className="h-5 w-5 animate-spin" /> : <ImageIcon className="h-5 w-5 opacity-40 group-hover:opacity-100" />}
+              {isUploading ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : (
+                <ImageIcon className="h-5 w-5 opacity-40 group-hover:opacity-100" />
+              )}
               <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
                 {isUploading ? "Uploading..." : "Attach_Evidence"}
               </span>
-              <input type="file" className="hidden" onChange={handleImageUpload} accept="image/*" />
+              <input
+                type="file"
+                className="hidden"
+                onChange={handleImageUpload}
+                accept="image/*"
+              />
             </label>
           )}
 
@@ -150,7 +181,11 @@ export function FeedbackModal({ open, onOpenChange, type }: ReportModalProps) {
                   <Loader2 className="h-5 w-5 animate-spin" />
                   <span>Dispatching...</span>
                 </div>
-              ) : type === "issue" ? "Report Anomaly" : "Send Thought"}
+              ) : type === "issue" ? (
+                "Report Anomaly"
+              ) : (
+                "Send Thought"
+              )}
             </Button>
           </div>
         </div>

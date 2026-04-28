@@ -1,26 +1,19 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable react/jsx-no-comment-textnodes */
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  Loader2,
-  LayoutDashboard,
-  Menu,
-  PanelLeftClose,
-  PanelLeftOpen,
-  PenLine,
-  X,
-} from "lucide-react";
+import { use, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Loader2, LayoutDashboard, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { useRouter } from "next/navigation";
-import { Calendar as CalendarIcon, ChevronDown } from "lucide-react";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+
+const CACHE_KEY = "withink_journal_buffer";
+const BUFFER_SIZE = 20;
 
 interface Entry {
   date: string;
@@ -61,22 +54,58 @@ function formatMonthLabel(key: string) {
 export function JournalSidebar({
   entries: initialEntries,
   selectedDate,
-  userName,
   today,
   onSelect,
 }: Props) {
   const [loadedEntries, setLoadedEntries] = useState<Entry[]>([]);
-  const entries = [
-    ...initialEntries,
-    ...loadedEntries.filter(
-      (loaded) => !initialEntries.some((entry) => entry.date === loaded.date),
-    ),
-  ];
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-
   const observerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    setLoadedEntries([]);
+    setPage(1);
+    setHasMore(true);
+
+    localStorage.removeItem(CACHE_KEY);
+  }, [initialEntries]);
+
+  useEffect(() => {
+    const saved = localStorage.getItem(CACHE_KEY);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved) as Entry[];
+        setLoadedEntries(parsed);
+      } catch (e) {
+        console.error("Archive hydration failed", e);
+      }
+    }
+  }, []);
+
+  const allEntries = useMemo(() => {
+    const map = new Map<string, Entry>();
+
+    loadedEntries.forEach((e) => map.set(e.date, e));
+
+    initialEntries.forEach((e) => map.set(e.date, e));
+
+    return Array.from(map.values()).sort((a, b) =>
+      b.date.localeCompare(a.date),
+    );
+  }, [initialEntries, loadedEntries]);
+
+  useEffect(() => {
+    if (allEntries.length > 0) {
+      const buffer = allEntries.slice(0, BUFFER_SIZE);
+      try {
+        localStorage.setItem(CACHE_KEY, JSON.stringify(buffer));
+      } catch (e) {
+        console.warn("Storage quota exceeded, purging oldest entries...");
+        localStorage.removeItem(CACHE_KEY);
+      }
+    }
+  }, [allEntries]);
 
   const fetchMoreEntries = useCallback(async () => {
     if (isLoading || !hasMore) return;
@@ -120,17 +149,13 @@ export function JournalSidebar({
     return () => observer.disconnect();
   }, [fetchMoreEntries]);
 
-  const [calendarDate, setCalendarDate] = useState<Date>(new Date());
-
-  const entryDates = new Set(entries.map((e) => e.date));
-
-  const grouped = groupByMonth(entries);
-  const hasTodayEntry = entries.some((e) => e.date === today);
+  const grouped = groupByMonth(allEntries);
+  const hasTodayEntry = allEntries.some((e) => e.date === today);
 
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="flex-1 overflow-y-auto py-6 px-4 space-y-8 no-scrollbar pb-20">
-        {/* 1. DASHBOARD SECTION */}
+        {/* DASHBOARD SECTION */}
         <div className="space-y-2">
           <p className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-[0.2em] px-2">
             Overview
@@ -141,13 +166,13 @@ export function JournalSidebar({
             className={cn(
               "w-full justify-start h-auto gap-4 px-4 py-4 rounded-2xl transition-all duration-300 shadow-none border border-transparent",
               selectedDate === null
-                ? "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground cursor-default"
-                : "text-muted-foreground hover:text-foreground hover:bg-muted/50 hover:border-border/50",
+                ? "bg-primary text-primary-foreground"
+                : "text-muted-foreground hover:bg-muted/50",
             )}
           >
             <div
               className={cn(
-                "p-2 rounded-xl transition-colors",
+                "p-2 rounded-xl",
                 selectedDate === null ? "bg-background/10" : "bg-muted",
               )}
             >
@@ -157,29 +182,20 @@ export function JournalSidebar({
               <span className="text-sm font-bold tracking-tight">
                 Dashboard
               </span>
-              <span
-                className={cn(
-                  "text-[10px] opacity-60",
-                  selectedDate === null
-                    ? "text-background/80"
-                    : "text-muted-foreground",
-                )}
-              >
-                Review your progress
-              </span>
+              <span className="text-[10px] opacity-60">System status</span>
             </div>
           </Button>
         </div>
 
-        {/* 2. TODAY SECTION */}
+        {/* TODAY SECTION */}
         <div className="space-y-2">
           <p className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-[0.2em] px-2">
-            Today
+            Active Entry
           </p>
           <Button
             variant="ghost"
             onClick={() => {
-              const existingToday = entries.find((e) => e.date === today);
+              const existingToday = allEntries.find((e) => e.date === today);
               onSelect(
                 existingToday ?? {
                   date: today,
@@ -193,33 +209,24 @@ export function JournalSidebar({
             className={cn(
               "w-full h-auto text-left justify-start px-5 py-6 rounded-[1.75rem] transition-all duration-300 border shadow-none",
               selectedDate === today
-                ? "bg-primary text-primary-foreground border-primary hover:bg-primary hover:text-primary-foreground cursor-default scale-[0.98]"
+                ? "bg-primary text-primary-foreground border-primary"
                 : hasTodayEntry
-                  ? "border-transparent bg-muted/40 hover:bg-muted/70 text-foreground hover:scale-[1.01]"
-                  : "border-dashed border-border bg-transparent hover:bg-muted/30 text-muted-foreground hover:text-foreground hover:scale-[1.01]",
+                  ? "border-transparent bg-muted/40"
+                  : "border-dashed border-border",
             )}
           >
-            <div className="flex items-center justify-between w-full gap-2">
+            <div className="flex items-center justify-between w-full">
               <div className="flex flex-col gap-0.5">
                 <p className="text-base font-black tracking-tight">
-                  {hasTodayEntry ? "Today's Entry" : "Start Writing"}
+                  {hasTodayEntry ? "Today's Log" : "New Archive"}
                 </p>
-                <p
-                  className={cn(
-                    "text-[11px] opacity-70",
-                    selectedDate === today
-                      ? "text-primary-foreground/80"
-                      : "text-muted-foreground",
-                  )}
-                >
-                  {hasTodayEntry
-                    ? "Continue reflecting"
-                    : "Capture your thoughts"}
+                <p className="text-[11px] opacity-60">
+                  {hasTodayEntry ? "Syncing thoughts..." : "Capture stream"}
                 </p>
               </div>
               <div
                 className={cn(
-                  "h-2 w-2 rounded-full transition-all",
+                  "h-2 w-2 rounded-full",
                   selectedDate === today
                     ? "bg-primary-foreground ring-4 ring-primary-foreground/20"
                     : "bg-primary ring-4 ring-primary/10",
@@ -229,159 +236,96 @@ export function JournalSidebar({
           </Button>
         </div>
 
-        {/* CALENDAR SECTION */}
-        {/* <div className="space-y-2">
-          <p className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-[0.2em] px-2">
-            Calendar
-          </p>
-          <div className="rounded-2xl overflow-hidden bg-muted/30 border border-border/40 p-1">
-            <Calendar
-              mode="single"
-              selected={calendarDate}
-              onSelect={(date) => {
-                if (!date) return;
-                setCalendarDate(date);
-                const dateStr = date.toLocaleDateString("en-CA"); // YYYY-MM-DD
-                const existing = entries.find((e) => e.date === dateStr);
-                if (existing) {
-                  onSelect(existing);
-                } else {
-                  // date in the future or no entry — navigate to editor
-                  onSelect({
-                    date: dateStr,
-                    title: "",
-                    wordCount: 0,
-                    preview: "",
-                    contentHtml: "",
-                  });
-                }
-              }}
-              modifiers={{
-                hasEntry: (date) => {
-                  const dateStr = date.toLocaleDateString("en-CA");
-                  return entryDates.has(dateStr);
-                },
-              }}
-              modifiersClassNames={{
-                hasEntry:
-                  "font-bold underline decoration-primary decoration-2 underline-offset-2",
-              }}
-              classNames={{
-                root: "w-full",
-                month: "w-full",
-                table: "w-full",
-                head_cell:
-                  "text-muted-foreground text-[10px] font-bold uppercase tracking-wide w-full",
-                cell: "w-full text-center",
-                day: "w-full h-8 text-xs rounded-xl hover:bg-accent transition-colors",
-                day_selected:
-                  "bg-primary text-primary-foreground hover:bg-primary",
-                day_today: "text-primary font-bold",
-                nav_button:
-                  "h-7 w-7 rounded-xl hover:bg-accent transition-colors",
-                caption: "text-xs font-bold text-foreground mb-2",
-              }}
-            />
-          </div>
-        </div> */}
+        {/* HISTORY SECTION */}
+        <div className="space-y-4">
+          {Object.entries(grouped).map(([monthKey, monthEntries]) => {
+            const historicalEntries = monthEntries.filter(
+              (e) => e.date !== today,
+            );
+            if (historicalEntries.length === 0) return null;
 
-{/* 3. HISTORY SECTION */}
-<div className="space-y-4">
-  {Object.entries(grouped).map(([monthKey, monthEntries]) => {
-    const historicalEntries = monthEntries.filter(
-      (e) => e.date !== today,
-    );
-    if (historicalEntries.length === 0) return null;
-
-    // 1. Get the current month key (e.g., "2026-04")
-    const [tYear, tMonth] = today.split("-");
-    const currentMonthKey = `${tYear}-${tMonth}`;
-
-    // 2. Logic: Open if it's the current month OR if it contains the selected entry
-    const isCurrentMonth = monthKey === currentMonthKey;
-    const containsSelected = historicalEntries.some(
-      (e) => e.date === selectedDate,
-    );
-
-    return (
-      <Collapsible
-        key={monthKey}
-        // Force open if it meets our criteria
-        defaultOpen={isCurrentMonth || containsSelected}
-        className="space-y-2 group"
-      >
-        <div className="flex items-center justify-between px-2">
-          <p className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-[0.2em]">
-            {formatMonthLabel(monthKey)}
-          </p>
-          <CollapsibleTrigger asChild>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-6 w-6 p-0 rounded-md hover:bg-muted opacity-0 group-hover:opacity-100 transition-opacity"
-            >
-              <ChevronDown className="h-3 w-3 text-muted-foreground transition-transform duration-300 group-data-[state=open]:rotate-180" />
-            </Button>
-          </CollapsibleTrigger>
-        </div>
-
-        <CollapsibleContent className="space-y-1 animate-in fade-in slide-in-from-top-1 duration-300">
-          {historicalEntries.map((entry) => {
-            const isSelected = entry.date === selectedDate;
-            const day = entry.date.split("-")[2];
+            const [tYear, tMonth] = today.split("-");
+            const isCurrentMonth = monthKey === `${tYear}-${tMonth}`;
+            const containsSelected = historicalEntries.some(
+              (e) => e.date === selectedDate,
+            );
 
             return (
-              <Button
-                key={entry.date}
-                variant="ghost"
-                onClick={() => onSelect(entry)}
-                className={cn(
-                  "w-full h-auto text-left justify-start px-3 py-3 rounded-2xl transition-all duration-200 flex items-center gap-4 shadow-none border border-transparent",
-                  isSelected
-                    ? "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground cursor-default"
-                    : "hover:bg-muted/50 text-muted-foreground hover:text-foreground",
-                )}
+              <Collapsible
+                key={monthKey}
+                defaultOpen={isCurrentMonth || containsSelected}
+                className="space-y-2 group"
               >
-                <div
-                  className={cn(
-                    "shrink-0 w-9 h-9 rounded-xl flex items-center justify-center border transition-colors text-xs font-bold",
-                    isSelected
-                      ? "bg-primary-foreground/20 border-primary-foreground/20 text-primary-foreground"
-                      : "bg-muted border-transparent text-foreground",
-                  )}
-                >
-                  {day}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold truncate leading-tight">
-                    {entry.title || "Untitled"}
+                <div className="flex items-center justify-between px-2">
+                  <p className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-[0.2em]">
+                    {formatMonthLabel(monthKey)}
                   </p>
-                  <p
-                    className={cn(
-                      "text-[10px] truncate mt-1 leading-none opacity-60",
-                      isSelected
-                        ? "text-primary-foreground/70"
-                        : "text-muted-foreground",
-                    )}
-                  >
-                    {entry.wordCount} words •{" "}
-                    {entry.preview || "No content"}
-                  </p>
+                  <CollapsibleTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <ChevronDown className="h-3 w-3 transition-transform group-data-[state=open]:rotate-180" />
+                    </Button>
+                  </CollapsibleTrigger>
                 </div>
-              </Button>
+                <CollapsibleContent className="space-y-1">
+                  {historicalEntries.map((entry) => {
+                    const isSelected = entry.date === selectedDate;
+                    return (
+                      <Button
+                        key={entry.date}
+                        variant="ghost"
+                        onClick={() => onSelect(entry)}
+                        className={cn(
+                          "w-full h-auto text-left justify-start px-3 py-3 rounded-2xl transition-all flex items-center gap-4 border border-transparent shadow-none",
+                          isSelected
+                            ? "bg-primary text-primary-foreground shadow-lg"
+                            : "hover:bg-muted/50 text-muted-foreground hover:text-foreground",
+                        )}
+                      >
+                        <div
+                          className={cn(
+                            "shrink-0 w-9 h-9 rounded-xl flex items-center justify-center border transition-colors text-xs font-bold",
+                            isSelected
+                              ? "bg-primary-foreground/20 border-primary-foreground/20"
+                              : "bg-muted border-transparent text-foreground",
+                          )}
+                        >
+                          {entry.date.split("-")[2]}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-bold truncate leading-tight">
+                            {entry.title || "Untitled Archive"}
+                          </p>
+                          <p
+                            className={cn(
+                              "text-[10px] truncate mt-1 opacity-60",
+                              isSelected
+                                ? "text-primary-foreground/70"
+                                : "text-muted-foreground",
+                            )}
+                          >
+                            {entry.wordCount} words •{" "}
+                            {entry.preview || "Empty.Archive"}
+                          </p>
+                        </div>
+                      </Button>
+                    );
+                  })}
+                </CollapsibleContent>
+              </Collapsible>
             );
           })}
-        </CollapsibleContent>
-      </Collapsible>
-    );
-  })}
-</div>
+        </div>
 
+        {/* INFINITE SCROLL LOADER */}
         <div ref={observerRef} className="py-4 flex justify-center">
           {isLoading && (
             <Loader2 className="h-5 w-5 animate-spin text-muted-foreground opacity-50" />
           )}
-          {!hasMore && entries.length > 10 && (
+          {!hasMore && allEntries.length > 10 && (
             <p className="text-[10px] font-mono text-muted-foreground/30 uppercase tracking-widest">
               // End_of_Sanctuary
             </p>

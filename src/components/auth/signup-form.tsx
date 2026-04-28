@@ -232,7 +232,7 @@ export function SignupForm() {
                   onClick={() =>
                     signIn.social({
                       provider: "google",
-                      callbackURL: "/journal",
+                      callbackURL: "/home",
                     })
                   }
                 >
