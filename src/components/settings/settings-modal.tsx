@@ -12,19 +12,14 @@ import { Button } from "@/components/ui/button";
 import {
   User,
   Palette,
-  ShieldCheck,
   LogOut,
   Trash2,
   Check,
   Database,
   Image as ImageIcon,
-  ExternalLink,
   HardDrive,
-  KeyRound,
-  UserMinus,
   Save,
   Camera,
-  X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { signOut, updateUser } from "@/lib/auth-client";
@@ -253,7 +248,7 @@ export function SettingsModal({
                       "flex items-center gap-4 px-4 py-3.5 rounded-2xl text-xs sm:text-sm font-bold transition-all duration-300 whitespace-nowrap relative group w-full",
                       isActive
                         ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20 scale-[0.98] cursor-default"
-                        : "text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground",
+                        : "text-muted-foreground hover:bg-foreground/5 hover:text-foreground",
                     )}
                   >
                     <item.icon

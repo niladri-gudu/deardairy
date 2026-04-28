@@ -95,7 +95,7 @@ export async function GET(req: NextRequest) {
   const [entries, total] = await Promise.all([
     Entry.find(
       { userId: session.user.id },
-      { date: 1, title: 1, wordCount: 1, contentText: 1 },
+      { date: 1, title: 1, wordCount: 1, contentText: 1, contentHtml: 1 },
     )
       .sort({ date: -1 })
       .skip(skip)
@@ -104,10 +104,18 @@ export async function GET(req: NextRequest) {
     Entry.countDocuments({ userId: session.user.id }),
   ]);
 
-  const decryptedEntries = entries.map((entry) => ({
-    ...entry,
-    contentText: safeDecrypt(entry.contentText || ""),
-  }));
+  const decryptedEntries = entries.map((entry) => {
+    const decryptedText = safeDecrypt(entry.contentText || "");
+    return {
+      ...entry,
+      contentHtml: safeDecrypt(entry.contentHtml || ""),
+      contentText: decryptedText,
+      preview:
+        decryptedText.length > 100
+          ? decryptedText.substring(0, 100) + "..."
+          : decryptedText,
+    };
+  });
 
   return NextResponse.json(
     {
