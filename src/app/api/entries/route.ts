@@ -25,23 +25,31 @@ export async function POST(req: NextRequest) {
 
   await connectDB();
 
-  const wordCount =
-    contentText?.trim().split(/\s+/).filter(Boolean).length ?? 0;
+  const updateFields: any = {};
 
-  const encryptedHtml = contentHtml ? encrypt(contentHtml) : "";
-  const encryptedText = contentText ? encrypt(contentText) : "";
-  const encryptedJson = contentJson ? encrypt(JSON.stringify(contentJson)) : "";
+  if (title !== undefined) {
+    updateFields.title = title;
+  }
+
+  if (contentHtml) {
+    updateFields.contentHtml = encrypt(contentHtml);
+  }
+  if (contentText) {
+    updateFields.contentText = encrypt(contentText);
+    updateFields.wordCount = contentText
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean).length;
+  }
+
+  if (contentJson) {
+    updateFields.contentJson = encrypt(JSON.stringify(contentJson));
+  }
 
   const entry = await Entry.findOneAndUpdate(
     { userId: session.user.id, date },
     {
-      $set: {
-        title,
-        contentHtml: encryptedHtml,
-        contentText: encryptedText,
-        contentJson: encryptedJson,
-        wordCount: contentText?.trim().split(/\s+/).filter(Boolean).length ?? 0,
-      },
+      $set: updateFields,
       $setOnInsert: { userId: session.user.id, date },
     },
     { upsert: true, new: true, lean: true },
