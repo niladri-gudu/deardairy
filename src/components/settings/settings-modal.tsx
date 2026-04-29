@@ -24,7 +24,7 @@ import {
 import { cn } from "@/lib/utils";
 import { signOut, updateUser } from "@/lib/auth-client";
 import { useTheme } from "next-themes";
-import { getAvatarPresignedUrl, getStorageStats } from "@/app/actions/storage";
+import { getAvatarPresignedUrl, getStorageStats } from "@/actions/storage";
 import Image from "next/image";
 import { toast } from "sonner";
 import Cropper from "react-easy-crop";
