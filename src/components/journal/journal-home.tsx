@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/purity */
 "use client";
 import { useMemo, useState } from "react";
@@ -241,28 +242,32 @@ export function JournalHome({
                     </div>
                   </div>
 
-                  {/* 🏛️ YESTERDAY ALERT: Only shows if Yesterday was missed */}
+                  {/* 🏛️ YESTERDAY ALERT: Responsive Fix */}
                   {!yesterdayEntry && (
-                    <div className="animate-in slide-in-from-top-4 duration-700">
+                    <div className="w-full">
                       <Link
                         href={`/journal/${yesterdayDate}?today=${userLocalToday}`}
                       >
                         <Button
                           variant="ghost"
-                          className="w-full bg-primary/3 border border-primary/10 rounded-4xl p-8 h-auto flex flex-col items-center gap-4 hover:bg-primary/[0.06] transition-all group"
+                          className="w-full bg-primary/5 border border-primary/10 rounded-4xl py-8 px-4 sm:px-8 h-auto flex flex-col items-center gap-4 hover:bg-primary/8 transition-all group overflow-hidden"
                         >
-                          <div className="flex items-center gap-3 text-primary">
-                            <History className="h-5 w-5" />
-                            <span className="text-xs font-mono uppercase tracking-[0.4em] font-bold">
-                              Yesterday&apos;s node is still open
+                          <div className="flex items-center gap-2 sm:gap-3 text-primary max-w-full">
+                            <History className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
+                            {/* 🚀 Fix: Responsive tracking and font size */}
+                            <span className="text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em] sm:tracking-[0.4em] font-bold truncate">
+                              Yesterday remains unwritten
                             </span>
                           </div>
-                          <p className="text-sm italic text-muted-foreground/60 px-4 text-center">
+
+                          {/* 🚀 Fix: text-balance to keep it contained */}
+                          <p className="text-xs sm:text-sm italic text-muted-foreground/60 px-2 text-center text-balance max-w-md">
                             The system allows a 24-hour grace period. Would you
                             like to finalize this entry?
                           </p>
+
                           <div className="flex items-center gap-2 text-primary/40 group-hover:text-primary transition-colors">
-                            <span className="text-[10px] font-mono uppercase tracking-widest">
+                            <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-widest">
                               Initialize.Session
                             </span>
                             <ArrowRight className="h-3 w-3 group-hover:translate-x-2 transition-transform" />
@@ -272,9 +277,9 @@ export function JournalHome({
                     </div>
                   )}
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 lg:gap-4 mt-8 lg:mt-12 px-2 md:px-0">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 lg:gap-4 mt-4 lg:mt-8 px-2 md:px-0">
                     {/* ...cards logic same as before... */}
-                    <div className="p-6 lg:p-8 rounded-[2rem] bg-muted/20 border border-border/40 opacity-60">
+                    <div className="p-6 lg:p-8 rounded-4xl bg-muted/20 border border-border/40 opacity-60">
                       <Search className="h-5 w-5 mb-4 opacity-20" />
                       <p className="text-[10px] font-mono uppercase tracking-[0.4em] opacity-30">
                         Archive.Search
@@ -290,7 +295,7 @@ export function JournalHome({
                         if (random) handleSelect(random);
                         setIsFetchingEntry(false);
                       }}
-                      className="p-6 lg:p-8 rounded-[2rem] bg-muted/20 border border-border/40 hover:bg-muted/50 hover:border-primary/20 transition-all cursor-pointer group active:scale-95"
+                      className="p-6 lg:p-8 rounded-4xl bg-muted/20 border border-border/40 hover:bg-muted/50 hover:border-primary/20 transition-all cursor-pointer group active:scale-95"
                     >
                       <History className="h-5 w-5 mb-4 opacity-40 group-hover:text-primary transition-colors" />
                       <p className="text-[10px] font-mono uppercase tracking-[0.4em] opacity-30">
@@ -300,7 +305,7 @@ export function JournalHome({
                         Retrieve random node...
                       </p>
                     </div>
-                    <div className="p-6 lg:p-8 rounded-[2rem] bg-muted/20 border border-border/40">
+                    <div className="p-6 lg:p-8 rounded-4xl bg-muted/20 border border-border/40">
                       <Zap className="h-5 w-5 mb-4 text-yellow-500/60" />
                       <p className="text-[10px] font-mono uppercase tracking-[0.4em] opacity-30">
                         System.Analysis
