@@ -17,22 +17,30 @@ export async function POST(req: NextRequest) {
   if (!date || !userLocalToday)
     return NextResponse.json({ error: "Date information missing" }, { status: 400 });
 
-  // Grace Period Logic
-  const todayDate = new Date(userLocalToday);
-  const yesterdayDate = new Date(todayDate);
-  yesterdayDate.setDate(todayDate.getDate() - 1);
-  const yesterdayStr = yesterdayDate.toISOString().split('T')[0];
-
-  if (date > userLocalToday) {
-    return NextResponse.json({ error: "The future is unwritten." }, { status: 403 });
-  }
-
-  if (date < yesterdayStr) {
-    return NextResponse.json({ error: "Grace period expired." }, { status: 403 });
-  }
-
   await connectDB();
 
+  // 🏛️ 1. Check if the entry already exists
+  const existingEntry = await Entry.findOne({ userId: session.user.id, date });
+
+  // 🏛️ 2. Apply Grace Period ONLY for NEW entries
+  if (!existingEntry) {
+    const todayDate = new Date(userLocalToday);
+    const yesterdayDate = new Date(todayDate);
+    yesterdayDate.setDate(todayDate.getDate() - 1);
+    const yesterdayStr = yesterdayDate.toISOString().split('T')[0];
+
+    // Block future dates
+    if (date > userLocalToday) {
+      return NextResponse.json({ error: "The future is unwritten." }, { status: 403 });
+    }
+
+    // Block creation of old entries
+    if (date < yesterdayStr) {
+      return NextResponse.json({ error: "Grace period expired for new entries." }, { status: 403 });
+    }
+  }
+
+  // 🏛️ 3. Proceed with Update or Create
   const updateFields: any = {};
   if (title !== undefined) updateFields.title = title;
   
