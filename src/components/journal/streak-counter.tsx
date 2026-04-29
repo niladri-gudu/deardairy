@@ -1,26 +1,22 @@
 import { Flame } from "lucide-react";
 
-interface StreakCounterProps {
+interface Props {
   currentStreak: number;
   totalEntries: number;
 }
 
-export function StreakCounter({ currentStreak, totalEntries }: StreakCounterProps) {
+export function StreakCounter({ currentStreak, totalEntries }: Props) {
   return (
-    <div className="p-6 rounded-4xl bg-orange-500/10 border border-orange-500/20 flex items-center gap-4 animate-in fade-in zoom-in duration-700">
-      <div className="h-12 w-12 rounded-2xl bg-orange-500 flex items-center justify-center shadow-lg shadow-orange-500/20">
-        <Flame className="text-white h-6 w-6" />
+    <div className="flex items-center gap-6 group">
+      <div className="h-16 w-16 rounded-3xl bg-orange-500/10 flex items-center justify-center border border-orange-500/20 shadow-inner transition-transform group-hover:scale-105">
+        <Flame className="h-8 w-8 text-orange-500" />
       </div>
       <div className="text-left">
-        <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-orange-500/60">
+        <p className="text-[11px] font-mono uppercase tracking-[0.4em] text-muted-foreground/40 mb-1">
           Sanctuary.Streak
         </p>
-        <h3 className="text-2xl font-black tracking-tight">
-          {currentStreak}{" "}
-          <span className="text-sm font-medium opacity-60">days</span>
-        </h3>
-        <p className="text-[10px] text-muted-foreground mt-0.5">
-          {totalEntries} total archives synced
+        <p className="text-4xl font-black leading-none">
+          {currentStreak} <span className="text-lg font-bold opacity-30 uppercase tracking-wide">Days</span>
         </p>
       </div>
     </div>

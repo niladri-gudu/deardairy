@@ -38,28 +38,37 @@ export function JournalEditor({ date, initialTitle, initialContent }: Props) {
   const [toolbarBottom, setToolbarBottom] = useState(32);
 
   useEffect(() => {
-    const paddingValue = toolbarBottom + 60;
-    document.documentElement.style.scrollPaddingBottom = `${paddingValue}px`;
+    const topBuffer = 100;
+    const bottomBuffer = toolbarBottom + 120;
+    document.documentElement.style.scrollPaddingTop = `${topBuffer}px`;
+    document.documentElement.style.scrollPaddingBottom = `${bottomBuffer}px`;
+
+    const style = document.createElement("style");
+    style.innerHTML = `
+      .prose-container p, .prose-container div[contenteditable] > * {
+        scroll-margin-top: ${topBuffer}px;
+        scroll-margin-bottom: ${bottomBuffer}px;
+      }
+    `;
+    document.head.appendChild(style);
 
     return () => {
+      document.documentElement.style.scrollPaddingTop = "0px";
       document.documentElement.style.scrollPaddingBottom = "0px";
+      document.head.removeChild(style);
     };
   }, [toolbarBottom]);
 
   useEffect(() => {
     const viewport = window.visualViewport;
     if (!viewport) return;
-
     const update = () => {
-      const fromBottom =
-        window.innerHeight - viewport.height - viewport.offsetTop;
-      setToolbarBottom(fromBottom + 24);
+      const fromBottom = window.innerHeight - viewport.height - viewport.offsetTop;
+      setToolbarBottom(Math.max(fromBottom, 0) + 24);
     };
-
     viewport.addEventListener("resize", update);
     viewport.addEventListener("scroll", update);
     update();
-
     return () => {
       viewport.removeEventListener("resize", update);
       viewport.removeEventListener("scroll", update);
@@ -75,55 +84,56 @@ export function JournalEditor({ date, initialTitle, initialContent }: Props) {
   });
 
   return (
-    <div className="min-h-screen bg-background text-foreground pt-16">
-      <main className="max-w-3xl mx-auto px-4 pt-14 pb-40">
-        <div className="flex items-center justify-between gap-4 px-4 mb-8">
-          <div className="flex-1 space-y-1">
+    <div className="min-h-screen bg-background text-foreground">
+      
+      {/* GHOST HEADER: Background blur */}
+      <div className="fixed top-0 left-0 right-0 z-20 h-20 bg-background/60 backdrop-blur-xl pointer-events-none" />
+
+      <main className="max-w-3xl mx-auto px-6 pt-24 pb-[50vh] relative z-30">
+        
+        {/* 🚀 HEADER LAYOUT: Title/Date on Left, Go Back on Right */}
+        <div className="flex items-start justify-between gap-8 mb-12">
+          <div className="flex-1 space-y-2">
             <input
               placeholder="Untitled"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full text-4xl font-bold bg-transparent outline-none text-foreground placeholder:text-muted-foreground/20 tracking-tight"
+              className="w-full text-4xl lg:text-5xl font-black bg-transparent outline-none text-foreground placeholder:text-muted-foreground/10 tracking-tighter leading-none"
             />
-            <p className="text-sm text-muted-foreground font-medium">
+            <p className="text-sm text-muted-foreground font-medium italic opacity-70">
               {formatDate(date)}
             </p>
           </div>
 
-          <Link href="/home" className="mt-1">
-            <Button
-              variant="ghost"
-              size="sm"
-              className={cn(
-                "rounded-full shrink-0 px-4 flex items-center gap-2 transition-all border border-transparent",
-                "text-muted-foreground hover:text-background hover:bg-foreground hover:border-foreground",
-              )}
+          <Link href="/home" className="shrink-0 mt-1">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="rounded-full flex items-center gap-2 px-4 py-5 hover:bg-foreground hover:text-background transition-all border border-border/50 group"
             >
-              <ChevronLeft className="h-4 w-4" />
-              <span className="text-xs font-semibold uppercase tracking-wide">
-                Back
-              </span>
+              <ChevronLeft className="h-4 w-4 group-hover:-translate-x-0.5 transition-transform" />
+              <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em]">Back</span>
             </Button>
           </Link>
         </div>
 
-        <Editor
-          key={date}
-          content={initialContent}
-          onChange={setEditorContent}
-          onEditorReady={setEditorInstance}
-        />
+        <div className="prose-container">
+          <Editor
+            key={date}
+            content={initialContent}
+            onChange={setEditorContent}
+            onEditorReady={setEditorInstance}
+          />
+        </div>
       </main>
 
+      {/* Toolbar Container */}
       <div
-        className="fixed left-0 right-0 z-10 flex justify-center pointer-events-none"
+        className="fixed left-0 right-0 z-40 flex justify-center pointer-events-none transition-[bottom] duration-300 ease-out"
         style={{ bottom: toolbarBottom }}
       >
         {editorInstance && (
-          <div
-            className="pointer-events-auto max-w-[90vw] overflow-x-auto rounded-xl border border-border bg-background shadow-lg"
-            style={{ scrollbarWidth: "none" }}
-          >
+          <div className="pointer-events-auto max-w-[95vw] overflow-x-auto rounded-2xl border border-border/50 bg-background/95 backdrop-blur-xl shadow-2xl p-1 mb-4 no-scrollbar">
             <Toolbar editor={editorInstance} />
           </div>
         )}
