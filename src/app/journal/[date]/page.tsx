@@ -24,29 +24,52 @@ export default async function JournalDatePage({ params, searchParams }: Props) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) redirect("/signin");
 
-  const today = clientToday || new Date().toISOString().split("T")[0];
+  await connectDB();
 
-  if (date > today) {
+  // 1. Fetch the entry FIRST to see if it exists
+  const entry = await Entry.findOne({
+    userId: session.user.id,
+    date,
+  }).lean();
+
+  // 2. Determine "Today" and "Yesterday"
+  const today = clientToday || new Date().toISOString().split("T")[0];
+  const todayDate = new Date(today);
+  const yesterdayDate = new Date(todayDate);
+  yesterdayDate.setDate(todayDate.getDate() - 1);
+  const yesterday = yesterdayDate.toISOString().split("T")[0];
+
+  // 3. Define the Firewall Logic
+  const isFuture = date > today;
+  const isExpired = date < yesterday;
+  const exists = !!entry;
+
+  // 🏛️ FIREWALL: Block ONLY if it's a NEW entry and outside the grace period
+  // If 'exists' is true, we skip the isExpired check.
+  if (isFuture || (isExpired && !exists)) {
     return (
       <div className="min-h-[85vh] flex flex-col justify-center py-12 px-8 antialiased">
         <div className="w-full max-w-sm mx-auto space-y-10">
           <div className="space-y-3">
             <h1 className="text-5xl font-black tracking-tighter leading-[0.85]">
-              Future is <br />
+              {isFuture ? "Future is" : "Archive is"} <br />
               <span className="text-primary/60 italic font-serif font-light text-6xl">
-                unwritten.
+                {isFuture ? "unwritten." : "sealed."}
               </span>
             </h1>
             <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.2em]">
-              Time_Lock // Access_Denied
+              {isFuture ? "Time_Lock // Access_Denied" : "Grace_Period // Expired"}
             </p>
           </div>
 
           <div className="space-y-8">
             <p className="text-muted-foreground font-mono text-xs tracking-widest leading-relaxed">
-              This day hasn&apos;t arrived in your sanctuary yet. <br />
+              {isFuture 
+                ? "This day hasn't arrived in your sanctuary yet." 
+                : "The ink for this day has already dried. Historical creation protocol is disabled."} 
+              <br />
               <span className="text-foreground block mt-2 underline decoration-primary/40 underline-offset-4 italic">
-                Patience is a form of ink.
+                {isFuture ? "Patience is a form of ink." : "Only current sessions can be initialized."}
               </span>
             </p>
 
@@ -70,21 +93,13 @@ export default async function JournalDatePage({ params, searchParams }: Props) {
     );
   }
 
-  await connectDB();
-
-  const entry = await Entry.findOne({
-    userId: session.user.id,
-    date,
-  }).lean();
-
+  // 4. Decrypt content if it exists
   let decryptedContent = "";
-
   if (entry) {
     const rawJson = safeDecrypt((entry as any).contentJson);
     try {
       decryptedContent =
-        (typeof rawJson === "string" && rawJson.startsWith("{")) ||
-        rawJson.startsWith("[")
+        (typeof rawJson === "string" && (rawJson.startsWith("{") || rawJson.startsWith("[")))
           ? JSON.parse(rawJson)
           : rawJson;
     } catch (e) {
