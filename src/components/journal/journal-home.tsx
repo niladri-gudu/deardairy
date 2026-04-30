@@ -302,7 +302,7 @@ export function JournalHome({
                         Archive.Flashback
                       </p>
                       <p className="text-sm mt-1 italic opacity-60 leading-tight">
-                        Retrieve random node...
+                        Retrieve random log...
                       </p>
                     </div>
                     <div className="p-6 lg:p-8 rounded-4xl bg-muted/20 border border-border/40">
