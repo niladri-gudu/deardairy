@@ -28,6 +28,7 @@ interface Entry {
   date: string;
   title: string;
   wordCount: number;
+  mood: number | null;
   preview: string;
   contentHtml: string;
 }
@@ -73,10 +74,6 @@ export function JournalHome({
     return d.toISOString().split("T")[0];
   }, [today]);
 
-  const todayEntry = useMemo(
-    () => entries.find((e) => e.date === today),
-    [entries, today],
-  );
   const yesterdayEntry = useMemo(
     () => entries.find((e) => e.date === yesterdayDate),
     [entries, yesterdayDate],
@@ -153,6 +150,7 @@ export function JournalHome({
           date: today,
           title: "",
           wordCount: 0,
+          mood: null,
           preview: "",
           contentHtml: "",
         });
@@ -242,7 +240,6 @@ export function JournalHome({
                     </div>
                   </div>
 
-                  {/* 🏛️ YESTERDAY ALERT: Responsive Fix */}
                   {!yesterdayEntry && (
                     <div className="w-full">
                       <Link
@@ -254,13 +251,11 @@ export function JournalHome({
                         >
                           <div className="flex items-center gap-2 sm:gap-3 text-primary max-w-full">
                             <History className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
-                            {/* 🚀 Fix: Responsive tracking and font size */}
                             <span className="text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em] sm:tracking-[0.4em] font-bold truncate">
                               Yesterday remains unwritten
                             </span>
                           </div>
 
-                          {/* 🚀 Fix: text-balance to keep it contained */}
                           <p className="text-xs sm:text-sm italic text-muted-foreground/60 px-2 text-center text-balance max-w-md">
                             The system allows a 24-hour grace period. Would you
                             like to finalize this entry?
@@ -278,7 +273,6 @@ export function JournalHome({
                   )}
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3 lg:gap-4 mt-4 lg:mt-8 px-2 md:px-0">
-                    {/* ...cards logic same as before... */}
                     <div className="p-6 lg:p-8 rounded-4xl bg-muted/20 border border-border/40 opacity-60">
                       <Search className="h-5 w-5 mb-4 opacity-20" />
                       <p className="text-[10px] font-mono uppercase tracking-[0.4em] opacity-30">
@@ -316,7 +310,6 @@ export function JournalHome({
                     </div>
                   </div>
 
-                  {/* Clean footer - branding removed as requested */}
                   <div className="flex-1 flex flex-col items-center justify-center text-center mt-10 lg:mt-12 pb-16">
                     <div className="max-w-xs space-y-4">
                       <p className="text-xs italic text-muted-foreground/40 leading-relaxed px-6">
@@ -378,6 +371,7 @@ export function JournalHome({
                   title={selectedEntry!.title}
                   contentHtml={selectedEntry!.contentHtml}
                   wordCount={selectedEntry!.wordCount}
+                  mood={selectedEntry!.mood} // 🚀 Successfully passing mood
                   today={today}
                   onDeleteSuccess={handleDeleteSuccess}
                 />

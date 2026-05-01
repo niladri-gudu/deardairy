@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function proxy(request: NextRequest) {
-  const isProtected = request.nextUrl.pathname.startsWith("/journal");
+  const isProtected = request.nextUrl.pathname.startsWith("/journal") || request.nextUrl.pathname.startsWith("/home");
 
   if (!isProtected) return NextResponse.next();
 
@@ -20,5 +20,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/journal/:path*"],
+  matcher: ["/journal/:path*", "/home/:path*"],
 };

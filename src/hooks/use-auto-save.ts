@@ -6,6 +6,7 @@ type SaveStatus = "idle" | "saving" | "saved" | "error";
 interface EntryData {
   date: string;
   title: string;
+  mood: number | null;
   contentHtml: string;
   contentText: string;
   contentJson: any;
@@ -20,6 +21,7 @@ export function useAutoSave(data: EntryData, debounceMs = 1500) {
   const initialContent = useRef({
     title: data.title,
     html: data.contentHtml,
+    mood: data.mood,
   });
 
   const isDirty = useRef(false);
@@ -29,7 +31,8 @@ export function useAutoSave(data: EntryData, debounceMs = 1500) {
 
     if (
       data.title !== initialContent.current.title ||
-      data.contentHtml !== initialContent.current.html
+      data.contentHtml !== initialContent.current.html || 
+      data.mood !== initialContent.current.mood
     ) {
       isDirty.current = true;
     }
@@ -59,6 +62,7 @@ export function useAutoSave(data: EntryData, debounceMs = 1500) {
         initialContent.current = {
           title: latestData.current.title,
           html: latestData.current.contentHtml,
+          mood: latestData.current.mood,
         };
 
         setStatus("saved");
@@ -72,7 +76,7 @@ export function useAutoSave(data: EntryData, debounceMs = 1500) {
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
-  }, [data.title, data.contentText, data.contentHtml, debounceMs]);
+  }, [data.title, data.contentText, data.contentHtml, data.mood, debounceMs]);
 
   return status;
 }

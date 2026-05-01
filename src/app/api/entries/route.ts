@@ -12,11 +12,21 @@ export async function POST(req: NextRequest) {
   if (!session)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { date, title, contentHtml, contentText, contentJson, userLocalToday } =
-    await req.json();
+  const {
+    date,
+    mood,
+    title,
+    contentHtml,
+    contentText,
+    contentJson,
+    userLocalToday,
+  } = await req.json();
 
   if (!date || !userLocalToday)
-    return NextResponse.json({ error: "Date information missing" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Date information missing" },
+      { status: 400 },
+    );
 
   await connectDB();
 
@@ -28,30 +38,40 @@ export async function POST(req: NextRequest) {
     const todayDate = new Date(userLocalToday);
     const yesterdayDate = new Date(todayDate);
     yesterdayDate.setDate(todayDate.getDate() - 1);
-    const yesterdayStr = yesterdayDate.toISOString().split('T')[0];
+    const yesterdayStr = yesterdayDate.toISOString().split("T")[0];
 
     // Block future dates
     if (date > userLocalToday) {
-      return NextResponse.json({ error: "The future is unwritten." }, { status: 403 });
+      return NextResponse.json(
+        { error: "The future is unwritten." },
+        { status: 403 },
+      );
     }
 
     // Block creation of old entries
     if (date < yesterdayStr) {
-      return NextResponse.json({ error: "Grace period expired for new entries." }, { status: 403 });
+      return NextResponse.json(
+        { error: "Grace period expired for new entries." },
+        { status: 403 },
+      );
     }
   }
 
   // 🏛️ 3. Proceed with Update or Create
   const updateFields: any = {};
   if (title !== undefined) updateFields.title = title;
-  
+  if (mood !== undefined) updateFields.mood = mood;
+
   if (contentHtml) {
     updateFields.contentHtml = encrypt(contentHtml);
   }
-  
+
   if (contentText) {
     updateFields.contentText = encrypt(contentText);
-    updateFields.wordCount = contentText.trim().split(/\s+/).filter(Boolean).length;
+    updateFields.wordCount = contentText
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean).length;
   }
 
   if (contentJson) {
@@ -114,7 +134,14 @@ export async function GET(req: NextRequest) {
   const [entries, total] = await Promise.all([
     Entry.find(
       { userId: session.user.id },
-      { date: 1, title: 1, wordCount: 1, contentText: 1, contentHtml: 1 },
+      {
+        date: 1,
+        title: 1,
+        wordCount: 1,
+        contentText: 1,
+        contentHtml: 1,
+        mood: 1,
+      },
     )
       .sort({ date: -1 })
       .skip(skip)
@@ -129,7 +156,10 @@ export async function GET(req: NextRequest) {
       ...entry,
       contentHtml: safeDecrypt(entry.contentHtml || ""),
       contentText: decryptedText,
-      preview: decryptedText.length > 100 ? decryptedText.substring(0, 100) + "..." : decryptedText,
+      preview:
+        decryptedText.length > 100
+          ? decryptedText.substring(0, 100) + "..."
+          : decryptedText,
     };
   });
 

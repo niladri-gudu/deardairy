@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IEntry extends Document {
@@ -8,6 +9,7 @@ export interface IEntry extends Document {
   contentText: string;
   contentJson: any;
   wordCount: number;
+  mood: number | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -21,6 +23,12 @@ const EntrySchema = new Schema<IEntry>(
     contentText: { type: String, default: "" },
     contentJson: { type: Schema.Types.Mixed, default: {} },
     wordCount: { type: Number, default: 0 },
+    mood: {
+      type: Number,
+      min: 1,
+      max: 5,
+      default: null,
+    },
   },
   { timestamps: true },
 );

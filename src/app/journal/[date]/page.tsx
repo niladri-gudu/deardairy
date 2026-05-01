@@ -58,18 +58,22 @@ export default async function JournalDatePage({ params, searchParams }: Props) {
               </span>
             </h1>
             <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.2em]">
-              {isFuture ? "Time_Lock // Access_Denied" : "Grace_Period // Expired"}
+              {isFuture
+                ? "Time_Lock // Access_Denied"
+                : "Grace_Period // Expired"}
             </p>
           </div>
 
           <div className="space-y-8">
             <p className="text-muted-foreground font-mono text-xs tracking-widest leading-relaxed">
-              {isFuture 
-                ? "This day hasn't arrived in your sanctuary yet." 
-                : "The ink for this day has already dried. Historical creation protocol is disabled."} 
+              {isFuture
+                ? "This day hasn't arrived in your sanctuary yet."
+                : "The ink for this day has already dried. Historical creation protocol is disabled."}
               <br />
               <span className="text-foreground block mt-2 underline decoration-primary/40 underline-offset-4 italic">
-                {isFuture ? "Patience is a form of ink." : "Only current sessions can be initialized."}
+                {isFuture
+                  ? "Patience is a form of ink."
+                  : "Only current sessions can be initialized."}
               </span>
             </p>
 
@@ -99,7 +103,8 @@ export default async function JournalDatePage({ params, searchParams }: Props) {
     const rawJson = safeDecrypt((entry as any).contentJson);
     try {
       decryptedContent =
-        (typeof rawJson === "string" && (rawJson.startsWith("{") || rawJson.startsWith("[")))
+        typeof rawJson === "string" &&
+        (rawJson.startsWith("{") || rawJson.startsWith("["))
           ? JSON.parse(rawJson)
           : rawJson;
     } catch (e) {
@@ -113,6 +118,7 @@ export default async function JournalDatePage({ params, searchParams }: Props) {
       date={date}
       initialTitle={(entry as any)?.title ?? ""}
       initialContent={decryptedContent ?? ""}
+      initialMood={entry?.mood || null}
     />
   );
 }

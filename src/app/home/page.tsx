@@ -20,7 +20,7 @@ export default async function JournalPage() {
     Entry.findOne({ userId: session.user.id, date: today }).lean(),
     Entry.find(
       { userId: session.user.id },
-      { date: 1, title: 1, wordCount: 1, contentText: 1, contentHtml: 1 },
+      { date: 1, title: 1, wordCount: 1, contentText: 1, contentHtml: 1, mood: 1 },
     )
       .sort({ date: -1 })
       .limit(15)
@@ -34,6 +34,7 @@ export default async function JournalPage() {
       date: e.date,
       title: e.title || "",
       wordCount: e.wordCount || 0,
+      mood: e.mood || null,
       preview: decryptedText.trim().split("\n")[0]?.slice(0, 80) || "",
       contentHtml: safeDecrypt(e.contentHtml || ""),
     };

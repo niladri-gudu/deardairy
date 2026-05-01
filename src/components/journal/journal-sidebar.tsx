@@ -23,6 +23,7 @@ interface Entry {
   date: string;
   title: string;
   wordCount: number;
+  mood: number | null;
   preview: string;
   contentHtml: string;
 }
@@ -197,6 +198,7 @@ export function JournalSidebar({
                   date: today,
                   title: "",
                   wordCount: 0,
+                  mood: null,
                   preview: "",
                   contentHtml: "",
                 },
