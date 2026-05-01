@@ -36,13 +36,9 @@ export function DeleteEntryButton({
       if (!res.ok) throw new Error("Failed to delete");
 
       localStorage.removeItem(CACHE_KEY);
-
       toast.success("Entry deleted");
 
-      if (onSuccess) {
-        onSuccess();
-      }
-
+      if (onSuccess) onSuccess();
       router.refresh();
     } catch {
       toast.error("Failed to delete entry");
@@ -55,34 +51,36 @@ export function DeleteEntryButton({
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button
-          variant="destructive"
+          variant="ghost"
           size="sm"
-          className="rounded-full px-3 sm:px-5 font-bold tracking-tight transition-transform active:scale-95"
+          className="w-full sm:w-auto rounded-full font-bold tracking-tight px-6 py-5 border border-border/40 hover:bg-red-500 hover:text-white transition-all group/btn"
         >
           {loading ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" />
           ) : (
             <>
-              <Trash2 className="h-3.5 w-3.5 sm:mr-2" />
-              <span className="hidden sm:inline">Delete</span>
+              <Trash2 className="h-3.5 w-3.5 mr-2 group-hover/btn:scale-110 group-hover/btn:-rotate-12 transition-transform" />
+              <span className="text-[10px] font-mono uppercase tracking-widest">
+                Delete
+              </span>
             </>
           )}
         </Button>
       </AlertDialogTrigger>
 
-      <AlertDialogContent>
+      <AlertDialogContent className="rounded-3xl border-border/40 shadow-2xl">
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete entry?</AlertDialogTitle>
-          <AlertDialogDescription>
+          <AlertDialogTitle className="tracking-tight font-black">Delete entry?</AlertDialogTitle>
+          <AlertDialogDescription className="text-sm">
             This will permanently delete this journal entry. This action cannot
             be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+        <AlertDialogFooter className="gap-2">
+          <AlertDialogCancel className="rounded-full font-bold">Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={handleDelete}
-            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            className="bg-red-500 text-white hover:bg-red-600 rounded-full font-bold"
           >
             Delete
           </AlertDialogAction>

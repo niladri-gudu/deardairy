@@ -49,7 +49,7 @@ export function MoodSelector({
   onSelect: (v: number) => void;
 }) {
   return (
-    <div className="flex items-center gap-1 mb-6">
+    <div className="flex items-center gap-2">
       {moods.map((m) => (
         <button
           key={m.value}
@@ -61,7 +61,7 @@ export function MoodSelector({
               : "text-muted-foreground/30 hover:bg-muted",
           )}
         >
-          <m.icon className="h-5 w-5" />
+          <m.icon className="h-6 w-6" />
         </button>
       ))}
     </div>

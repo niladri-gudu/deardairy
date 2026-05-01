@@ -17,19 +17,18 @@ interface Props {
 }
 
 const moodConfig: Record<number, { icon: any; color: string; label: string }> = {
-  1: { icon: Angry, color: "text-red-500", label: "Critical" },
-  2: { icon: Frown, color: "text-orange-500", label: "Low" },
-  3: { icon: Meh, color: "text-yellow-500", label: "Neutral" },
-  4: { icon: Smile, color: "text-green-500", label: "Stable" },
-  5: { icon: SmilePlus, color: "text-emerald-500", label: "Optimal" },
+  1: { icon: Angry, color: "text-red-500", label: "A rough one" },
+  2: { icon: Frown, color: "text-orange-500", label: "Feeling a bit down" },
+  3: { icon: Meh, color: "text-yellow-500", label: "Just getting by" },
+  4: { icon: Smile, color: "text-green-500", label: "Doing pretty well" },
+  5: { icon: SmilePlus, color: "text-emerald-500", label: "Best day ever" },
 };
 
 function formatDate(dateStr: string) {
   const [year, month, day] = dateStr.split("-").map(Number);
   return new Date(year, month - 1, day).toLocaleDateString("en-US", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
+    weekday: "short",
+    month: "short",
     day: "numeric",
   });
 }
@@ -47,72 +46,87 @@ export function EntryPreview({
   const MoodIcon = mood ? moodConfig[mood].icon : null;
 
   return (
-    <div className="max-w-3xl mx-auto group px-4 sm:px-0 selection:bg-primary/10">
-      <div className="flex flex-col gap-6 sm:gap-8">
+    <div className="max-w-4xl mx-auto pb-32 sm:pb-12 px-5 sm:px-6 md:px-8">
+      <article className="space-y-6 sm:space-y-12">
         
-        {/* 🏛️ HEADER BLOCK: Structured Meta & Title */}
-        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6">
-          <div className="flex-1 space-y-3 sm:space-y-4">
-            
-            {/* Meta Row */}
-            <div className="flex flex-wrap items-center gap-3">
+        {/* Header Section */}
+        <header className="space-y-4 sm:space-y-6 pt-4 sm:pt-0">
+          <div className="flex items-center justify-between sm:justify-start sm:gap-4">
+            <div className="flex items-center gap-2">
               {isToday && (
-                <span className="text-[9px] font-black uppercase tracking-[0.2em] px-2.5 py-1 rounded-full bg-primary text-primary-foreground shadow-sm">
-                  Active
+                <span className="bg-foreground text-background text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
+                  Today
                 </span>
               )}
-              <p className="text-[10px] sm:text-xs font-mono uppercase tracking-[0.3em] text-muted-foreground/40 italic">
-                // {formatDate(date)}
-              </p>
-
-              {MoodIcon && (
-                <>
-                  <div className="hidden sm:block h-3 w-px bg-border/20" />
-                  <div className={cn("flex items-center gap-2 px-2 py-0.5 rounded-md bg-muted/5 border border-border/5", moodConfig[mood!].color)}>
-                    <MoodIcon className="h-3.5 w-3.5 stroke-[2.5px]" />
-                    <span className="text-[9px] sm:text-[10px] font-mono font-bold uppercase tracking-widest opacity-70">
-                      {moodConfig[mood!].label}
-                    </span>
-                  </div>
-                </>
-              )}
+              <time className="text-[10px] sm:text-xs font-mono uppercase tracking-widest text-muted-foreground/60">
+                {formatDate(date)}
+              </time>
             </div>
-
-            {/* Title */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter text-foreground leading-[1.1] sm:leading-[0.95] wrap-break-word">
-              {title || "Untitled_Log"}
-            </h1>
-
-            {/* Word Count / Status */}
-            <div className="flex items-center gap-3">
-              <div className="h-px w-6 bg-primary/20" />
-              <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-[0.4em] text-muted-foreground/30 font-bold">
-                {wordCount} Words Recorded
-              </span>
-            </div>
+            
+            {MoodIcon && (
+              <div className={cn(
+                "flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary/20 border border-border/5",
+                moodConfig[mood!].color
+              )}>
+                <MoodIcon className="h-4 w-4 sm:h-5 sm:w-5 stroke-[2.5px]" />
+                <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-tight">
+                  {moodConfig[mood!].label}
+                </span>
+              </div>
+            )}
           </div>
 
-          {/* 🛠️ ACTION GROUP */}
-          <div className="flex items-center gap-2 sm:shrink-0 sm:pt-2">
-            <Link href={`/journal/${date}`} className="flex-1 sm:flex-none">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-full rounded-full font-bold tracking-tight px-6 py-5 border border-border/40 hover:bg-foreground hover:text-background transition-all group/btn"
-              >
-                <Pencil className="h-3.5 w-3.5 mr-2 group-hover/btn:rotate-12 transition-transform" />
-                <span className="text-[10px] font-mono uppercase tracking-widest">Edit</span>
-              </Button>
-            </Link>
+          <h1 className="text-4xl sm:text-7xl font-black tracking-tightest leading-[1] sm:leading-[0.9] text-foreground break-words">
+            {title || "Untitled"}
+          </h1>
+
+          <div className="flex items-center justify-between border-b border-border/10 pb-4 sm:pb-6">
+            <span className="text-[9px] sm:text-xs font-mono uppercase tracking-widest opacity-30 italic">
+              {wordCount} words
+            </span>
+            
+            {/* Desktop Action Buttons */}
+            <div className="hidden sm:flex items-center gap-3">
+              <Link href={`/journal/${date}`}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="rounded-full font-bold tracking-tight px-6 py-5 border border-border/40 hover:bg-foreground hover:text-background transition-all group/edit"
+                >
+                  <Pencil className="h-3.5 w-3.5 mr-2 group-hover/edit:rotate-12 transition-transform" />
+                  <span className="text-[10px] font-mono uppercase tracking-widest">Edit</span>
+                </Button>
+              </Link>
+              <DeleteEntryButton date={date} onSuccess={onDeleteSuccess} />
+            </div>
+          </div>
+        </header>
+
+        {/* Content Section */}
+        <section 
+          className="tiptap prose prose-neutral dark:prose-invert max-w-none 
+          text-base sm:text-xl leading-[1.6] sm:leading-[1.7] text-foreground/90
+          prose-p:mb-4 sm:prose-p:mb-6 prose-headings:tracking-tighter prose-headings:font-black"
+          dangerouslySetInnerHTML={{ __html: contentHtml }}
+        />
+      </article>
+
+      {/* Mobile Floating Action Bar - More "Dock" style */}
+      <div className="sm:hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[calc(100%-2.5rem)] max-w-md z-50">
+        <div className="flex items-center gap-2 p-1.5 rounded-full bg-background/95 backdrop-blur-md border border-border/40 shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
+          <Link href={`/journal/${date}`} className="flex-2">
+            <Button 
+              variant="ghost"
+              className="w-full rounded-full h-12 font-bold border border-transparent bg-foreground text-background hover:bg-foreground/90 transition-all active:scale-95"
+            >
+              <Pencil className="h-4 w-4 mr-2" />
+              <span className="text-[10px] font-mono uppercase tracking-widest">Edit</span>
+            </Button>
+          </Link>
+          <div className="flex-1">
             <DeleteEntryButton date={date} onSuccess={onDeleteSuccess} />
           </div>
         </div>
-
-        {/* ✍️ CONTENT AREA: Refined Typography */}
-        <div
-          className="tiptap max-w-none text-foreground/90 text-lg leading-relaxed border-t border-border/10 pt-8 sm:pt-12"
-          dangerouslySetInnerHTML={{ __html: contentHtml }}
-        />
       </div>
     </div>
   );
