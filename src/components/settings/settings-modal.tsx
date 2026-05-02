@@ -30,6 +30,7 @@ import { getAvatarPresignedUrl, getStorageStats } from "@/actions/storage";
 import Image from "next/image";
 import { toast } from "sonner";
 import Cropper from "react-easy-crop";
+import { MediaLibraryDialog } from "../media/MediaLibraryDialog";
 
 type TabType = "profile" | "appearance" | "data";
 
@@ -82,6 +83,7 @@ export function SettingsModal({
 
   // 📦 Data & Media State
   const [isExporting, setIsExporting] = React.useState(false);
+  const [showMediaLibrary, setShowMediaLibrary] = React.useState(false);
 
   // 📊 Storage Stats
   const [stats, setStats] = React.useState<StorageStats>({
@@ -531,6 +533,15 @@ export function SettingsModal({
                           </div>
                         ))}
                   </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowMediaLibrary(true)}
+                    className="w-full mt-1 text-[10px] font-black uppercase tracking-widest border border-border/40 rounded-xl hover:bg-foreground hover:text-background transition-all h-9"
+                  >
+                    <ImageIcon size={12} className="mr-2" />
+                    View All Media
+                  </Button>
                 </div>
 
                 <div className="grid gap-2">
@@ -637,6 +648,17 @@ export function SettingsModal({
           </div>
         </DialogContent>
       </Dialog>
+
+      <MediaLibraryDialog
+        userId={user.id}
+        open={showMediaLibrary}
+        onOpenChange={setShowMediaLibrary}
+        onDeleteComplete={async () => {
+          // refresh stats
+          const data = await getStorageStats(user.id);
+          setStats(data);
+        }}
+      />
     </>
   );
 }

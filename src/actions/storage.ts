@@ -1,11 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
 import {
   S3Client,
   ListObjectsV2Command,
   PutObjectCommand,
+  DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { connectDB } from "@/lib/mongoose";
+import { Entry } from "@/models/entry";
+import { safeDecrypt, encrypt } from "@/lib/encryption";
 
 const s3 = new S3Client({
   region: "auto",
@@ -81,5 +86,93 @@ export async function getAvatarPresignedUrl(
   } catch (error) {
     console.error("R2 Presigned URL Error:", error);
     throw new Error("Failed to generate upload authority.");
+  }
+}
+
+export async function getFullMediaLibrary(userId: string) {
+  try {
+    const prefix = `${envPrefix}journal/${userId}/`;
+    const response = await s3.send(
+      new ListObjectsV2Command({
+        Bucket: process.env.R2_BUCKET_NAME,
+        Prefix: prefix,
+      }),
+    );
+
+    return (
+      response.Contents?.map((file) => ({
+        key: file.Key!,
+        url: `https://assets.withink.me/${file.Key}`,
+        size: file.Size || 0,
+        lastModified: file.LastModified?.toISOString() || null,
+      })) || []
+    );
+  } catch (error) {
+    console.error("R2 Media Library Error:", error);
+    return [];
+  }
+}
+
+export async function deleteMediaFile(userId: string, fileKey: string) {
+  // Safety check — only allow deleting own files
+  if (!fileKey.includes(userId)) throw new Error("Unauthorized");
+
+  // 1. Delete from R2
+  await s3.send(
+    new DeleteObjectCommand({
+      Bucket: process.env.R2_BUCKET_NAME,
+      Key: fileKey,
+    }),
+  );
+
+  const publicUrl = `https://assets.withink.me/${fileKey}`;
+
+  // 2. Scrub from all entries
+  await connectDB();
+  const entries = (await Entry.find({ userId }).lean()) as any[];
+
+  for (const entry of entries) {
+    let dirty = false;
+
+    const contentHtml = safeDecrypt(entry.contentHtml) ?? "";
+    const contentJsonRaw = safeDecrypt(entry.contentJson) ?? "";
+
+    if (!contentHtml.includes(publicUrl) && !contentJsonRaw.includes(publicUrl))
+      continue;
+
+    // Scrub from HTML
+    const newHtml = contentHtml.replace(
+      new RegExp(`<img[^>]*src="${publicUrl}"[^>]*/?>`, "g"),
+      "",
+    );
+
+    // Scrub from JSON
+    let newJson = contentJsonRaw;
+    try {
+      const doc = JSON.parse(contentJsonRaw);
+      const scrub = (node: any): any => {
+        if (node?.type === "image" && node?.attrs?.src === publicUrl)
+          return null;
+        if (Array.isArray(node?.content)) {
+          node.content = node.content.map(scrub).filter(Boolean);
+        }
+        return node;
+      };
+      newJson = JSON.stringify(scrub(doc));
+    } catch {
+      /* malformed, skip */
+    }
+
+    dirty = newHtml !== contentHtml || newJson !== contentJsonRaw;
+
+    if (dirty) {
+      await Entry.updateOne(
+        { _id: entry._id },
+        {
+          contentHtml: encrypt(newHtml),
+          contentJson: encrypt(newJson),
+        },
+      );
+    }
   }
 }

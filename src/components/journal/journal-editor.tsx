@@ -148,8 +148,10 @@ export function JournalEditor({
         style={{ bottom: toolbarBottom }}
       >
         {editorInstance && (
-          <div className="pointer-events-auto w-full max-w-fit rounded-full border border-border/40 bg-background/80 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] p-1.5 flex items-center overflow-hidden">
-            <Toolbar editor={editorInstance} />
+          <div className="pointer-events-auto max-w-full sm:max-w-fit rounded-full border border-border/40 bg-background/80 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] p-1.5 flex items-center overflow-hidden">
+            <div className="overflow-x-auto no-scrollbar flex items-center">
+              <Toolbar editor={editorInstance} />
+            </div>
           </div>
         )}
       </div>
