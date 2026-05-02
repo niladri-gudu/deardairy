@@ -76,7 +76,7 @@ export function EntryPreview({
             )}
           </div>
 
-          <h1 className="text-4xl sm:text-7xl font-black tracking-tightest leading-[1] sm:leading-[0.9] text-foreground break-words">
+          <h1 className="text-4xl sm:text-7xl font-black tracking-tightest leading-none sm:leading-[0.9] text-foreground wrap-break-word">
             {title || "Untitled"}
           </h1>
 

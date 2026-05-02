@@ -278,6 +278,11 @@ export function JournalSidebar({
                   <CollapsibleContent className="space-y-1.5 animate-in fade-in slide-in-from-top-2">
                     {historicalEntries.map((entry) => {
                       const isSelected = entry.date === selectedDate;
+                      
+                      {/* --- Timezone Safe Date Splitting --- */}
+                      const [year, month, day] = entry.date.split("-");
+                      const monthName = new Date(Number(year), Number(month) - 1).toLocaleDateString("en-US", { month: "short" });
+                      
                       return (
                         <Button
                           key={entry.date}
@@ -302,13 +307,10 @@ export function JournalSidebar({
                             )}
                           >
                             <span className="text-[10px] font-mono opacity-60 leading-none mb-0.5 uppercase">
-                              {new Date(entry.date).toLocaleDateString(
-                                "en-US",
-                                { month: "short" },
-                              )}
+                              {monthName}
                             </span>
                             <span className="text-sm font-black leading-none">
-                              {entry.date.split("-")[2]}
+                              {day}
                             </span>
                           </div>
                           <div className="flex-1 min-w-0">

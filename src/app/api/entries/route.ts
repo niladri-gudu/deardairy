@@ -36,9 +36,8 @@ export async function POST(req: NextRequest) {
   // 🏛️ 2. Apply Grace Period ONLY for NEW entries
   if (!existingEntry) {
     const todayDate = new Date(userLocalToday);
-    const yesterdayDate = new Date(todayDate);
-    yesterdayDate.setDate(todayDate.getDate() - 1);
-    const yesterdayStr = yesterdayDate.toISOString().split("T")[0];
+    todayDate.setDate(todayDate.getDate() - 1);
+    const yesterdayStr = todayDate.toLocaleDateString("en-CA");
 
     // Block future dates
     if (date > userLocalToday) {

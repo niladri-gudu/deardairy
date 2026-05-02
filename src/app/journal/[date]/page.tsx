@@ -33,11 +33,10 @@ export default async function JournalDatePage({ params, searchParams }: Props) {
   }).lean();
 
   // 2. Determine "Today" and "Yesterday"
-  const today = clientToday || new Date().toISOString().split("T")[0];
+  const today = clientToday || new Date().toLocaleDateString("en-CA");
   const todayDate = new Date(today);
-  const yesterdayDate = new Date(todayDate);
-  yesterdayDate.setDate(todayDate.getDate() - 1);
-  const yesterday = yesterdayDate.toISOString().split("T")[0];
+  todayDate.setDate(todayDate.getDate() - 1);
+  const yesterday = todayDate.toLocaleDateString("en-CA");
 
   // 3. Define the Firewall Logic
   const isFuture = date > today;
