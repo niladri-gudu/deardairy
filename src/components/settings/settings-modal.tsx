@@ -20,6 +20,8 @@ import {
   HardDrive,
   Save,
   Camera,
+  Loader2,
+  Download,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { signOut, updateUser } from "@/lib/auth-client";
@@ -78,6 +80,9 @@ export function SettingsModal({
   const [localPreview, setLocalPreview] = React.useState<string | null>(null);
   const [croppedBlob, setCroppedBlob] = React.useState<Blob | null>(null);
 
+  // 📦 Data & Media State
+  const [isExporting, setIsExporting] = React.useState(false);
+
   // 📊 Storage Stats
   const [stats, setStats] = React.useState<StorageStats>({
     usedMB: 0,
@@ -86,6 +91,30 @@ export function SettingsModal({
     files: [],
   });
   const [loading, setLoading] = React.useState(false);
+
+  const handleExport = async () => {
+    setIsExporting(true);
+    const toastId = toast.loading("Bundling your sanctuary...");
+    try {
+      const response = await fetch("/api/user/export");
+      if (!response.ok) throw new Error("Export failed");
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `withink-export-${new Date().toLocaleDateString("en-CA")}.zip`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+
+      toast.success("Archives successfully exported.", { id: toastId });
+    } catch (error) {
+      toast.error("Failed to export archives.", { id: toastId });
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   // 🛠️ Camera Trigger
   const onCameraClick = () => {
@@ -309,6 +338,7 @@ export function SettingsModal({
                           alt={user.name || "User"}
                           fill
                           className="object-cover"
+                          sizes="96px"
                           unoptimized={
                             currentDisplayImage.startsWith("blob:") ||
                             currentDisplayImage.includes("googleusercontent")
@@ -487,7 +517,8 @@ export function SettingsModal({
                               src={file.url}
                               fill
                               className="object-cover grayscale hover:grayscale-0 transition-all"
-                              alt="R2"
+                              alt="Archive Media"
+                              sizes="(max-width: 640px) 25vw, 100px"
                             />
                           </div>
                         ))
@@ -503,29 +534,47 @@ export function SettingsModal({
                 </div>
 
                 <div className="grid gap-2">
-                  <div className="bg-secondary/10 border border-border/20 p-4 rounded-2xl flex items-center justify-between">
+                  {/* 🚀 Integrated Export Button */}
+                  <div className="bg-secondary/10 border border-border/20 p-4 rounded-2xl flex items-center justify-between group">
                     <div className="flex items-center gap-3">
-                      <HardDrive size={16} className="text-muted-foreground" />
-                      <span className="text-xs font-bold text-muted-foreground">
-                        JSON Export
-                      </span>
+                      <HardDrive
+                        size={16}
+                        className="text-muted-foreground group-hover:text-primary transition-colors"
+                      />
+                      <div className="flex flex-col">
+                        <span className="text-xs font-bold text-foreground">
+                          Full Archive Export
+                        </span>
+                        <span className="text-[9px] text-muted-foreground font-mono uppercase tracking-tight">
+                          JSON + Media Assets (.zip)
+                        </span>
+                      </div>
                     </div>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-7 text-[9px] font-bold uppercase tracking-widest"
+                      disabled={isExporting}
+                      onClick={handleExport}
+                      className="h-9 px-4 text-[9px] font-black uppercase tracking-widest border border-border/40 rounded-xl hover:bg-foreground hover:text-background transition-all active:scale-95 flex items-center gap-2"
                     >
-                      Download
+                      {isExporting ? (
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                      ) : (
+                        <Download className="h-3 w-3" />
+                      )}
+                      {isExporting ? "Bundling..." : "Download"}
                     </Button>
                   </div>
-                  <div className="pt-4 mt-2 border-t border-destructive/10">
+
+                  {/* Wipe Archives Section */}
+                  {/* <div className="pt-4 mt-2 border-t border-destructive/10">
                     <Button
                       variant="outline"
-                      className="w-full gap-2 h-10 rounded-xl border-destructive/20 text-destructive text-xs"
+                      className="w-full gap-2 h-10 rounded-xl border-destructive/20 text-destructive text-xs hover:bg-destructive hover:text-destructive-foreground transition-all font-bold"
                     >
                       <Trash2 size={14} /> Wipe All Archives
                     </Button>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             )}
