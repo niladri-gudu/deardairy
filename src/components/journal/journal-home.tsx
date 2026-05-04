@@ -81,10 +81,9 @@ export function JournalHome({
 
   const isExistingEntry = useMemo(() => {
     if (!selectedEntry) return false;
-    return entries.some(
-      (e) => e.date === selectedEntry.date && e.wordCount > 0,
-    );
-  }, [selectedEntry, entries]);
+
+    return selectedEntry.wordCount > 0 || !!selectedEntry.contentHtml;
+  }, [selectedEntry]);
 
   const isWithinGracePeriod = useMemo(() => {
     if (!selectedEntry) return false;
@@ -103,8 +102,14 @@ export function JournalHome({
   const showEntryPreview = isExistingEntry && selectedEntry !== null;
   const showStartWriting =
     !isExistingEntry && isWithinGracePeriod && selectedEntry !== null;
-  const showLockedState =
-    !isExistingEntry && !isWithinGracePeriod && selectedEntry !== null;
+  const showLockedState = useMemo(() => {
+    return (
+      !isExistingEntry &&
+      !isWithinGracePeriod &&
+      selectedEntry !== null &&
+      !isFetchingEntry
+    );
+  }, [isExistingEntry, isWithinGracePeriod, selectedEntry, isFetchingEntry]);
 
   const handleSelect = async (entry: Entry | null) => {
     setIsMobileSidebarOpen(false);
@@ -371,7 +376,7 @@ export function JournalHome({
                   title={selectedEntry!.title}
                   contentHtml={selectedEntry!.contentHtml}
                   wordCount={selectedEntry!.wordCount}
-                  mood={selectedEntry!.mood} // 🚀 Successfully passing mood
+                  mood={selectedEntry!.mood}
                   today={today}
                   onDeleteSuccess={handleDeleteSuccess}
                 />
