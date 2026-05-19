@@ -23,6 +23,7 @@ import { StreakCounter } from "./streak-counter";
 import { DigitalClock } from "./clock";
 import { getRandomEntry } from "@/actions/flashback";
 import Link from "next/link";
+import { MoodHeatmap } from "@/components/journal/mood-heatmap";
 
 interface Entry {
   date: string;
@@ -244,6 +245,8 @@ export function JournalHome({
                       <DigitalClock />
                     </div>
                   </div>
+
+                  <MoodHeatmap entries={entries} today={today} />
 
                   {!yesterdayEntry && (
                     <div className="w-full">
