@@ -24,7 +24,7 @@ export function ExportDataButton() {
       window.URL.revokeObjectURL(url);
       
       toast.success("Your sanctuary has been bundled.");
-    } catch (error) {
+    } catch {
       toast.error("Failed to export data.");
     } finally {
       setIsExporting(false);

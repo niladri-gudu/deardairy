@@ -142,7 +142,7 @@ export function Toolbar({ editor }: ToolbarProps) {
             .run();
         }
       });
-    } catch (err) {
+    } catch {
       toast.error("Image upload failed");
 
       const { state } = editor;

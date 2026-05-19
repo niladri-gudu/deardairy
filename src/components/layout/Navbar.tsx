@@ -1,23 +1,16 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { PenLine, LayoutDashboard, LogOut, User } from "lucide-react";
+import { PenLine, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemePicker } from "../ui/theme-picker";
 import { getGithubStars } from "@/actions/github";
-import { cn } from "@/lib/utils";
-import { useSession, signOut } from "@/lib/auth-client";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
+import { useSession } from "@/lib/auth-client";
+
 import { UserDropdown } from "../ui/user-dropdown";
 import { GithubIcon } from "../icons/github";
 

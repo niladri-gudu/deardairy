@@ -45,7 +45,7 @@ export function decrypt(encryptedData: string): string {
     decrypted += decipher.final("utf8");
 
     return decrypted;
-  } catch (e) {
+  } catch {
     console.error("Decryption failed. Key might be wrong.");
     return "DECRYPTION_ERROR";
   }
@@ -55,7 +55,7 @@ export function safeDecrypt(data: any): any {
   if (!data || typeof data !== "string" || !data.includes(":")) return data;
   try {
     return decrypt(data);
-  } catch (e) {
+  } catch {
     return data;
   }
 }

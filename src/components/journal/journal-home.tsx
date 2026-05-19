@@ -189,7 +189,7 @@ export function JournalHome({
           )}
           <aside
             className={cn(
-              "flex-col overflow-hidden transition-all duration-300 fixed inset-x-0 top-16 bottom-0 z-50 w-[85vw] max-w-[320px] lg:relative lg:top-0 lg:z-auto lg:inset-auto",
+              "flex flex-col overflow-hidden transition-all duration-300 fixed inset-x-0 top-16 bottom-0 z-50 w-[85vw] max-w-[320px] lg:relative lg:top-0 lg:z-auto lg:inset-auto",
               isMobileSidebarOpen
                 ? "translate-x-0"
                 : "-translate-x-full lg:translate-x-0",

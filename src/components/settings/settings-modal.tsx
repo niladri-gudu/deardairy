@@ -13,7 +13,6 @@ import {
   User,
   Palette,
   LogOut,
-  Trash2,
   Check,
   Database,
   Image as ImageIcon,
@@ -111,7 +110,7 @@ export function SettingsModal({
       window.URL.revokeObjectURL(url);
 
       toast.success("Archives successfully exported.", { id: toastId });
-    } catch (error) {
+    } catch {
       toast.error("Failed to export archives.", { id: toastId });
     } finally {
       setIsExporting(false);

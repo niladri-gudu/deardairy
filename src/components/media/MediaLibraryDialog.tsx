@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Trash2, X, Loader2, ImageIcon, ArrowLeft, ArrowRight } from "lucide-react";
 import { getFullMediaLibrary, deleteMediaFile } from "@/actions/storage";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
+
 
 type MediaFile = {
   key: string;

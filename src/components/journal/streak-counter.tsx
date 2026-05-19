@@ -5,7 +5,7 @@ interface Props {
   totalEntries: number;
 }
 
-export function StreakCounter({ currentStreak, totalEntries }: Props) {
+export function StreakCounter({ currentStreak }: Props) {
   return (
     <div className="flex items-center gap-6 group">
       <div className="h-16 w-16 rounded-3xl bg-orange-500/10 flex items-center justify-center border border-orange-500/20 shadow-inner transition-transform group-hover:scale-105">

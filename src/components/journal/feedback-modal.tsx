@@ -49,7 +49,7 @@ export function FeedbackModal({ open, onOpenChange, type }: ReportModalProps) {
       });
       setImage({ url: publicUrl, key: file.name });
       toast.success("Evidence attached.");
-    } catch (err) {
+    } catch {
       toast.error("Upload failed.");
     } finally {
       setIsUploading(false);
@@ -76,7 +76,7 @@ export function FeedbackModal({ open, onOpenChange, type }: ReportModalProps) {
         setText("");
         setImage(null);
       }
-    } catch (err) {
+    } catch {
       toast.error("Submission failed.");
     } finally {
       setIsSubmitting(false);

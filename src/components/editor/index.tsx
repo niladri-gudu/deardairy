@@ -120,7 +120,7 @@ export default function Editor({
             .run();
         }
       });
-    } catch (err) {
+    } catch {
       toast.error("Image upload failed");
       // Remove placeholder on failure
       editor.state.doc.descendants((node, pos) => {

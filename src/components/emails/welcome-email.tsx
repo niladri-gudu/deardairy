@@ -80,8 +80,3 @@ const button = {
   padding: "12px",
 };
 
-const footer = {
-  color: "#898989",
-  fontSize: "12px",
-  marginTop: "40px",
-};
