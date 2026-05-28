@@ -139,11 +139,11 @@ export function JournalSidebar({
   const hasTodayEntry = allEntries.some((e) => e.date === today);
 
   return (
-    <div className="flex flex-col h-full bg-background/80 lg:bg-transparent backdrop-blur-xl lg:backdrop-blur-none border-r border-border/40">
-      <div className="flex-1 overflow-y-auto py-8 px-4 space-y-10 no-scrollbar pb-24">
+    <div className="flex flex-col h-full bg-background/95 lg:bg-transparent backdrop-blur-xl lg:backdrop-blur-none border-r border-border/40 shadow-2xl lg:shadow-none">
+      <div className="flex-1 overflow-y-auto py-5 sm:py-8 px-3 sm:px-4 space-y-6 sm:space-y-10 no-scrollbar pb-[calc(env(safe-area-inset-bottom)+6rem)]">
         {/* NAV SECTION */}
         <div className="space-y-3">
-          <p className="text-[10px] font-mono font-bold text-muted-foreground/40 uppercase tracking-[0.3em] px-3">
+          <p className="text-[9px] sm:text-[10px] font-mono font-bold text-muted-foreground/40 uppercase tracking-[0.24em] sm:tracking-[0.3em] px-3">
             Navigation
           </p>
           <Button
@@ -153,7 +153,7 @@ export function JournalSidebar({
               onClose();
             }}
             className={cn(
-              "w-full justify-start h-auto gap-4 px-4 py-4 rounded-2xl transition-all duration-500 group",
+              "w-full justify-start h-auto gap-3 sm:gap-4 px-4 py-3.5 sm:py-4 rounded-2xl transition-all duration-500 group",
               selectedDate === null
                 ? "bg-muted text-foreground"
                 : "text-muted-foreground hover:bg-muted/50",
@@ -186,7 +186,7 @@ export function JournalSidebar({
 
         {/* ACTIVE SECTION */}
         <div className="space-y-3">
-          <p className="text-[10px] font-mono font-bold text-muted-foreground/40 uppercase tracking-[0.3em] px-3">
+          <p className="text-[9px] sm:text-[10px] font-mono font-bold text-muted-foreground/40 uppercase tracking-[0.24em] sm:tracking-[0.3em] px-3">
             Current Session
           </p>
           <Button
@@ -206,7 +206,7 @@ export function JournalSidebar({
               onClose();
             }}
             className={cn(
-              "w-full h-auto text-left justify-start px-5 py-5 rounded-2xl border group",
+              "w-full h-auto text-left justify-start px-4 sm:px-5 py-4 sm:py-5 rounded-2xl border group",
               selectedDate === today
                 ? "bg-primary/5 border-primary text-foreground"
                 : hasTodayEntry
@@ -242,7 +242,7 @@ export function JournalSidebar({
 
         {/* ARCHIVE SECTION */}
         <div className="space-y-6">
-          <p className="text-[10px] font-mono font-bold text-muted-foreground/40 uppercase tracking-[0.3em] px-3">
+          <p className="text-[9px] sm:text-[10px] font-mono font-bold text-muted-foreground/40 uppercase tracking-[0.24em] sm:tracking-[0.3em] px-3">
             Archives
           </p>
           <div className="space-y-4">
@@ -292,7 +292,7 @@ export function JournalSidebar({
                             onClose();
                           }}
                           className={cn(
-                            "w-full h-auto text-left justify-start px-3 py-3 rounded-2xl transition-all duration-300 flex items-center gap-4 border border-transparent",
+                            "w-full h-auto text-left justify-start px-3 py-3 rounded-2xl transition-all duration-300 flex items-center gap-3 sm:gap-4 border border-transparent",
                             isSelected
                               ? "bg-muted border-border/60 text-foreground shadow-sm"
                               : "hover:bg-muted/40 text-muted-foreground hover:text-foreground",
@@ -300,7 +300,7 @@ export function JournalSidebar({
                         >
                           <div
                             className={cn(
-                              "shrink-0 w-10 h-10 rounded-xl flex flex-col items-center justify-center transition-all duration-500",
+                              "shrink-0 w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex flex-col items-center justify-center transition-all duration-500",
                               isSelected
                                 ? "bg-primary text-primary-foreground"
                                 : "bg-muted/50 text-muted-foreground",
@@ -314,13 +314,13 @@ export function JournalSidebar({
                             </span>
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-[14px] font-bold truncate tracking-tight">
+                            <p className="text-[13px] sm:text-[14px] font-bold truncate tracking-tight">
                               {entry.title || "Untitled.Archive"}
                             </p>
                             <div className="flex items-center gap-2 mt-0.5 truncate">
                               <span
                                 className={cn(
-                                  "text-[10px] font-mono uppercase tracking-tighter shrink-0",
+                                  "text-[9px] sm:text-[10px] font-mono uppercase tracking-tighter shrink-0",
                                   isSelected
                                     ? "text-foreground/80"
                                     : "text-muted-foreground/70",
@@ -333,7 +333,7 @@ export function JournalSidebar({
                               </span>
                               <span
                                 className={cn(
-                                  "text-[10px] truncate italic font-medium",
+                                  "text-[9px] sm:text-[10px] truncate italic font-medium",
                                   isSelected
                                     ? "text-foreground/80"
                                     : "text-muted-foreground/70",
@@ -364,7 +364,7 @@ export function JournalSidebar({
               <div className="flex flex-col items-center gap-3 animate-in fade-in duration-1000">
                 <div className="h-px w-8 bg-muted-foreground/20" />
                 <div className="flex flex-col items-center">
-                  <p className="text-[9px] font-mono font-bold text-muted-foreground/30 uppercase tracking-[0.4em] ml-[0.4em]">
+                  <p className="text-[9px] font-mono font-bold text-muted-foreground/30 uppercase tracking-[0.24em] sm:tracking-[0.4em] sm:ml-[0.4em]">
                     End.of.Logs
                   </p>
                   <p className="text-[8px] font-mono text-muted-foreground/20 uppercase tracking-widest mt-1">

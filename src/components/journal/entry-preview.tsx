@@ -46,19 +46,19 @@ export function EntryPreview({
   const MoodIcon = mood ? moodConfig[mood].icon : null;
 
   return (
-    <div className="max-w-4xl mx-auto pb-32 sm:pb-12 px-5 sm:px-6 md:px-8">
+    <div className="max-w-4xl mx-auto pb-[calc(env(safe-area-inset-bottom)+7rem)] sm:pb-12 px-4 sm:px-6 md:px-8">
       <article className="space-y-6 sm:space-y-12">
         
         {/* Header Section */}
-        <header className="space-y-4 sm:space-y-6 pt-4 sm:pt-0">
-          <div className="flex items-center justify-between sm:justify-start sm:gap-4">
+        <header className="space-y-4 sm:space-y-6 pt-1 sm:pt-0">
+          <div className="flex flex-col min-[380px]:flex-row min-[380px]:items-center justify-between sm:justify-start sm:gap-4 gap-2">
             <div className="flex items-center gap-2">
               {isToday && (
                 <span className="bg-foreground text-background text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
                   Today
                 </span>
               )}
-              <time className="text-[10px] sm:text-xs font-mono uppercase tracking-widest text-muted-foreground/60">
+              <time className="text-[10px] sm:text-xs font-mono uppercase tracking-[0.18em] sm:tracking-widest text-muted-foreground/60">
                 {formatDate(date)}
               </time>
             </div>
@@ -76,12 +76,12 @@ export function EntryPreview({
             )}
           </div>
 
-          <h1 className="text-4xl sm:text-7xl font-black tracking-tightest leading-none sm:leading-[0.9] text-foreground wrap-break-word">
+          <h1 className="text-[clamp(2.15rem,14vw,4rem)] sm:text-7xl font-black tracking-tight leading-[0.92] sm:leading-[0.9] text-foreground break-words">
             {title || "Untitled"}
           </h1>
 
           <div className="flex items-center justify-between border-b border-border/10 pb-4 sm:pb-6">
-            <span className="text-[9px] sm:text-xs font-mono uppercase tracking-widest opacity-30 italic">
+            <span className="text-[9px] sm:text-xs font-mono uppercase tracking-[0.18em] sm:tracking-widest opacity-30 italic">
               {wordCount} words
             </span>
             
@@ -105,14 +105,14 @@ export function EntryPreview({
         {/* Content Section */}
         <section 
           className="tiptap prose prose-neutral dark:prose-invert max-w-none 
-          text-base sm:text-xl leading-[1.6] sm:leading-[1.7] text-foreground/90
+          text-[1.02rem] sm:text-xl leading-[1.68] sm:leading-[1.7] text-foreground/90
           prose-p:mb-4 sm:prose-p:mb-6 prose-headings:tracking-tighter prose-headings:font-black"
           dangerouslySetInnerHTML={{ __html: contentHtml }}
         />
       </article>
 
       {/* Mobile Floating Action Bar - More "Dock" style */}
-      <div className="sm:hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[calc(100%-2.5rem)] max-w-md z-50">
+      <div className="sm:hidden fixed bottom-[calc(env(safe-area-inset-bottom)+1rem)] left-1/2 -translate-x-1/2 w-[calc(100%-1.5rem)] max-w-md z-50">
         <div className="flex items-center gap-2 p-1.5 rounded-full bg-background/95 backdrop-blur-md border border-border/40 shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
           <Link href={`/journal/${date}`} className="flex-2">
             <Button 

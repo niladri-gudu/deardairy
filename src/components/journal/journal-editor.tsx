@@ -94,19 +94,19 @@ export function JournalEditor({
   }, 1500, editorReady);
 
   return (
-    <div className="min-h-screen bg-background text-foreground selection:bg-primary/10 transition-colors duration-500">
-      <div className="fixed top-0 left-0 right-0 z-20 h-32 bg-linear-to-b from-background via-background/80 to-transparent pointer-events-none" />
+    <div className="min-h-dvh bg-background text-foreground selection:bg-primary/10 transition-colors duration-500">
+      <div className="fixed top-0 left-0 right-0 z-20 h-24 sm:h-32 bg-linear-to-b from-background via-background/80 to-transparent pointer-events-none" />
 
-      <main className="max-w-4xl mx-auto px-6 pt-24 sm:pt-32 pb-[40vh] relative z-30">
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 pt-22 sm:pt-32 pb-[45vh] relative z-30">
         <div className="flex flex-col">
           {/* 1. HEADER ROW */}
-          <div className="flex items-start justify-between gap-6">
+          <div className="flex items-start justify-between gap-3 sm:gap-6">
             <div className="flex-1">
               <input
                 placeholder="Untitled_Log"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full text-5xl sm:text-7xl font-black bg-transparent outline-none text-foreground placeholder:text-muted-foreground/5 tracking-tightest leading-[0.9] transition-all mb-2 sm:mb-4"
+                className="w-full text-[clamp(2.4rem,15vw,4.5rem)] sm:text-7xl font-black bg-transparent outline-none text-foreground placeholder:text-muted-foreground/8 tracking-tight leading-[0.92] sm:leading-[0.9] transition-all mb-2 sm:mb-4"
               />
             </div>
 
@@ -121,10 +121,10 @@ export function JournalEditor({
           </div>
 
           {/* 2. METADATA BAR - Reduced padding and gaps for phone */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 py-4 sm:py-5 border-y border-border/10">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-6 py-3.5 sm:py-5 border-y border-border/10">
             <div className="flex items-center gap-4">
               {/* <div className="h-2 w-2 rounded-full bg-primary/40 animate-pulse" /> */}
-              <time className="text-[11px] font-mono uppercase tracking-[0.2em] text-muted-foreground/60 italic">
+              <time className="text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.16em] sm:tracking-[0.2em] text-muted-foreground/60 italic">
                 {formatDate(date)}
               </time>
             </div>
@@ -133,7 +133,7 @@ export function JournalEditor({
           </div>
 
           {/* 3. EDITOR AREA - Reduced top margin for mobile */}
-          <div className="prose-container sm:mt-4">
+          <div className="prose-container mt-1 sm:mt-4 -mx-2 sm:mx-0">
             <Editor
               content={initialContent}
               onChange={setEditorContent}
@@ -148,11 +148,11 @@ export function JournalEditor({
 
       {/* Floating Toolbar */}
       <div
-        className="fixed left-0 right-0 z-40 flex justify-center pointer-events-none transition-[bottom] duration-300 ease-out px-4"
+        className="fixed left-0 right-0 z-40 flex justify-center pointer-events-none transition-[bottom] duration-300 ease-out px-2 sm:px-4"
         style={{ bottom: toolbarBottom }}
       >
         {editorInstance && (
-          <div className="pointer-events-auto max-w-full sm:max-w-fit rounded-2xl border border-border/50 bg-background/90 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] p-1 flex items-center overflow-hidden">
+          <div className="pointer-events-auto w-full sm:w-auto max-w-[calc(100vw-1rem)] sm:max-w-fit rounded-2xl border border-border/50 bg-background/95 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.22)] p-1 flex items-center overflow-hidden">
             <div className="overflow-x-auto no-scrollbar flex items-center">
               <Toolbar editor={editorInstance} />
             </div>
@@ -160,7 +160,7 @@ export function JournalEditor({
         )}
       </div>
 
-      <div className="fixed bottom-6 right-6 z-50 pointer-events-none sm:pointer-events-auto">
+      <div className="fixed bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] sm:bottom-6 right-4 sm:right-6 z-50 pointer-events-none sm:pointer-events-auto">
         <SaveIndicator status={saveStatus} />
       </div>
     </div>

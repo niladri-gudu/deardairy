@@ -136,22 +136,22 @@ export function MoodHeatmap({ entries, today }: MoodHeatmapProps) {
   return (
     <div
       ref={containerRef}
-      className="relative w-full p-6 sm:p-8 rounded-4xl bg-muted/20 border border-border/40"
+      className="relative w-full p-4 sm:p-6 lg:p-8 rounded-3xl lg:rounded-4xl bg-muted/20 border border-border/40 overflow-hidden"
     >
-      <div className="flex flex-col space-y-4">
+      <div className="flex flex-col space-y-4 min-w-0">
         {/* Title & Legend */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h3 className="text-xs font-mono font-bold text-muted-foreground/50 uppercase tracking-[0.3em]">
+            <h3 className="text-[10px] sm:text-xs font-mono font-bold text-muted-foreground/50 uppercase tracking-[0.2em] sm:tracking-[0.3em]">
               Mood.Trend.Telemetry
             </h3>
-            <p className="text-sm font-bold text-foreground mt-1">
+            <p className="text-xs sm:text-sm font-bold text-foreground mt-1">
               Visualized pattern of daily reflections
             </p>
           </div>
 
           {/* Simple Legend */}
-          <div className="flex items-center gap-1.5 text-[9px] font-mono text-muted-foreground/40 self-end sm:self-auto select-none">
+          <div className="flex flex-wrap items-center justify-end gap-1.5 text-[8px] sm:text-[9px] font-mono text-muted-foreground/40 self-start sm:self-auto select-none">
             <span>Empty</span>
             <div className="h-2.5 w-2.5 rounded-[2px] bg-muted/15 border border-border/5" />
             <div className="h-2.5 w-2.5 rounded-[2px] bg-primary/20 border border-primary/10" />
@@ -165,9 +165,9 @@ export function MoodHeatmap({ entries, today }: MoodHeatmapProps) {
 
         {/* Heatmap Area */}
         <div className="relative">
-          <div className="flex overflow-x-auto no-scrollbar pb-1 select-none">
+          <div className="flex overflow-x-auto pb-2 select-none -mx-1 px-1">
             {/* Day of Week Labels */}
-            <div className="grid grid-rows-7 gap-[3px] text-[9px] font-mono text-muted-foreground/35 select-none pr-2.5 shrink-0 pt-5">
+            <div className="grid grid-rows-7 gap-[3px] text-[8px] sm:text-[9px] font-mono text-muted-foreground/35 select-none pr-2 shrink-0 pt-5 sticky left-0 bg-background/80 backdrop-blur-sm z-10">
               <span className="h-2.5 flex items-center leading-none">Sun</span>
               <span className="h-2.5 flex items-center leading-none invisible">Mon</span>
               <span className="h-2.5 flex items-center leading-none">Tue</span>

@@ -54,16 +54,16 @@ export function SigninForm() {
   };
 
   return (
-    <div className="min-h-[85vh] flex flex-col justify-center py-12 px-8 antialiased">
-      <div className="w-full max-w-sm mx-auto space-y-10">
+    <div className="min-h-dvh flex flex-col justify-center py-24 sm:py-12 px-4 sm:px-8 antialiased">
+      <div className="w-full max-w-sm mx-auto space-y-8 sm:space-y-10">
         <div className="space-y-3">
-          <h1 className="text-5xl font-black tracking-tighter leading-[0.85]">
+          <h1 className="text-4xl sm:text-5xl font-black tracking-tighter leading-[0.88] sm:leading-[0.85]">
             Welcome <br />
-            <span className="text-primary/60 italic font-serif font-light text-6xl">
+            <span className="text-primary/60 italic font-serif font-light text-5xl sm:text-6xl">
               back.
             </span>
           </h1>
-          <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-[0.2em]">
+          <p className="text-muted-foreground font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.16em] sm:tracking-[0.2em]">
             Verification required // Accessing the archives
           </p>
         </div>
@@ -75,7 +75,7 @@ export function SigninForm() {
                 Identity.Email
               </Label>
               {errors.email && (
-                <span className="text-[9px] font-mono text-destructive uppercase tracking-tighter animate-in fade-in slide-in-from-right-1">
+                <span className="text-[9px] font-mono text-destructive uppercase tracking-tighter animate-in fade-in slide-in-from-right-1 max-w-[50%] text-right">
                   // {errors.email}
                 </span>
               )}
@@ -99,7 +99,7 @@ export function SigninForm() {
                 Secret.Key
               </Label>
               {errors.password && (
-                <span className="text-[9px] font-mono text-destructive uppercase tracking-tighter animate-in fade-in slide-in-from-right-1">
+                <span className="text-[9px] font-mono text-destructive uppercase tracking-tighter animate-in fade-in slide-in-from-right-1 max-w-[50%] text-right">
                   // {errors.password}
                 </span>
               )}

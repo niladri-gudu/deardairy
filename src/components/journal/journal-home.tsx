@@ -187,9 +187,9 @@ export function JournalHome({
   );
 
   return (
-    <div className="h-screen bg-background text-foreground overflow-hidden flex flex-col">
-      <div className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-6 mt-16 overflow-hidden">
-        <div className="flex gap-6 h-full">
+    <div className="h-dvh bg-background text-foreground overflow-hidden flex flex-col">
+      <div className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-3 lg:py-6 pt-19 lg:pt-22 overflow-hidden">
+        <div className="flex gap-3 lg:gap-6 h-full">
           {isMobileSidebarOpen && (
             <div
               className="fixed inset-0 bg-background/90 backdrop-blur-md z-40 lg:hidden"
@@ -198,7 +198,7 @@ export function JournalHome({
           )}
           <aside
             className={cn(
-              "flex flex-col overflow-hidden transition-all duration-300 fixed inset-x-0 top-16 bottom-0 z-50 w-[85vw] max-w-[320px] lg:relative lg:top-0 lg:z-auto lg:inset-auto",
+              "flex flex-col overflow-hidden transition-all duration-300 fixed inset-x-0 top-16 bottom-0 z-50 w-[min(92vw,360px)] lg:relative lg:top-0 lg:z-auto lg:inset-auto",
               isMobileSidebarOpen
                 ? "translate-x-0"
                 : "-translate-x-full lg:translate-x-0",
@@ -218,7 +218,7 @@ export function JournalHome({
           </aside>
 
           <div className="flex-1 min-w-0 flex flex-col h-full overflow-hidden">
-            <div className="flex items-center gap-3 shrink-0 mb-2 lg:mb-4">
+            <div className="flex items-center justify-between gap-3 shrink-0 mb-3 lg:mb-4">
               <button
                 onClick={() => setIsDesktopSidebarOpen((o) => !o)}
                 className="hidden lg:flex p-2 rounded-xl text-muted-foreground hover:bg-muted/50 transition-all"
@@ -231,20 +231,25 @@ export function JournalHome({
               </button>
               <button
                 onClick={() => setIsMobileSidebarOpen(true)}
-                className="lg:hidden flex p-2.5 rounded-xl bg-muted/50 text-foreground transition-all"
+                className="lg:hidden flex h-11 w-11 items-center justify-center rounded-2xl bg-muted/60 text-foreground border border-border/30 shadow-sm transition-all active:scale-95"
               >
                 <Menu className="h-5 w-5" />
               </button>
+              <div className="lg:hidden flex-1 min-w-0">
+                <p className="text-[10px] font-mono uppercase tracking-[0.22em] text-muted-foreground/50 truncate">
+                  {showDashboard ? "Dashboard" : selectedEntry?.title || "Entry"}
+                </p>
+              </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto no-scrollbar px-1 lg:px-4 pb-10">
+            <div className="flex-1 overflow-y-auto no-scrollbar px-0.5 lg:px-4 pb-[calc(env(safe-area-inset-bottom)+2rem)]">
               {isFetchingEntry ? (
                 <div className="h-full flex flex-col items-center justify-center text-center">
                   <Loader2 className="h-8 w-8 animate-spin text-primary/30" />
                 </div>
               ) : showDashboard ? (
-                <div className="min-h-full flex flex-col space-y-12">
-                  <div className="flex items-center justify-between py-6 lg:py-8 border-b border-border/40">
+                <div className="min-h-full flex flex-col space-y-6 sm:space-y-10 lg:space-y-12">
+                  <div className="flex items-center justify-between py-3 sm:py-5 lg:py-8 border-b border-border/40">
                     <StreakCounter
                       currentStreak={streak}
                       totalEntries={totalEntries}
@@ -288,13 +293,13 @@ export function JournalHome({
                     </div>
                   )}
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 lg:gap-4 mt-4 lg:mt-8 px-2 md:px-0">
-                    <div className="p-6 lg:p-8 rounded-4xl bg-muted/20 border border-border/40 opacity-60">
-                      <Search className="h-5 w-5 mb-4 opacity-20" />
-                      <p className="text-[10px] font-mono uppercase tracking-[0.4em] opacity-30">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 lg:gap-4 mt-1 lg:mt-8 px-0 md:px-0">
+                    <div className="p-4 sm:p-5 lg:p-8 rounded-3xl lg:rounded-4xl bg-muted/20 border border-border/40 opacity-60">
+                      <Search className="h-4 w-4 sm:h-5 sm:w-5 mb-3 sm:mb-4 opacity-20" />
+                      <p className="text-[9px] sm:text-[10px] font-mono uppercase tracking-[0.22em] sm:tracking-[0.3em] opacity-30">
                         Archive.Search
                       </p>
-                      <p className="text-sm mt-1 italic opacity-40 leading-tight">
+                      <p className="text-xs sm:text-sm mt-1 italic opacity-40 leading-tight">
                         Indexing pending...
                       </p>
                     </div>
@@ -305,33 +310,33 @@ export function JournalHome({
                         if (random) handleSelect(random);
                         setIsFetchingEntry(false);
                       }}
-                      className="p-6 lg:p-8 rounded-4xl bg-muted/20 border border-border/40 hover:bg-muted/50 hover:border-primary/20 transition-all cursor-pointer group active:scale-95"
+                      className="p-4 sm:p-5 lg:p-8 rounded-3xl lg:rounded-4xl bg-muted/20 border border-border/40 hover:bg-muted/50 hover:border-primary/20 transition-all cursor-pointer group active:scale-95"
                     >
-                      <History className="h-5 w-5 mb-4 opacity-40 group-hover:text-primary transition-colors" />
-                      <p className="text-[10px] font-mono uppercase tracking-[0.4em] opacity-30">
+                      <History className="h-4 w-4 sm:h-5 sm:w-5 mb-3 sm:mb-4 opacity-40 group-hover:text-primary transition-colors" />
+                      <p className="text-[9px] sm:text-[10px] font-mono uppercase tracking-[0.22em] sm:tracking-[0.3em] opacity-30">
                         Archive.Flashback
                       </p>
-                      <p className="text-sm mt-1 italic opacity-60 leading-tight">
+                      <p className="text-xs sm:text-sm mt-1 italic opacity-60 leading-tight">
                         Retrieve random log...
                       </p>
                     </div>
-                    <div className="p-6 lg:p-8 rounded-4xl bg-muted/20 border border-border/40">
-                      <Zap className="h-5 w-5 mb-4 text-yellow-500/60" />
-                      <p className="text-[10px] font-mono uppercase tracking-[0.4em] opacity-30">
+                    <div className="p-4 sm:p-5 lg:p-8 rounded-3xl lg:rounded-4xl bg-muted/20 border border-border/40">
+                      <Zap className="h-4 w-4 sm:h-5 sm:w-5 mb-3 sm:mb-4 text-yellow-500/60" />
+                      <p className="text-[9px] sm:text-[10px] font-mono uppercase tracking-[0.22em] sm:tracking-[0.3em] opacity-30">
                         System.Analysis
                       </p>
-                      <p className="text-sm font-bold opacity-60">
+                      <p className="text-xs sm:text-sm font-bold opacity-60">
                         {stats.total.toLocaleString()} words
                       </p>
                     </div>
                   </div>
 
-                  <div className="flex-1 flex flex-col items-center justify-center text-center mt-10 lg:mt-12 pb-16">
+                  <div className="flex-1 flex flex-col items-center justify-center text-center mt-4 lg:mt-12 pb-12 sm:pb-16">
                     <div className="max-w-xs space-y-4">
-                      <p className="text-xs italic text-muted-foreground/40 leading-relaxed px-6">
+                      <p className="text-xs sm:text-sm italic text-muted-foreground/40 leading-relaxed px-4 sm:px-6">
                         &quot;{randomPrompt}&quot;
                       </p>
-                      <div className="opacity-10 pointer-events-none flex items-center justify-center gap-4">
+                      <div className="opacity-10 pointer-events-none hidden sm:flex items-center justify-center gap-4">
                         <div className="h-px w-8 lg:w-12 bg-foreground" />
                         <p className="text-[8px] lg:text-[10px] font-mono uppercase tracking-[1em] ml-[1em]">
                           Encrypted

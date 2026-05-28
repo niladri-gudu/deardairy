@@ -38,11 +38,11 @@ export default function LandingPage() {
       <div className="absolute top-0 inset-x-0 h-[800px] bg-gradient-to-b from-primary/10 via-background/0 to-transparent -z-20 pointer-events-none" />
 
       {/* HERO SECTION */}
-      <header className="relative max-w-7xl mx-auto pt-32 md:pt-48 pb-20 md:pb-32 px-6 grid lg:grid-cols-2 gap-16 md:gap-12 items-center">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 blur-[120px] rounded-full -z-10 animate-pulse duration-1000" />
+      <header className="relative max-w-7xl mx-auto pt-24 sm:pt-32 md:pt-48 pb-14 sm:pb-20 md:pb-32 px-4 sm:px-6 grid lg:grid-cols-2 gap-12 md:gap-12 items-center">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 blur-[120px] rounded-full -z-10 animate-pulse duration-1000 hidden sm:block" />
 
-        <div className="text-left space-y-6 md:space-y-10 relative z-10">
-          <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full border border-border/50 bg-background/50 backdrop-blur-md text-muted-foreground text-[11px] font-mono tracking-tight shadow-sm">
+        <div className="text-left space-y-5 sm:space-y-6 md:space-y-10 relative z-10">
+          <div className="inline-flex max-w-full items-center gap-2 sm:gap-3 px-3 sm:px-4 py-1.5 rounded-full border border-border/50 bg-background/50 backdrop-blur-md text-muted-foreground text-[10px] sm:text-[11px] font-mono tracking-tight shadow-sm">
             <span
               className={cn(
                 "flex h-2 w-2 rounded-full",
@@ -52,28 +52,28 @@ export default function LandingPage() {
             {session ? "System Active" : "v1.0.0 — The Private Sanctuary"}
           </div>
 
-          <h1 className="text-[clamp(4rem,12vw,8.5rem)] font-black tracking-tighter leading-[0.8] drop-shadow-sm">
+          <h1 className="text-[clamp(3.5rem,18vw,8.5rem)] font-black tracking-tighter leading-[0.82] sm:leading-[0.8] drop-shadow-sm">
             Think in <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary/80 to-muted-foreground italic font-serif font-light pr-8">
               ink.
             </span>
           </h1>
 
-          <p className="text-lg md:text-xl text-muted-foreground max-w-md leading-relaxed font-medium">
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-md leading-relaxed font-medium">
             A sanctuary for your digital thoughts. No distractions, no tracking,
             just a clean slate for your mind to breathe.
           </p>
 
           {/* ACTION AREA */}
-          <div className="flex flex-col gap-6 pt-4">
-            <div className="flex flex-col sm:flex-row gap-4 md:gap-5">
+          <div className="flex flex-col gap-5 sm:gap-6 pt-2 sm:pt-4">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 md:gap-5">
               <Link
                 href={session ? "/home" : "/signup"}
                 className="w-full sm:w-auto"
               >
                 <Button
                   size="lg"
-                  className="w-full rounded-2xl px-10 h-14 md:h-16 font-bold text-lg shadow-[0_0_40px_rgba(var(--primary),0.2)] hover:shadow-[0_0_60px_rgba(var(--primary),0.4)] hover:-translate-y-1 transition-all duration-300"
+                  className="w-full rounded-2xl px-8 sm:px-10 h-13 sm:h-14 md:h-16 font-bold text-base sm:text-lg shadow-[0_0_40px_rgba(var(--primary),0.2)] hover:shadow-[0_0_60px_rgba(var(--primary),0.4)] hover:-translate-y-1 transition-all duration-300"
                 >
                   {session ? "Enter Workspace" : "Start Writing"}
                   {session ? (
@@ -93,7 +93,7 @@ export default function LandingPage() {
                 <Button
                   variant="outline"
                   size="lg"
-                  className="w-full rounded-2xl px-10 h-14 md:h-16 font-mono text-sm border-border/50 bg-background/50 backdrop-blur-md hover:bg-muted/50 transition-all duration-300"
+                  className="w-full rounded-2xl px-8 sm:px-10 h-13 sm:h-14 md:h-16 font-mono text-xs sm:text-sm border-border/50 bg-background/50 backdrop-blur-md hover:bg-muted/50 transition-all duration-300"
                 >
                   <GithubIcon className="mr-2 h-5 w-5" />
                   Source Code
@@ -102,8 +102,8 @@ export default function LandingPage() {
             </div>
 
             {!session && (
-              <div className="flex items-center gap-3 text-sm font-medium text-muted-foreground/60">
-                <div className="h-px w-10 bg-border/80" />
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm font-medium text-muted-foreground/60">
+                <div className="h-px w-8 sm:w-10 bg-border/80" />
                 <span>Returning to your sanctuary?</span>
                 <Link
                   href="/signin"
@@ -186,12 +186,12 @@ export default function LandingPage() {
       </header>
 
       {/* STATS SECTION */}
-      <section className="max-w-7xl mx-auto px-6 py-20 md:py-32">
-        <div className="flex flex-col items-center text-center space-y-4 mb-16 md:mb-24">
-          <p className="text-muted-foreground font-mono text-xs uppercase tracking-[0.4em] font-bold">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-20 md:py-32">
+        <div className="flex flex-col items-center text-center space-y-3 sm:space-y-4 mb-10 sm:mb-16 md:mb-24">
+          <p className="text-muted-foreground font-mono text-[10px] sm:text-xs uppercase tracking-[0.22em] sm:tracking-[0.4em] font-bold">
             System Specifications
           </p>
-          <h2 className="text-4xl md:text-6xl font-black tracking-tighter">
+          <h2 className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tighter">
             Built for{" "}
             <span className="text-muted-foreground/40 italic font-serif font-light">
               longevity.
@@ -199,7 +199,7 @@ export default function LandingPage() {
           </h2>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 border border-border/50 rounded-[32px] overflow-hidden bg-card/20 backdrop-blur-sm shadow-xl">
+        <div className="grid grid-cols-2 md:grid-cols-4 border border-border/50 rounded-3xl sm:rounded-[32px] overflow-hidden bg-card/20 backdrop-blur-sm shadow-xl">
           {[
             { label: "Security", value: "AES-256" },
             { label: "Habits", value: "Streaks" },
@@ -209,17 +209,17 @@ export default function LandingPage() {
             <div
               key={stat.label}
               className={cn(
-                "flex flex-col gap-2 p-8 md:p-12 group hover:bg-muted/30 transition-colors duration-300",
+                "flex flex-col gap-2 p-4 sm:p-8 md:p-12 group hover:bg-muted/30 transition-colors duration-300 min-w-0",
                 i % 2 === 0 ? "border-r border-border/50" : "",
                 i < 2 ? "border-b md:border-b-0 border-border/50" : "",
                 i === 1 ? "md:border-r border-border/50" : "",
                 i === 2 ? "md:border-r border-border/50" : "",
               )}
             >
-              <span className="text-[10px] md:text-xs font-mono uppercase tracking-[0.3em] text-muted-foreground/50 group-hover:text-primary transition-colors duration-300">
+              <span className="text-[9px] sm:text-[10px] md:text-xs font-mono uppercase tracking-[0.16em] sm:tracking-[0.3em] text-muted-foreground/50 group-hover:text-primary transition-colors duration-300 truncate">
                 {stat.label}
               </span>
-              <span className="text-2xl md:text-4xl font-black tracking-tight drop-shadow-sm">
+              <span className="text-xl sm:text-2xl md:text-4xl font-black tracking-tight drop-shadow-sm truncate">
                 {stat.value}
               </span>
             </div>
@@ -228,20 +228,20 @@ export default function LandingPage() {
       </section>
 
       {/* FEATURES SECTION */}
-      <section className="max-w-6xl mx-auto px-6 py-20 md:py-32 space-y-24 md:space-y-48">
-        <div className="flex flex-col items-center text-center space-y-4 mb-16 md:mb-32">
-          <h2 className="text-5xl md:text-7xl font-black tracking-tighter text-balance">
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-14 sm:py-20 md:py-32 space-y-18 sm:space-y-24 md:space-y-48">
+        <div className="flex flex-col items-center text-center space-y-3 sm:space-y-4 mb-10 sm:mb-16 md:mb-32">
+          <h2 className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tighter text-balance">
             Purposefully{" "}
             <span className="text-muted-foreground/40 italic font-serif font-light">
               minimal.
             </span>
           </h2>
-          <p className="text-muted-foreground font-mono text-xs uppercase tracking-[0.4em] font-bold">
+          <p className="text-muted-foreground font-mono text-[10px] sm:text-xs uppercase tracking-[0.24em] sm:tracking-[0.4em] font-bold">
             The complete toolkit
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-24 md:gap-40">
+        <div className="grid grid-cols-1 gap-16 sm:gap-24 md:gap-40">
           <FeatureRow
             num="01"
             title="Focus & Habit"
@@ -272,12 +272,12 @@ export default function LandingPage() {
       </section>
 
       {/* FINAL CTA */}
-      <section className="max-w-5xl mx-auto px-6 py-24 md:py-48 text-center relative">
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 py-16 sm:py-24 md:py-48 text-center relative">
         <div className="absolute inset-0 bg-primary/5 blur-[100px] rounded-full -z-10" />
-        <div className="bg-card/40 border border-border/50 rounded-[40px] md:rounded-[60px] p-12 md:p-32 backdrop-blur-md shadow-2xl relative overflow-hidden group">
+        <div className="bg-card/40 border border-border/50 rounded-3xl sm:rounded-[40px] md:rounded-[60px] p-7 sm:p-12 md:p-32 backdrop-blur-md shadow-2xl relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 blur-[100px] rounded-full -z-10 group-hover:bg-primary/20 transition-colors duration-700" />
           
-          <h2 className="text-5xl md:text-7xl font-black tracking-tighter mb-8 md:mb-10 text-balance">
+          <h2 className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tighter mb-6 sm:mb-8 md:mb-10 text-balance">
             {session ? "Welcome back." : "Ready to write?"}
           </h2>
           
@@ -288,7 +288,7 @@ export default function LandingPage() {
             >
               <Button
                 size="lg"
-                className="rounded-full px-10 md:px-14 h-14 md:h-16 font-bold text-lg md:text-xl w-full sm:w-auto shadow-xl shadow-primary/20 hover:scale-105 hover:shadow-primary/30 transition-all duration-300"
+                className="rounded-full px-8 sm:px-10 md:px-14 h-13 sm:h-14 md:h-16 font-bold text-base sm:text-lg md:text-xl w-full sm:w-auto shadow-xl shadow-primary/20 hover:scale-105 hover:shadow-primary/30 transition-all duration-300"
               >
                 {session ? "Continue Writing" : "Open your diary"}
                 <ArrowRight className="ml-3 h-5 w-5" />
@@ -326,24 +326,24 @@ function FeatureRow({ num, title, desc, mockup, reverse }: FeatureRowProps) {
   return (
     <div
       className={cn(
-        "flex flex-col md:flex-row gap-12 md:gap-20 items-center group",
+        "flex flex-col md:flex-row gap-8 sm:gap-12 md:gap-20 items-center group",
         reverse && "md:flex-row-reverse",
       )}
     >
-      <div className="flex-1 space-y-6 text-center md:text-left relative z-10">
-        <span className="text-7xl md:text-[10rem] leading-none font-serif italic text-primary/5 select-none block -mb-6 md:-mb-12 font-black transition-colors duration-700 group-hover:text-primary/10">
+      <div className="flex-1 space-y-4 sm:space-y-6 text-center md:text-left relative z-10">
+        <span className="text-6xl sm:text-7xl md:text-[10rem] leading-none font-serif italic text-primary/5 select-none block -mb-5 sm:-mb-6 md:-mb-12 font-black transition-colors duration-700 group-hover:text-primary/10">
           {num}
         </span>
-        <h3 className="text-4xl md:text-6xl font-black tracking-tighter">
+        <h3 className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tighter">
           {title}
         </h3>
-        <p className="text-muted-foreground text-lg md:text-xl leading-relaxed max-w-lg mx-auto md:mx-0 font-medium">
+        <p className="text-muted-foreground text-base sm:text-lg md:text-xl leading-relaxed max-w-lg mx-auto md:mx-0 font-medium">
           {desc}
         </p>
       </div>
       <div className="flex-1 w-full flex justify-center items-center relative z-0">
-        <div className="relative w-full max-w-sm aspect-square md:max-w-none md:w-[500px] md:h-[500px]">
-          <div className="absolute inset-0 bg-primary/5 rounded-full blur-[80px] opacity-50 group-hover:opacity-100 group-hover:bg-primary/10 transition-all duration-700" />
+        <div className="relative w-full max-w-[19rem] sm:max-w-sm aspect-square md:max-w-none md:w-[500px] md:h-[500px]">
+          <div className="absolute inset-0 bg-primary/5 rounded-full blur-[80px] opacity-50 group-hover:opacity-100 group-hover:bg-primary/10 transition-all duration-700 hidden sm:block" />
           <div className="relative w-full h-full transition-transform duration-700 ease-out group-hover:scale-[1.02]">
             {mockup}
           </div>
@@ -371,13 +371,13 @@ function HeatmapMockup() {
   }, []);
 
   return (
-    <div className="w-full h-full border border-border/50 bg-card/40 backdrop-blur-xl rounded-[40px] md:rounded-[60px] flex flex-col items-center justify-center p-8 shadow-2xl">
+    <div className="w-full h-full border border-border/50 bg-card/40 backdrop-blur-xl rounded-3xl sm:rounded-[40px] md:rounded-[60px] flex flex-col items-center justify-center p-5 sm:p-8 shadow-2xl">
       <div className="w-full max-w-[280px]">
         <div className="flex items-center justify-between mb-6 opacity-60">
           <span className="text-[10px] font-mono uppercase tracking-[0.2em] font-bold">Activity</span>
           <Flame className="w-4 h-4 text-orange-500" />
         </div>
-        <div className="flex gap-2 justify-center">
+        <div className="flex gap-1.5 sm:gap-2 justify-center">
           {grid.length > 0 ? (
             grid.map((col, c) => (
               <div key={c} className="flex flex-col gap-2">
@@ -394,7 +394,7 @@ function HeatmapMockup() {
                     <div
                       key={r}
                       className={cn(
-                        "w-3.5 h-3.5 rounded-[3px] border transition-all duration-1000",
+                        "w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-[3px] border transition-all duration-1000",
                         opacities[val]
                       )}
                       style={{ transitionDelay: `${(c * 7 + r) * 15}ms` }}
@@ -430,9 +430,9 @@ function ThemeMockup() {
   const t = themes[activeTheme];
 
   return (
-    <div className="w-full h-full border border-border/50 bg-card/40 backdrop-blur-xl rounded-[40px] md:rounded-[60px] flex items-center justify-center p-8 shadow-2xl">
+    <div className="w-full h-full border border-border/50 bg-card/40 backdrop-blur-xl rounded-3xl sm:rounded-[40px] md:rounded-[60px] flex items-center justify-center p-5 sm:p-8 shadow-2xl">
       <div 
-        className="w-full max-w-[280px] rounded-3xl p-8 transition-colors duration-1000 shadow-2xl border border-white/5"
+        className="w-full max-w-[240px] sm:max-w-[280px] rounded-3xl p-6 sm:p-8 transition-colors duration-1000 shadow-2xl border border-white/5"
         style={{ backgroundColor: t.bg }}
       >
         <div className="flex gap-3 mb-8 justify-center">
@@ -494,12 +494,12 @@ function PrivacyMockup() {
   }, [isLocked]);
 
   return (
-    <div className="w-full h-full border border-border/50 bg-card/40 backdrop-blur-xl rounded-[40px] md:rounded-[60px] flex items-center justify-center p-8 shadow-2xl relative">
-      <div className="relative w-full max-w-[300px] bg-background/80 border border-border/80 rounded-2xl p-8 shadow-2xl font-mono text-sm break-all h-40 flex flex-col justify-center overflow-hidden">
+    <div className="w-full h-full border border-border/50 bg-card/40 backdrop-blur-xl rounded-3xl sm:rounded-[40px] md:rounded-[60px] flex items-center justify-center p-5 sm:p-8 shadow-2xl relative">
+      <div className="relative w-full max-w-[260px] sm:max-w-[300px] bg-background/80 border border-border/80 rounded-2xl p-5 sm:p-8 shadow-2xl font-mono text-sm break-all h-36 sm:h-40 flex flex-col justify-center overflow-hidden">
         <div className={cn("absolute top-4 right-4 transition-all duration-500", isLocked ? "text-primary" : "text-muted-foreground/40")}>
           {isLocked ? <Lock className="w-5 h-5" /> : <Unlock className="w-5 h-5" />}
         </div>
-        <div className={cn("transition-colors duration-300 text-lg leading-relaxed mt-2", isLocked ? "text-primary/60 font-bold tracking-widest" : "text-foreground")}>
+        <div className={cn("transition-colors duration-300 text-sm sm:text-lg leading-relaxed mt-2", isLocked ? "text-primary/60 font-bold tracking-widest" : "text-foreground")}>
           {text}
         </div>
         {isLocked && (
@@ -512,19 +512,19 @@ function PrivacyMockup() {
 
 function MediaMockup() {
   return (
-    <div className="w-full h-full border border-border/50 bg-card/40 backdrop-blur-xl rounded-[40px] md:rounded-[60px] flex items-center justify-center p-8 shadow-2xl overflow-hidden relative group">
+    <div className="w-full h-full border border-border/50 bg-card/40 backdrop-blur-xl rounded-3xl sm:rounded-[40px] md:rounded-[60px] flex items-center justify-center p-5 sm:p-8 shadow-2xl overflow-hidden relative group">
       <div className="relative w-full h-full max-w-[320px] max-h-[320px]">
         {/* Image 1 */}
-        <div className="absolute top-8 left-4 w-40 h-48 bg-background border border-border/80 shadow-2xl rounded-xl p-2.5 rotate-[-8deg] group-hover:rotate-[-12deg] group-hover:-translate-x-4 transition-all duration-700 z-10 ease-out">
-          <div className="w-full h-32 bg-muted rounded-lg mb-3 overflow-hidden relative">
+        <div className="absolute top-8 left-3 sm:left-4 w-32 sm:w-40 h-40 sm:h-48 bg-background border border-border/80 shadow-2xl rounded-xl p-2 sm:p-2.5 rotate-[-8deg] group-hover:rotate-[-12deg] group-hover:-translate-x-4 transition-all duration-700 z-10 ease-out">
+          <div className="w-full h-24 sm:h-32 bg-muted rounded-lg mb-3 overflow-hidden relative">
             <div className="absolute inset-0 bg-gradient-to-tr from-primary/30 to-transparent" />
             <ImageIcon className="absolute inset-0 m-auto w-8 h-8 text-foreground/20" />
           </div>
           <div className="h-2 w-1/2 bg-muted-foreground/20 rounded-full" />
         </div>
         {/* Image 2 */}
-        <div className="absolute bottom-10 right-4 w-40 h-48 bg-background border border-border/80 shadow-2xl rounded-xl p-2.5 rotate-[6deg] group-hover:rotate-[10deg] group-hover:translate-x-4 transition-all duration-700 z-20 ease-out">
-          <div className="w-full h-32 bg-muted rounded-lg mb-3 overflow-hidden relative">
+        <div className="absolute bottom-10 right-3 sm:right-4 w-32 sm:w-40 h-40 sm:h-48 bg-background border border-border/80 shadow-2xl rounded-xl p-2 sm:p-2.5 rotate-[6deg] group-hover:rotate-[10deg] group-hover:translate-x-4 transition-all duration-700 z-20 ease-out">
+          <div className="w-full h-24 sm:h-32 bg-muted rounded-lg mb-3 overflow-hidden relative">
             <div className="absolute inset-0 bg-gradient-to-bl from-primary/40 to-transparent" />
             <ImageIcon className="absolute inset-0 m-auto w-8 h-8 text-foreground/20" />
           </div>

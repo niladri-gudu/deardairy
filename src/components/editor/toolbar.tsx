@@ -49,7 +49,7 @@ function ToolbarButton({
       disabled={disabled}
       title={title}
       className={`
-        p-1.5 rounded-md transition-all
+        h-10 w-10 sm:h-9 sm:w-9 p-0 rounded-xl sm:rounded-md transition-all shrink-0
         ${
           active
             ? "bg-accent text-accent-foreground"
@@ -63,7 +63,7 @@ function ToolbarButton({
 }
 
 function Divider() {
-  return <div className="w-px h-5 bg-border mx-1 shrink-0" />;
+  return <div className="w-px h-6 sm:h-5 bg-border mx-0.5 sm:mx-1 shrink-0" />;
 }
 
 export function Toolbar({ editor }: ToolbarProps) {
@@ -158,8 +158,8 @@ export function Toolbar({ editor }: ToolbarProps) {
   };
 
   return (
-    <div className="flex items-center gap-1 py-2 flex-nowrap">
-      <div className="pl-3 shrink-0" />{" "}
+    <div className="flex items-center gap-1 py-1.5 sm:py-2 flex-nowrap">
+      <div className="pl-1 sm:pl-3 shrink-0" />{" "}
       <ToolbarButton
         onClick={() => editor.chain().focus().undo().run()}
         disabled={!editorState.canUndo}
@@ -263,7 +263,7 @@ export function Toolbar({ editor }: ToolbarProps) {
         className="hidden"
         onChange={addImage}
       />
-      <div className="pr-3 shrink-0 select-none">&#8203;</div>{" "}
+      <div className="pr-1 sm:pr-3 shrink-0 select-none">&#8203;</div>{" "}
       {/* right spacer with zero-width space */}
     </div>
   );
