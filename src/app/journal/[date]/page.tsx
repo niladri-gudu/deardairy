@@ -9,6 +9,8 @@ import { Entry } from "@/models/entry";
 import { safeDecrypt } from "@/lib/encryption";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { addDays, getLocalDateString, isDateString } from "@/lib/utils/date";
+import { cookies } from "next/headers";
 
 interface Props {
   params: Promise<{ date: string }>;
@@ -19,7 +21,7 @@ export default async function JournalDatePage({ params, searchParams }: Props) {
   const { date } = await params;
   const { today: clientToday } = await searchParams;
 
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) redirect("/home");
+  if (!isDateString(date)) redirect("/home");
 
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) redirect("/signin");
@@ -33,10 +35,13 @@ export default async function JournalDatePage({ params, searchParams }: Props) {
   }).lean();
 
   // 2. Determine "Today" and "Yesterday"
-  const today = clientToday || new Date().toLocaleDateString("en-CA");
-  const todayDate = new Date(today);
-  todayDate.setDate(todayDate.getDate() - 1);
-  const yesterday = todayDate.toLocaleDateString("en-CA");
+  const cookieToday = (await cookies()).get("withink-local-date")?.value;
+  const today = isDateString(clientToday)
+    ? clientToday
+    : isDateString(cookieToday)
+      ? cookieToday
+      : getLocalDateString();
+  const yesterday = addDays(today, -1);
 
   // 3. Define the Firewall Logic
   const isFuture = date > today;
@@ -97,7 +102,7 @@ export default async function JournalDatePage({ params, searchParams }: Props) {
   }
 
   // 4. Decrypt content if it exists
-  let decryptedContent = "";
+  let decryptedContent: any = "";
   if (entry) {
     const rawJson = safeDecrypt((entry as any).contentJson);
     try {
@@ -117,7 +122,7 @@ export default async function JournalDatePage({ params, searchParams }: Props) {
       date={date}
       initialTitle={(entry as any)?.title ?? ""}
       initialContent={decryptedContent ?? ""}
-      initialMood={entry?.mood || null}
+      initialMood={entry?.mood ?? null}
     />
   );
 }

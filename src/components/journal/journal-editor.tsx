@@ -15,7 +15,7 @@ interface Props {
   date: string;
   initialTitle: string;
   initialContent: any;
-  initialMood?: number;
+  initialMood?: number | null;
 }
 
 function formatDate(dateStr: string) {
@@ -35,13 +35,14 @@ export function JournalEditor({
   initialMood,
 }: Props) {
   const [title, setTitle] = useState(initialTitle);
-  const [mood, setMood] = useState<number | null>(initialMood || null);
+  const [mood, setMood] = useState<number | null>(initialMood ?? null);
   const [editorContent, setEditorContent] = useState({
     html: "",
     text: "",
     json: initialContent,
   });
   const [editorInstance, setEditorInstance] = useState<any>(null);
+  const [editorReady, setEditorReady] = useState(false);
   const [toolbarBottom, setToolbarBottom] = useState(32);
 
   useEffect(() => {
@@ -90,7 +91,7 @@ export function JournalEditor({
     contentHtml: editorContent.html,
     contentText: editorContent.text,
     contentJson: editorContent.json,
-  });
+  }, 1500, editorReady);
 
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary/10 transition-colors duration-500">
@@ -136,7 +137,10 @@ export function JournalEditor({
             <Editor
               content={initialContent}
               onChange={setEditorContent}
-              onEditorReady={setEditorInstance}
+              onEditorReady={(editor) => {
+                setEditorInstance(editor);
+                setEditorReady(true);
+              }}
             />
           </div>
         </div>

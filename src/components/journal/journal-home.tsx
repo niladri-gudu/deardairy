@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/purity */
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { JournalSidebar } from "@/components/journal/journal-sidebar";
 import { EntryPreview } from "@/components/journal/entry-preview";
 import { Button } from "@/components/ui/button";
@@ -24,6 +24,8 @@ import { DigitalClock } from "./clock";
 import { getRandomEntry } from "@/actions/flashback";
 import Link from "next/link";
 import { MoodHeatmap } from "@/components/journal/mood-heatmap";
+import { addDays, getLocalDateString } from "@/lib/utils/date";
+import { useRouter } from "next/navigation";
 
 interface Entry {
   date: string;
@@ -51,11 +53,27 @@ export function JournalHome({
   streak,
   totalEntries,
 }: Props) {
+  const router = useRouter();
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isDesktopSidebarOpen, setIsDesktopSidebarOpen] = useState(true);
   const [selectedEntry, setSelectedEntry] = useState<Entry | null>(null);
   const [isFetchingEntry, setIsFetchingEntry] = useState(false);
   const [entryCache, setEntryCache] = useState<Record<string, Entry>>({});
+  const [localToday, setLocalToday] = useState(today);
+
+  useEffect(() => {
+    const currentLocalToday = getLocalDateString();
+    document.cookie = `withink-local-date=${currentLocalToday}; path=/; max-age=34560000; samesite=lax`;
+    const syncTimer = window.setTimeout(() => {
+      setLocalToday(currentLocalToday);
+    }, 0);
+
+    if (currentLocalToday !== today) {
+      router.refresh();
+    }
+
+    return () => window.clearTimeout(syncTimer);
+  }, [router, today]);
 
   const entries = useMemo(() => {
     const map = new Map<string, Entry>();
@@ -70,10 +88,8 @@ export function JournalHome({
   }, [entries]);
 
   const yesterdayDate = useMemo(() => {
-    const d = new Date(today);
-    d.setDate(d.getDate() - 1);
-    return d.toISOString().split("T")[0];
-  }, [today]);
+    return addDays(localToday, -1);
+  }, [localToday]);
 
   const yesterdayEntry = useMemo(
     () => entries.find((e) => e.date === yesterdayDate),
@@ -88,16 +104,8 @@ export function JournalHome({
 
   const isWithinGracePeriod = useMemo(() => {
     if (!selectedEntry) return false;
-    const entryDate = new Date(selectedEntry.date);
-    const todayD = new Date(today);
-    todayD.setHours(0, 0, 0, 0);
-    const yesterdayD = new Date(todayD);
-    yesterdayD.setDate(todayD.getDate() - 1);
-    return (
-      entryDate.toDateString() === todayD.toDateString() ||
-      entryDate.toDateString() === yesterdayD.toDateString()
-    );
-  }, [selectedEntry, today]);
+    return selectedEntry.date === localToday || selectedEntry.date === yesterdayDate;
+  }, [localToday, selectedEntry, yesterdayDate]);
 
   const showDashboard = selectedEntry === null;
   const showEntryPreview = isExistingEntry && selectedEntry !== null;
@@ -151,9 +159,9 @@ export function JournalHome({
       delete newCache[deletedDate];
       setEntryCache(newCache);
       toast.success("Archive purged.");
-      if (deletedDate === today) {
+      if (deletedDate === localToday) {
         setSelectedEntry({
-          date: today,
+          date: localToday,
           title: "",
           wordCount: 0,
           mood: null,
@@ -166,7 +174,7 @@ export function JournalHome({
     }
   };
 
-  const userLocalToday = new Date().toLocaleDateString("en-CA");
+  const userLocalToday = localToday;
   const randomPrompt = useMemo(
     () =>
       [
@@ -202,7 +210,7 @@ export function JournalHome({
                 entries={entries}
                 selectedDate={selectedEntry?.date ?? null}
                 userName={userName}
-                today={today}
+                today={localToday}
                 onSelect={handleSelect}
                 onClose={() => setIsMobileSidebarOpen(false)}
               />
@@ -246,7 +254,7 @@ export function JournalHome({
                     </div>
                   </div>
 
-                  <MoodHeatmap entries={entries} today={today} />
+                  <MoodHeatmap entries={entries} today={localToday} />
 
                   {!yesterdayEntry && (
                     <div className="w-full">
@@ -380,7 +388,7 @@ export function JournalHome({
                   contentHtml={selectedEntry!.contentHtml}
                   wordCount={selectedEntry!.wordCount}
                   mood={selectedEntry!.mood}
-                  today={today}
+                  today={localToday}
                   onDeleteSuccess={handleDeleteSuccess}
                 />
               )}

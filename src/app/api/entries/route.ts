@@ -6,6 +6,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongoose";
 import { Entry } from "@/models/entry";
 import { encrypt, safeDecrypt } from "@/lib/encryption";
+import { addDays, isDateString } from "@/lib/utils/date";
+import { countWords } from "@/lib/utils/text";
 
 export async function POST(req: NextRequest) {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -22,9 +24,9 @@ export async function POST(req: NextRequest) {
     userLocalToday,
   } = await req.json();
 
-  if (!date || !userLocalToday)
+  if (!isDateString(date) || !isDateString(userLocalToday))
     return NextResponse.json(
-      { error: "Date information missing" },
+      { error: "Valid date information missing" },
       { status: 400 },
     );
 
@@ -35,9 +37,7 @@ export async function POST(req: NextRequest) {
 
   // 🏛️ 2. Apply Grace Period ONLY for NEW entries
   if (!existingEntry) {
-    const todayDate = new Date(userLocalToday);
-    todayDate.setDate(todayDate.getDate() - 1);
-    const yesterdayStr = todayDate.toLocaleDateString("en-CA");
+    const yesterdayStr = addDays(userLocalToday, -1);
 
     // Block future dates
     if (date > userLocalToday) {
@@ -61,19 +61,16 @@ export async function POST(req: NextRequest) {
   if (title !== undefined) updateFields.title = title;
   if (mood !== undefined) updateFields.mood = mood;
 
-  if (contentHtml) {
+  if (contentHtml !== undefined) {
     updateFields.contentHtml = encrypt(contentHtml);
   }
 
-  if (contentText) {
+  if (contentText !== undefined) {
     updateFields.contentText = encrypt(contentText);
-    updateFields.wordCount = contentText
-      .trim()
-      .split(/\s+/)
-      .filter(Boolean).length;
+    updateFields.wordCount = countWords(contentText);
   }
 
-  if (contentJson) {
+  if (contentJson !== undefined) {
     updateFields.contentJson = encrypt(JSON.stringify(contentJson));
   }
 
@@ -109,13 +106,20 @@ export async function GET(req: NextRequest) {
 
   const { searchParams } = new URL(req.url);
   const date = searchParams.get("date");
-  const page = parseInt(searchParams.get("page") || "1");
-  const limit = parseInt(searchParams.get("limit") || "10");
+  const page = Math.max(1, parseInt(searchParams.get("page") || "1", 10) || 1);
+  const limit = Math.min(
+    50,
+    Math.max(1, parseInt(searchParams.get("limit") || "10", 10) || 10),
+  );
   const skip = (page - 1) * limit;
 
   await connectDB();
 
   if (date) {
+    if (!isDateString(date)) {
+      return NextResponse.json({ error: "Invalid date" }, { status: 400 });
+    }
+
     const entry = await Entry.findOne({ userId: session.user.id, date }).lean();
     if (entry) {
       entry.contentHtml = safeDecrypt(entry.contentHtml);

@@ -4,8 +4,9 @@ import { connectDB } from "@/lib/mongoose";
 import { Entry } from "@/models/entry";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { addDays, getLocalDateString, isDateString } from "@/lib/utils/date";
 
-export async function getStreakData() {
+export async function getStreakData(localToday = getLocalDateString()) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user) return { currentStreak: 0, totalEntries: 0 };
 
@@ -20,8 +21,8 @@ export async function getStreakData() {
   const totalEntries = entries.length;
   let currentStreak = 0;
 
-  const today = new Date().toISOString().split("T")[0];
-  const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0];
+  const today = isDateString(localToday) ? localToday : getLocalDateString();
+  const yesterday = addDays(today, -1);
 
   const lastEntryDate = entries[0].date;
 
@@ -29,19 +30,12 @@ export async function getStreakData() {
     return { currentStreak: 0, totalEntries };
   }
 
-  const expectedDate = new Date(lastEntryDate);
+  let expectedDate = lastEntryDate;
 
   for (const entry of entries) {
-    const entryDate = new Date(entry.date);
-
-    // Check if this entry matches our expected consecutive date
-    if (
-      entryDate.toISOString().split("T")[0] ===
-      expectedDate.toISOString().split("T")[0]
-    ) {
+    if (entry.date === expectedDate) {
       currentStreak++;
-      // Set expected date to the day before this one
-      expectedDate.setDate(expectedDate.getDate() - 1);
+      expectedDate = addDays(expectedDate, -1);
     } else {
       // Gap found, streak ends here
       break;

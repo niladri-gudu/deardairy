@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef, useState } from "react";
+import { getLocalDateString } from "@/lib/utils/date";
 
 type SaveStatus = "idle" | "saving" | "saved" | "error";
 
@@ -12,15 +13,18 @@ interface EntryData {
   contentJson: any;
 }
 
-export function useAutoSave(data: EntryData, debounceMs = 1500) {
+export function useAutoSave(data: EntryData, debounceMs = 1500, enabled = true) {
   const [status, setStatus] = useState<SaveStatus>("idle");
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hasStartedRef = useRef(false);
 
   const latestData = useRef(data);
 
   const initialContent = useRef({
     title: data.title,
     html: data.contentHtml,
+    text: data.contentText,
+    json: data.contentJson,
     mood: data.mood,
   });
 
@@ -28,17 +32,33 @@ export function useAutoSave(data: EntryData, debounceMs = 1500) {
 
   useEffect(() => {
     latestData.current = data;
+    if (!enabled) return;
+
+    if (!hasStartedRef.current) {
+      initialContent.current = {
+        title: data.title,
+        html: data.contentHtml,
+        text: data.contentText,
+        json: data.contentJson,
+        mood: data.mood,
+      };
+      hasStartedRef.current = true;
+      return;
+    }
 
     if (
       data.title !== initialContent.current.title ||
-      data.contentHtml !== initialContent.current.html || 
+      data.contentHtml !== initialContent.current.html ||
+      data.contentText !== initialContent.current.text ||
+      data.contentJson !== initialContent.current.json ||
       data.mood !== initialContent.current.mood
     ) {
       isDirty.current = true;
     }
-  }, [data]);
+  }, [data, enabled]);
 
   useEffect(() => {
+    if (!enabled) return;
     if (!isDirty.current) return;
 
     if (timerRef.current) clearTimeout(timerRef.current);
@@ -46,7 +66,7 @@ export function useAutoSave(data: EntryData, debounceMs = 1500) {
     timerRef.current = setTimeout(async () => {
       setStatus("saving");
       try {
-        const userLocalToday = new Date().toLocaleDateString("en-CA");
+        const userLocalToday = getLocalDateString();
         const res = await fetch("/api/entries", {
           method: "POST",
           credentials: "include",
@@ -62,6 +82,8 @@ export function useAutoSave(data: EntryData, debounceMs = 1500) {
         initialContent.current = {
           title: latestData.current.title,
           html: latestData.current.contentHtml,
+          text: latestData.current.contentText,
+          json: latestData.current.contentJson,
           mood: latestData.current.mood,
         };
 
@@ -76,7 +98,15 @@ export function useAutoSave(data: EntryData, debounceMs = 1500) {
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
-  }, [data.title, data.contentText, data.contentHtml, data.mood, debounceMs]);
+  }, [
+    data.title,
+    data.contentText,
+    data.contentHtml,
+    data.contentJson,
+    data.mood,
+    debounceMs,
+    enabled,
+  ]);
 
   return status;
 }
