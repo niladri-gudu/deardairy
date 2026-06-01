@@ -8,24 +8,27 @@ import { getLocalDateString } from "@/lib/utils/date";
 import { JournalHome } from "@/components/journal/journal-home";
 import { safeDecrypt } from "@/lib/encryption";
 import { getStreakData } from "@/actions/streak";
+import { cookies } from "next/headers";
+import { isDateString } from "@/lib/utils/date";
 
 export default async function JournalPage() {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) redirect("/signin");
 
   await connectDB();
-  const today = getLocalDateString();
+  const cookieToday = (await cookies()).get("withink-local-date")?.value;
+  const today = isDateString(cookieToday) ? cookieToday : getLocalDateString();
 
   const [todayEntry, allEntries, streakData] = await Promise.all([
     Entry.findOne({ userId: session.user.id, date: today }).lean(),
     Entry.find(
       { userId: session.user.id },
-      { date: 1, title: 1, wordCount: 1, contentText: 1, contentHtml: 1 },
+      { date: 1, title: 1, wordCount: 1, contentText: 1, contentHtml: 1, mood: 1 },
     )
       .sort({ date: -1 })
       .limit(15)
       .lean(),
-    getStreakData(),
+    getStreakData(today),
   ]);
 
   const entries = (allEntries as any[]).map((e) => {
@@ -34,6 +37,7 @@ export default async function JournalPage() {
       date: e.date,
       title: e.title || "",
       wordCount: e.wordCount || 0,
+      mood: e.mood || null,
       preview: decryptedText.trim().split("\n")[0]?.slice(0, 80) || "",
       contentHtml: safeDecrypt(e.contentHtml || ""),
     };

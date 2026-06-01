@@ -24,22 +24,7 @@ export const auth = betterAuth({
             await resend.emails.send({
               from: process.env.EMAIL_FROM!,
               to: user.email,
-              subject: "Welcome to your sanctuary — withink.",
-              react: WelcomeEmail({
-                userFirstname: user.name.split(" ")[0],
-                baseUrl: BASE_URL,
-              }),
-            });
-          }
-        },
-      },
-      update: {
-        after: async (user) => {
-          if (user.emailVerified) {
-            await resend.emails.send({
-              from: process.env.EMAIL_FROM!,
-              to: user.email,
-              subject: "Welcome to your sanctuary — withink.",
+              subject: "Welcome to your sanctuary - withink.",
               react: WelcomeEmail({
                 userFirstname: user.name.split(" ")[0],
                 baseUrl: BASE_URL,
@@ -60,7 +45,7 @@ export const auth = betterAuth({
       await resend.emails.send({
         from: process.env.EMAIL_FROM!,
         to: user.email,
-        subject: "Reset your password — withink.",
+        subject: "Reset your password - withink.",
         react: ResetPassword({ name: user.name, url }),
       });
     },
@@ -76,7 +61,7 @@ export const auth = betterAuth({
       await resend.emails.send({
         from: process.env.EMAIL_FROM!,
         to: user.email,
-        subject: "Verify your email — withink.",
+        subject: "Verify your email - withink.",
         react: VerifyEmail({
           name: user.name,
           url: verificationUrl.toString(),

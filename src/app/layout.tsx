@@ -5,6 +5,8 @@ import { cn } from "@/lib/utils";
 import { Navbar } from "@/components/layout/Navbar";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/sonner";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -23,7 +25,8 @@ export const metadata: Metadata = {
     default: "withink. — Your Digital Sanctuary",
     template: "%s | withink.",
   },
-  description: "A private, encrypted, and minimal space for your digital thoughts. Built for focus.",
+  description:
+    "A private, encrypted, and minimal space for your digital thoughts. Built for focus.",
   icons: {
     icon: "/favicon.ico",
   },
@@ -66,6 +69,8 @@ export default function RootLayout({
           <main>{children}</main>
           <Toaster position="bottom-right" />
         </ThemeProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

@@ -1,5 +1,5 @@
 {
-  "name": "deardiary",
+  "name": "withink.me",
   "version": "0.1.0",
   "pnpm": {
     "ignoredBuiltDependencies": [
@@ -10,7 +10,17 @@
       "next@>=16.0.0-beta.0 <16.2.3": ">=16.2.3",
       "fast-xml-parser@<5.7.0": ">=5.7.0",
       "uuid@<14.0.0": ">=14.0.0",
-      "postcss@<8.5.10": ">=8.5.10"
+      "postcss@<8.5.10": ">=8.5.10",
+      "fast-uri@<=3.1.0": ">=3.1.1",
+      "fast-uri@<=3.1.1": ">=3.1.2",
+      "hono@<4.12.18": ">=4.12.18",
+      "next@>=16.0.0 <16.2.5": ">=16.2.5",
+      "kysely": "0.28.17",
+      "ip-address@<=10.1.0": ">=10.1.1",
+      "next@>=16.0.0 <16.2.6": ">=16.2.6",
+      "fast-xml-builder@<=1.1.6": ">=1.1.7",
+      "fast-xml-builder@=1.1.5": ">=1.1.6",
+      "brace-expansion@>=5.0.0 <5.0.6": ">=5.0.6"
     }
   },
   "scripts": {
@@ -22,28 +32,21 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1028.0",
     "@aws-sdk/s3-request-presigner": "^3.1028.0",
-    "@better-fetch/fetch": "^1.1.21",
     "@react-email/components": "^1.0.11",
     "@react-email/render": "^2.0.5",
-    "@tiptap/extension-document": "^3.22.2",
-    "@tiptap/extension-heading": "^3.22.2",
-    "@tiptap/extension-highlight": "^3.22.3",
     "@tiptap/extension-image": "^3.22.3",
     "@tiptap/extension-link": "^3.22.3",
-    "@tiptap/extension-paragraph": "^3.22.2",
     "@tiptap/extension-placeholder": "^3.22.2",
-    "@tiptap/extension-text": "^3.22.2",
-    "@tiptap/extension-text-align": "^3.22.3",
-    "@tiptap/extension-typography": "^3.22.3",
     "@tiptap/extension-underline": "^3.22.3",
-    "@tiptap/extension-youtube": "^3.22.3",
     "@tiptap/pm": "^3.22.2",
     "@tiptap/react": "^3.22.2",
     "@tiptap/starter-kit": "^3.22.2",
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
     "better-auth": "^1.6.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "date-fns": "^4.1.0",
+    "jszip": "^3.10.1",
     "lucide-react": "^1.7.0",
     "mongodb": "^7.1.1",
     "mongoose": "^9.4.1",

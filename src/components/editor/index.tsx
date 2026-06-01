@@ -14,10 +14,19 @@ export default function Editor({
   onChange,
   onEditorReady,
 }: {
-  content?: string;
+  content?: any;
   onChange?: (data: { html: string; text: string; json: any }) => void;
   onEditorReady?: (editor: any) => void;
 }) {
+  function getEditorSnapshot(editor: any) {
+    const html = editor.getHTML();
+    return {
+      html: html === "<p></p>" ? "" : html,
+      text: editor.getText().trim(),
+      json: editor.getJSON(),
+    };
+  }
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -56,19 +65,11 @@ export default function Editor({
       // --- PASTE HANDLER END ---
     },
     onCreate({ editor }) {
+      onChange?.(getEditorSnapshot(editor));
       onEditorReady?.(editor);
     },
     onUpdate({ editor }) {
-      const json = editor.getJSON();
-      const html = editor.getHTML();
-      const text = editor.getText();
-
-      // Explicitly check if it's "empty" but still trigger the change
-      onChange?.({
-        html: html === "<p></p>" ? "" : html, // Normalize empty state
-        text: text.trim(),
-        json: json,
-      });
+      onChange?.(getEditorSnapshot(editor));
     },
     immediatelyRender: false,
   });
@@ -120,7 +121,7 @@ export default function Editor({
             .run();
         }
       });
-    } catch (err) {
+    } catch {
       toast.error("Image upload failed");
       // Remove placeholder on failure
       editor.state.doc.descendants((node, pos) => {

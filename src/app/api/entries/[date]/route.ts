@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongoose";
 import { Entry } from "@/models/entry";
+import { isDateString } from "@/lib/utils/date";
 
 export async function DELETE(
   req: NextRequest,
@@ -13,6 +14,9 @@ export async function DELETE(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { date } = await params;
+  if (!isDateString(date)) {
+    return NextResponse.json({ error: "Invalid date" }, { status: 400 });
+  }
 
   await connectDB();
 

@@ -6,17 +6,29 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongoose";
 import { Entry } from "@/models/entry";
 import { encrypt, safeDecrypt } from "@/lib/encryption";
+import { addDays, isDateString } from "@/lib/utils/date";
+import { countWords } from "@/lib/utils/text";
 
 export async function POST(req: NextRequest) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { date, title, contentHtml, contentText, contentJson, userLocalToday } =
-    await req.json();
+  const {
+    date,
+    mood,
+    title,
+    contentHtml,
+    contentText,
+    contentJson,
+    userLocalToday,
+  } = await req.json();
 
-  if (!date || !userLocalToday)
-    return NextResponse.json({ error: "Date information missing" }, { status: 400 });
+  if (!isDateString(date) || !isDateString(userLocalToday))
+    return NextResponse.json(
+      { error: "Valid date information missing" },
+      { status: 400 },
+    );
 
   await connectDB();
 
@@ -25,36 +37,40 @@ export async function POST(req: NextRequest) {
 
   // 🏛️ 2. Apply Grace Period ONLY for NEW entries
   if (!existingEntry) {
-    const todayDate = new Date(userLocalToday);
-    const yesterdayDate = new Date(todayDate);
-    yesterdayDate.setDate(todayDate.getDate() - 1);
-    const yesterdayStr = yesterdayDate.toISOString().split('T')[0];
+    const yesterdayStr = addDays(userLocalToday, -1);
 
     // Block future dates
     if (date > userLocalToday) {
-      return NextResponse.json({ error: "The future is unwritten." }, { status: 403 });
+      return NextResponse.json(
+        { error: "The future is unwritten." },
+        { status: 403 },
+      );
     }
 
     // Block creation of old entries
     if (date < yesterdayStr) {
-      return NextResponse.json({ error: "Grace period expired for new entries." }, { status: 403 });
+      return NextResponse.json(
+        { error: "Grace period expired for new entries." },
+        { status: 403 },
+      );
     }
   }
 
   // 🏛️ 3. Proceed with Update or Create
   const updateFields: any = {};
   if (title !== undefined) updateFields.title = title;
-  
-  if (contentHtml) {
+  if (mood !== undefined) updateFields.mood = mood;
+
+  if (contentHtml !== undefined) {
     updateFields.contentHtml = encrypt(contentHtml);
   }
-  
-  if (contentText) {
+
+  if (contentText !== undefined) {
     updateFields.contentText = encrypt(contentText);
-    updateFields.wordCount = contentText.trim().split(/\s+/).filter(Boolean).length;
+    updateFields.wordCount = countWords(contentText);
   }
 
-  if (contentJson) {
+  if (contentJson !== undefined) {
     updateFields.contentJson = encrypt(JSON.stringify(contentJson));
   }
 
@@ -90,13 +106,20 @@ export async function GET(req: NextRequest) {
 
   const { searchParams } = new URL(req.url);
   const date = searchParams.get("date");
-  const page = parseInt(searchParams.get("page") || "1");
-  const limit = parseInt(searchParams.get("limit") || "10");
+  const page = Math.max(1, parseInt(searchParams.get("page") || "1", 10) || 1);
+  const limit = Math.min(
+    50,
+    Math.max(1, parseInt(searchParams.get("limit") || "10", 10) || 10),
+  );
   const skip = (page - 1) * limit;
 
   await connectDB();
 
   if (date) {
+    if (!isDateString(date)) {
+      return NextResponse.json({ error: "Invalid date" }, { status: 400 });
+    }
+
     const entry = await Entry.findOne({ userId: session.user.id, date }).lean();
     if (entry) {
       entry.contentHtml = safeDecrypt(entry.contentHtml);
@@ -114,7 +137,14 @@ export async function GET(req: NextRequest) {
   const [entries, total] = await Promise.all([
     Entry.find(
       { userId: session.user.id },
-      { date: 1, title: 1, wordCount: 1, contentText: 1, contentHtml: 1 },
+      {
+        date: 1,
+        title: 1,
+        wordCount: 1,
+        contentText: 1,
+        contentHtml: 1,
+        mood: 1,
+      },
     )
       .sort({ date: -1 })
       .skip(skip)
@@ -129,7 +159,10 @@ export async function GET(req: NextRequest) {
       ...entry,
       contentHtml: safeDecrypt(entry.contentHtml || ""),
       contentText: decryptedText,
-      preview: decryptedText.length > 100 ? decryptedText.substring(0, 100) + "..." : decryptedText,
+      preview:
+        decryptedText.length > 100
+          ? decryptedText.substring(0, 100) + "..."
+          : decryptedText,
     };
   });
 
