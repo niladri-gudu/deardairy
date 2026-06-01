@@ -1,20 +1,15 @@
 "use server";
 
-import { connectDB } from "@/lib/mongoose";
-import { Entry } from "@/models/entry";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { addDays, getLocalDateString, isDateString } from "@/lib/utils/date";
+import { getCachedEntryDates } from "@/lib/entry-cache";
 
 export async function getStreakData(localToday = getLocalDateString()) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user) return { currentStreak: 0, totalEntries: 0 };
 
-  await connectDB();
-
-  const entries = await Entry.find({ userId: session.user.id }, { date: 1 })
-    .sort({ date: -1 })
-    .lean();
+  const entries = await getCachedEntryDates(session.user.id);
 
   if (entries.length === 0) return { currentStreak: 0, totalEntries: 0 };
 

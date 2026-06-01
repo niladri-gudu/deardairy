@@ -2,32 +2,27 @@
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { connectDB } from "@/lib/mongoose";
-import { Entry } from "@/models/entry";
 import { getLocalDateString } from "@/lib/utils/date";
 import { JournalHome } from "@/components/journal/journal-home";
 import { safeDecrypt } from "@/lib/encryption";
 import { getStreakData } from "@/actions/streak";
 import { cookies } from "next/headers";
 import { isDateString } from "@/lib/utils/date";
+import {
+  getCachedEntry,
+  getCachedEntrySummaries,
+} from "@/lib/entry-cache";
 
 export default async function JournalPage() {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) redirect("/signin");
 
-  await connectDB();
   const cookieToday = (await cookies()).get("withink-local-date")?.value;
   const today = isDateString(cookieToday) ? cookieToday : getLocalDateString();
 
   const [todayEntry, allEntries, streakData] = await Promise.all([
-    Entry.findOne({ userId: session.user.id, date: today }).lean(),
-    Entry.find(
-      { userId: session.user.id },
-      { date: 1, title: 1, wordCount: 1, contentText: 1, contentHtml: 1, mood: 1 },
-    )
-      .sort({ date: -1 })
-      .limit(15)
-      .lean(),
+    getCachedEntry(session.user.id, today),
+    getCachedEntrySummaries(session.user.id, 15),
     getStreakData(today),
   ]);
 

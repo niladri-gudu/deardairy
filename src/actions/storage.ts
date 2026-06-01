@@ -11,6 +11,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { connectDB } from "@/lib/mongoose";
 import { Entry } from "@/models/entry";
 import { safeDecrypt, encrypt } from "@/lib/encryption";
+import { invalidateUserEntryCache } from "@/lib/entry-cache";
 
 const s3 = new S3Client({
   region: "auto",
@@ -130,6 +131,7 @@ export async function deleteMediaFile(userId: string, fileKey: string) {
   // 2. Scrub from all entries
   await connectDB();
   const entries = (await Entry.find({ userId }).lean()) as any[];
+  let entriesChanged = false;
 
   for (const entry of entries) {
     let dirty = false;
@@ -173,6 +175,11 @@ export async function deleteMediaFile(userId: string, fileKey: string) {
           contentJson: encrypt(newJson),
         },
       );
+      entriesChanged = true;
     }
+  }
+
+  if (entriesChanged) {
+    await invalidateUserEntryCache(userId);
   }
 }
