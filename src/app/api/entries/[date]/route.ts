@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongoose";
 import { Entry } from "@/models/entry";
 import { isDateString } from "@/lib/utils/date";
+import { invalidateUserEntryCache } from "@/lib/entry-cache";
 
 export async function DELETE(
   req: NextRequest,
@@ -21,6 +22,7 @@ export async function DELETE(
   await connectDB();
 
   await Entry.deleteOne({ userId: session.user.id, date });
+  await invalidateUserEntryCache(session.user.id);
 
   return NextResponse.json({ success: true });
 }

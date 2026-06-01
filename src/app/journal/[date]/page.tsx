@@ -4,13 +4,12 @@ import { JournalEditor } from "@/components/journal/journal-editor";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { connectDB } from "@/lib/mongoose";
-import { Entry } from "@/models/entry";
 import { safeDecrypt } from "@/lib/encryption";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { addDays, getLocalDateString, isDateString } from "@/lib/utils/date";
 import { cookies } from "next/headers";
+import { getCachedEntry } from "@/lib/entry-cache";
 
 interface Props {
   params: Promise<{ date: string }>;
@@ -26,13 +25,8 @@ export default async function JournalDatePage({ params, searchParams }: Props) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) redirect("/signin");
 
-  await connectDB();
-
   // 1. Fetch the entry FIRST to see if it exists
-  const entry = await Entry.findOne({
-    userId: session.user.id,
-    date,
-  }).lean();
+  const entry = await getCachedEntry(session.user.id, date);
 
   // 2. Determine "Today" and "Yesterday"
   const cookieToday = (await cookies()).get("withink-local-date")?.value;

@@ -1,41 +1,24 @@
 "use server";
 
-import { connectDB } from "@/lib/mongoose";
-import { Entry } from "@/models/entry";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
-import { safeDecrypt } from "@/lib/encryption"; 
+import { safeDecrypt } from "@/lib/encryption";
+import { getCachedFlashbackEntries } from "@/lib/entry-cache";
 
 export async function getRandomEntry() {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user) return null;
 
-  await connectDB();
+  const entries = await getCachedFlashbackEntries(session.user.id);
+  if (entries.length === 0) return null;
 
-  // 1. Pick a random archive from the user's collection
-  const randomEntries = await Entry.aggregate([
-    { $match: { userId: session.user.id } },
-    { $sample: { size: 1 } },
-    { 
-      $project: { 
-        date: 1, 
-        title: 1, 
-        wordCount: 1, 
-        contentText: 1, 
-        contentHtml: 1 
-      } 
-    }
-  ]);
-
-  if (randomEntries.length === 0) return null;
-
-  const entry = randomEntries[0];
+  const entry = entries[Math.floor(Math.random() * entries.length)];
 
   // 2. Decrypt the sensitive payload before it hits the UI
   // We use safeDecrypt to handle potential nulls or malformed data
   const decryptedEntry = {
     ...entry,
-    _id: entry._id.toString(), // Ensure ID is a string for Next.js Client Components
+    _id: entry._id.toString(),
     contentText: safeDecrypt(entry.contentText || ""),
     contentHtml: safeDecrypt(entry.contentHtml || ""),
   };

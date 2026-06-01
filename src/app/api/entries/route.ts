@@ -8,6 +8,11 @@ import { Entry } from "@/models/entry";
 import { encrypt, safeDecrypt } from "@/lib/encryption";
 import { addDays, isDateString } from "@/lib/utils/date";
 import { countWords } from "@/lib/utils/text";
+import {
+  getCachedEntry,
+  getCachedEntryPage,
+  invalidateUserEntryCache,
+} from "@/lib/entry-cache";
 
 export async function POST(req: NextRequest) {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -82,6 +87,7 @@ export async function POST(req: NextRequest) {
     },
     { upsert: true, new: true, lean: true },
   );
+  await invalidateUserEntryCache(session.user.id);
 
   // Decrypt for response
   if (entry) {
@@ -111,16 +117,13 @@ export async function GET(req: NextRequest) {
     50,
     Math.max(1, parseInt(searchParams.get("limit") || "10", 10) || 10),
   );
-  const skip = (page - 1) * limit;
-
-  await connectDB();
 
   if (date) {
     if (!isDateString(date)) {
       return NextResponse.json({ error: "Invalid date" }, { status: 400 });
     }
 
-    const entry = await Entry.findOne({ userId: session.user.id, date }).lean();
+    const entry = await getCachedEntry(session.user.id, date);
     if (entry) {
       entry.contentHtml = safeDecrypt(entry.contentHtml);
       entry.contentText = safeDecrypt(entry.contentText);
@@ -134,24 +137,11 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ entry });
   }
 
-  const [entries, total] = await Promise.all([
-    Entry.find(
-      { userId: session.user.id },
-      {
-        date: 1,
-        title: 1,
-        wordCount: 1,
-        contentText: 1,
-        contentHtml: 1,
-        mood: 1,
-      },
-    )
-      .sort({ date: -1 })
-      .skip(skip)
-      .limit(limit)
-      .lean(),
-    Entry.countDocuments({ userId: session.user.id }),
-  ]);
+  const { entries, total } = await getCachedEntryPage(
+    session.user.id,
+    page,
+    limit,
+  );
 
   const decryptedEntries = entries.map((entry) => {
     const decryptedText = safeDecrypt(entry.contentText || "");
